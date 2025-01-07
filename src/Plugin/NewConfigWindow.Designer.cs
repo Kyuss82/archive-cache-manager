@@ -95,6 +95,7 @@ namespace ArchiveCacheManager
             this.Chdman = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.DolphinTool = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ExtractXiso = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.PS3dec = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tab1CacheSettings.SuspendLayout();
@@ -540,7 +541,8 @@ namespace ArchiveCacheManager
             this.SmartExtract,
             this.Chdman,
             this.DolphinTool,
-            this.ExtractXiso});
+            this.ExtractXiso,
+            this.PS3dec});
             this.emulatorPlatformConfigDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.emulatorPlatformConfigDataGridView.Location = new System.Drawing.Point(6, 62);
             this.emulatorPlatformConfigDataGridView.MultiSelect = false;
@@ -826,6 +828,13 @@ namespace ArchiveCacheManager
             this.ExtractXiso.ToolTipText = "Extract ZIP and ISO files in xiso format.";
             this.ExtractXiso.Width = 66;
             // 
+            // PS3dec
+            // 
+            this.PS3dec.HeaderText = "PS3dec";
+            this.PS3dec.Name = "PS3dec";
+            this.PS3dec.ToolTipText = "Decrypt PS3 iso.";
+            this.PS3dec.Width = 24;
+            // 
             // NewConfigWindow
             // 
             this.AcceptButton = this.okButton;
@@ -919,5 +928,6 @@ namespace ArchiveCacheManager
         private System.Windows.Forms.DataGridViewCheckBoxColumn Chdman;
         private System.Windows.Forms.DataGridViewCheckBoxColumn DolphinTool;
         private System.Windows.Forms.DataGridViewCheckBoxColumn ExtractXiso;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn PS3dec;
     }
 }

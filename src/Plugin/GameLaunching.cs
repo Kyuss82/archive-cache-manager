@@ -46,7 +46,9 @@ namespace ArchiveCacheManager
             if (extract && (Zip.SupportedType(archivePath)
                             || (Config.GetChdman(key) && Chdman.SupportedType(archivePath))
                             || (Config.GetDolphinTool(key) && DolphinTool.SupportedType(archivePath))
-                            || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))))
+                            || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))
+                            || (Config.GetPS3dec(key) && PS3dec.SupportedType(archivePath))
+                            ))
             {
                 return true;
             }
@@ -84,7 +86,9 @@ namespace ArchiveCacheManager
             else if (extract && (Zip.SupportedType(archivePath)
                                  || (Config.GetChdman(key) && Chdman.SupportedType(archivePath))
                                  || (Config.GetDolphinTool(key) && DolphinTool.SupportedType(archivePath))
-                                 || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))))
+                                 || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))
+                                 || (Config.GetPS3dec(key) && PS3dec.SupportedType(archivePath))
+                                 ))
             {
                 return true;
             }
@@ -112,6 +116,10 @@ namespace ArchiveCacheManager
             else if (extract && Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))
             {
                 extractor = new ExtractXiso();
+            }
+            else if (extract && Config.GetPS3dec(key) && PS3dec.SupportedType(archivePath))
+            {
+                extractor = new PS3dec();
             }
             else if (extract && Zip.SupportedType(archivePath))
             {
