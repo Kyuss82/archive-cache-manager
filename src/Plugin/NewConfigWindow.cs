@@ -79,7 +79,9 @@ namespace ArchiveCacheManager
                                                                                 config.Value.Chdman,
                                                                                 config.Value.DolphinTool,
                                                                                 config.Value.ExtractXiso,
-                                                                                config.Value.PS3dec});
+                                                                                config.Value.PS3dec,
+                                                                                config.Value.NNASOS });
+
                 }
                 else
                 {
@@ -94,7 +96,9 @@ namespace ArchiveCacheManager
                                                                           config.Value.Chdman,
                                                                           config.Value.DolphinTool,
                                                                           config.Value.ExtractXiso,
-                                                                          config.Value.PS3dec});
+                                                                          config.Value.PS3dec,
+                                                                          config.Value.NNASOS });
+
                 }
             }
             emulatorPlatformConfigDataGridView.ClearSelection();
@@ -233,6 +237,8 @@ namespace ArchiveCacheManager
                 config[key].DolphinTool = Convert.ToBoolean(row.Cells[9].Value);
                 config[key].ExtractXiso = Convert.ToBoolean(row.Cells[10].Value);
                 config[key].PS3dec = Convert.ToBoolean(row.Cells[11].Value);
+                config[key].NNASOS = Convert.ToBoolean(row.Cells[12].Value);
+
             }
 
             Config.UpdateCheck = updateCheckCheckBox.Checked;

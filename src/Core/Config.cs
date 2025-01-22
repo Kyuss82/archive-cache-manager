@@ -58,6 +58,7 @@ namespace ArchiveCacheManager
         private static readonly bool defaultDolphinTool = false;
         private static readonly bool defaultExtractXiso = false;
         private static readonly bool defaultPS3dec = false;
+        private static readonly bool defaultNNASOS = false;
 
         public class EmulatorPlatformConfig
         {
@@ -71,6 +72,7 @@ namespace ArchiveCacheManager
             public bool DolphinTool;
             public bool ExtractXiso;
             public bool PS3dec;
+            public bool NNASOS;
 
             public EmulatorPlatformConfig()
             {
@@ -84,6 +86,7 @@ namespace ArchiveCacheManager
                 DolphinTool = defaultDolphinTool;
                 ExtractXiso = defaultExtractXiso;
                 PS3dec = defaultPS3dec;
+                NNASOS = defaultNNASOS;
             }
         };
 
@@ -346,21 +349,38 @@ namespace ArchiveCacheManager
             return defaultExtractXiso;
         }
 
+
         public static bool GetPS3dec(string key)
         {
             try
             {
                 return mEmulatorPlatformConfig[key].PS3dec;
+          catch (KeyNotFoundException) { }
+
+            try
+              return mEmulatorPlatformConfig[defaultEmulatorPlatform].PS3dec;
+            }
+            catch (KeyNotFoundException) { }
+
+            return defaultPS3dec;
+          }
+        public static bool GetNNASOS(string key)
+        {
+            try
+            {
+                return mEmulatorPlatformConfig[key].NNASOS;
             }
             catch (KeyNotFoundException) { }
 
             try
             {
-                return mEmulatorPlatformConfig[defaultEmulatorPlatform].PS3dec;
+<
+                return mEmulatorPlatformConfig[defaultEmulatorPlatform].NNASOS;
             }
             catch (KeyNotFoundException) { }
 
-            return defaultPS3dec;
+            return defaultNNASOS;
+
         }
 
         public static string EmulatorPlatformKey(string emulator, string platform) => string.Format(@"{0} \ {1}", emulator, platform);
@@ -529,6 +549,10 @@ namespace ArchiveCacheManager
                             if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.PS3dec)))
                             {
                                 mEmulatorPlatformConfig[section.SectionName].PS3dec = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.PS3dec)]);
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.NNASOS)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].NNASOS = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.NNASOS)]);
+
                             }
                         }
                     }
@@ -621,6 +645,8 @@ namespace ArchiveCacheManager
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.DolphinTool)] = priority.Value.DolphinTool.ToString();
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.ExtractXiso)] = priority.Value.ExtractXiso.ToString();
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.PS3dec)] = priority.Value.PS3dec.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.NNASOS)] = priority.Value.NNASOS.ToString();
+
             }
 
             try

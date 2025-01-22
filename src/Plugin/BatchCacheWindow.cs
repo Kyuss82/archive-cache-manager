@@ -103,6 +103,7 @@ namespace ArchiveCacheManager
             Extractor dolphinTool = new DolphinTool();
             Extractor extractXiso = new ExtractXiso();
             Extractor ps3dec = new PS3dec();
+            Extractor nnasos = new NNASOS();
             Extractor robocopy = new Robocopy();
             long archiveSize = 0;
             double archiveSizeMb = 0;
@@ -127,14 +128,31 @@ namespace ArchiveCacheManager
 
                     if (File.Exists(gameInfoPath))
                     {
-                        archiveSize = new GameInfo(gameInfoPath).DecompressedSize;
-                        archiveSizeMb = archiveSize / 1048576.0;
-                        cacheStatusGridView.Rows[i].Cells["ArchiveSize"].Value = archiveSize;
-                        cacheStatusGridView.Rows[i].Cells["ArchiveSizeMb"].Value = archiveSizeMb;
-                        requiredCacheSize += archiveSizeMb;
-                        cacheStatusGridView.Rows[i].Cells["CacheAction"].Value = "None";
-                        cacheStatusGridView.Rows[i].Cells["CacheStatus"].Value = "Already cached.";
-                        continue;
+                        // Check if a compressed .iso.dec is in cache, meaning not extracted (when you have nNASOS setting selected).
+                        // Should only happen when you extracted originally without checking the nNASOS checkbox in settings.
+                        bool cached = true;
+                        key = Config.EmulatorPlatformKey(PluginHelper.DataManager.GetEmulatorById(mSelectedGames[index].EmulatorId).Title, mSelectedGames[index].Platform);
+                        if (Config.GetNNASOS(key))
+                        {
+                            string cachePath = PathUtils.ArchiveCachePath(PathUtils.GetAbsolutePath(path));
+                            if (Directory.GetFiles(cachePath, "*.iso.dec").Length > 0
+                                && Directory.GetFiles(cachePath, "*.iso").Length == 0)
+                            {
+                                cached = false;
+                            }
+                        }
+
+                        if (cached)
+                        {
+                            archiveSize = new GameInfo(gameInfoPath).DecompressedSize;
+                            archiveSizeMb = archiveSize / 1048576.0;
+                            cacheStatusGridView.Rows[i].Cells["ArchiveSize"].Value = archiveSize;
+                            cacheStatusGridView.Rows[i].Cells["ArchiveSizeMb"].Value = archiveSizeMb;
+                            requiredCacheSize += archiveSizeMb;
+                            cacheStatusGridView.Rows[i].Cells["CacheAction"].Value = "None";
+                            cacheStatusGridView.Rows[i].Cells["CacheStatus"].Value = "Already cached.";
+                            continue;
+                        }
                     }
 
                     if (!File.Exists(path))
@@ -168,6 +186,8 @@ namespace ArchiveCacheManager
                         extractor = extractXiso;
                     else if (extract && Config.GetPS3dec(key) && PS3dec.SupportedType(path))
                         extractor = ps3dec;
+                    else if (extract && Config.GetNNASOS(key) && NNASOS.SupportedType(path))
+                        extractor = nnasos;
                     else if (extract && Zip.SupportedType(path))
                         extractor = zip;
                     else
