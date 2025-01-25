@@ -30,6 +30,7 @@ namespace ArchiveCacheManager
         private static readonly string restoreSettingsFileName = @"restore-settings.ini";
         private static readonly string relativePluginPath = @"Plugins\ArchiveCacheManager";
         private static readonly string relative7zPath = @"ThirdParty\7-Zip";
+        private static readonly string relativePs3keyPath = @"ThirdParty\PS3key";
         private static readonly string relativeExtractorPath = Path.Combine(relativePluginPath, "Extractors");
         private static readonly string relativeLogPath = Path.Combine(relativePluginPath, "Logs");
         private static readonly DateTime dateTimeNow = DateTime.Now;
@@ -220,6 +221,11 @@ namespace ArchiveCacheManager
         /// </summary>
         /// <returns>Absolute path to the folder containing the plugin's extractors.</returns>
         public static string GetExtractorRootPath() => Path.Combine(launchBoxRootPath, relativeExtractorPath);
+        /// <summary>
+        /// Absolute path to the folder containing the plugin's extractors.
+        /// </summary>
+        /// <returns>Absolute path to the folder containing the plugin's extractors.</returns>
+        public static string GetPS3keyRootPath() => Path.Combine(launchBoxRootPath, relativePs3keyPath);
 
         /// <summary>
         /// Absolute path to the last played file for the given archive cache path.

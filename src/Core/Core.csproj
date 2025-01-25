@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Extractors\Chdman.cs" />
     <Compile Include="Extractors\DolphinTool.cs" />
+    <Compile Include="Extractors\PS3dec.cs" />
     <Compile Include="Extractors\ExtractXiso.cs" />
     <Compile Include="Extractors\Robocopy.cs" />
     <Compile Include="Extractors\Extractor.cs" />

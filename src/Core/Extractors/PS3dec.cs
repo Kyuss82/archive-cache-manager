@@ -8,11 +8,11 @@ using System.Text.RegularExpressions;
 
 namespace ArchiveCacheManager
 {
-    public class ExtractXiso : Extractor
+    public class PS3dec : Extractor
     {
-        string executablePath = Path.Combine(PathUtils.GetExtractorRootPath(), "extract-xiso.exe");
-
-        public ExtractXiso()
+        string executablePath = Path.Combine(PathUtils.GetExtractorRootPath(), "PS3Dec.exe");
+        
+        public PS3dec()
         {
 
         }
@@ -26,7 +26,7 @@ namespace ArchiveCacheManager
         {
             string isoPath = string.Empty;
             string extension = Path.GetExtension(archivePath).ToLower();
-
+            
             if (extension.Equals(".zip") || extension.Equals(".7z"))
             {
                 Extractor zip = new Zip();
@@ -47,25 +47,35 @@ namespace ArchiveCacheManager
             // Double-check isoPath is set, and not the original archive path, as it will be deleted.
             if (string.IsNullOrEmpty(isoPath) || string.Equals(isoPath, archivePath, StringComparison.InvariantCultureIgnoreCase))
             {
-                Logger.Log($"extract-xiso path check failed: {isoPath}");
+                Logger.Log($"PS3dec path check failed: {isoPath}");
                 Environment.ExitCode = 1;
                 return false;
             }
+            //Read the key from the path
+            string keypath = Path.Combine(PathUtils.GetPS3keyRootPath(), Path.ChangeExtension(Path.GetFileName(archivePath), ".dkey"));
+            if (!File.Exists(keypath))
+            {
+                Logger.Log($"{keypath} not found");
+                Environment.ExitCode = 1;
+                return false;
+            }
+            string key = File.ReadLines(keypath).First();
 
-            // -d    Output directory
-            // -D    Delete old iso after conversion
-            // -r    Rewrite mode
-            // Is safe to use -D option here to delete old iso, as we're working on copy in the cache
-            string args = string.Format("-d \"{0}\" -D -r \"{1}\"", cachePath, isoPath);
-            
+            string temppath = Path.Combine(PathUtils.GetTempPath(), "temp.iso");
+           
+            // -d    decrypt
+            // key decryption key
+            string args = string.Format(" d key {0} \"{1}\"  \"{2}\"", key,isoPath,temppath);
+           
             (string stdout, string stderr, int exitCode) = ProcessUtils.RunProcess(executablePath, args, false, null, false, ExtractionProgress);
 
             if (exitCode != 0)
             {
-                Logger.Log($"extract-xiso returned exit code {exitCode} with error output:\r\n{stderr}");
+                Logger.Log($"PS3dec returned exit code {exitCode} with error output:\r\n{stderr}");
                 Environment.ExitCode = exitCode;
             }
-
+            File.Delete(isoPath);
+            File.Move(temppath, isoPath);
             return exitCode == 0;
         }
 
@@ -86,33 +96,7 @@ namespace ArchiveCacheManager
 
             (string stdout, string stderr, int exitCode) = ProcessUtils.RunProcess(executablePath, args);
 
-            /*
-            stdout will be in the format below:
-            ------
-            c:\LaunchBox\ThirdParty\extract-xiso>extract-xiso -l "c:\Emulation\ROMs\JSRF - Jet Set Radio Future (USA).iso"
-            extract-xiso v2.7.1 (01.11.14) for win32 - written by in <in@fishtank.com>
-
-            listing JSRF - Jet Set Radio Future (USA).iso:
-
-            \default.xbe (2281472 bytes)
-            \Media\ (0 bytes)
-            \Media\Cache\ (0 bytes)
-            \Media\Cache\Cache00.tbl (3786 bytes)
-            \Media\Cache\Cache01.tbl (5869 bytes)
-            \Media\Cache\Cache02.tbl (72 bytes)
-            \Media\Cache\Cache03.tbl (72 bytes)
-            \Media\Cache\Cache04.tbl (72 bytes)
-            \Media\Cache\Cache05.tbl (72 bytes)
-            \Media\Cache\Cache06.tbl (72 bytes)
-            \Media\Cache\Cache07.tbl (72 bytes)
-            \Media\Cache\Cache08.tbl (72 bytes)
-            [...]
-            \Media\Z_ADX\MUSENJ\gjv009_01.adx (124092 bytes)
-            \Media\Z_ADX\MUSENJ\gjv010_01.adx (117900 bytes)
-            \Media\Z_ADX\MUSENJ\gjv011_01.adx (93078 bytes)
-
-            3221 files in c:\Emulation\ROMs\JSRF - Jet Set Radio Future (USA).iso total 2498145117 bytes
-            */
+           
 
             long size = 0;
 
@@ -128,7 +112,7 @@ namespace ArchiveCacheManager
             }
             else
             {
-                Logger.Log($"extract-xiso returned exit code {exitCode} with error output:\r\n{stderr}");
+                Logger.Log($"PS3dec returned exit code {exitCode} with error output:\r\n{stderr}");
                 Environment.ExitCode = exitCode;
             }
 
@@ -142,7 +126,7 @@ namespace ArchiveCacheManager
 
         public override string Name()
         {
-            return "extract-xiso";
+            return "PS3dec";
         }
 
         public override string GetExtractorPath()

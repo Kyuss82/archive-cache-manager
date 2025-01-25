@@ -91,6 +91,10 @@ namespace ArchiveCacheManager
             {
                 return new ExtractXiso();
             }
+            else if (extract && mGameCacheData.Config.PS3dec && PS3dec.SupportedType(archivePath))
+            {
+                return new PS3dec();
+            }
             else if (extract && Zip.SupportedType(archivePath))
             {
                 return new Zip();
