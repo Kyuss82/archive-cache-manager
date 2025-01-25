@@ -46,8 +46,7 @@ namespace ArchiveCacheManager
             if (extract && (Zip.SupportedType(archivePath)
                             || (Config.GetChdman(key) && Chdman.SupportedType(archivePath))
                             || (Config.GetDolphinTool(key) && DolphinTool.SupportedType(archivePath))
-                            || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))
-                            || (Config.GetNNASOS(key) && NNASOS.SupportedType(archivePath))))
+                            || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))))
             {
                 return true;
             }
@@ -85,8 +84,7 @@ namespace ArchiveCacheManager
             else if (extract && (Zip.SupportedType(archivePath)
                                  || (Config.GetChdman(key) && Chdman.SupportedType(archivePath))
                                  || (Config.GetDolphinTool(key) && DolphinTool.SupportedType(archivePath))
-                                 || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))
-                                 || (Config.GetNNASOS(key) && NNASOS.SupportedType(archivePath))))
+                                 || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))))
             {
                 return true;
             }
@@ -114,10 +112,6 @@ namespace ArchiveCacheManager
             else if (extract && Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))
             {
                 extractor = new ExtractXiso();
-            }
-            else if (extract && Config.GetNNASOS(key) && NNASOS.SupportedType(archivePath))
-            {
-                extractor = new NNASOS();
             }
             else if (extract && Zip.SupportedType(archivePath))
             {
