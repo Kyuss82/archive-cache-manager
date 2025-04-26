@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using IniParser;
+using IniParser.Configuration;
+using IniParser.Model;
 using Unbroken.LaunchBox.Plugins;
 using Unbroken.LaunchBox.Plugins.Data;
-using IniParser;
-using IniParser.Model;
-using System.Windows.Forms;
 
 namespace ArchiveCacheManager
 {
@@ -269,8 +270,10 @@ namespace ArchiveCacheManager
         /// </summary>
         public static void Save()
         {
-            var parser = new FileIniDataParser();
+            var formatter = new IniDataFormatter();
+            var configuration = new IniFormattingConfiguration();
             IniData iniData = new IniData();
+            iniData.CreateSectionsIfTheyDontExist = true;
 
             iniData[launchInfoSection][nameof(GameId)] = GameId;
             iniData[launchInfoSection][nameof(Title)] = Title;
@@ -286,7 +289,9 @@ namespace ArchiveCacheManager
 
             try
             {
-                parser.WriteFile(mSettingsPath, iniData);
+                using var writer = new StreamWriter(mSettingsPath);
+                writer.Write(formatter.Format(iniData, configuration));
+                writer.Flush();
             }
             catch (Exception e)
             {
@@ -304,12 +309,13 @@ namespace ArchiveCacheManager
             {
                 try
                 {
-                    var parser = new FileIniDataParser();
-                    IniData iniData = parser.ReadFile(mSettingsPath);
+                    var parser = new IniDataParser();
+                    var reader = new StreamReader(mSettingsPath);
+                    IniData iniData = parser.Parse(reader);
 
                     foreach (var section in iniData.Sections)
                     {
-                        if (string.Equals(section.SectionName, launchInfoSection))
+                        if (string.Equals(section.Name, launchInfoSection))
                         {
                             mGameId = iniData[launchInfoSection][nameof(GameId)];
                             mTitle = iniData[launchInfoSection][nameof(Title)];
@@ -321,9 +327,9 @@ namespace ArchiveCacheManager
                         else
                         {
                             SettingName settingName;
-                            if (Enum.TryParse(section.SectionName, out settingName))
+                            if (Enum.TryParse(section.Name, out settingName))
                             {
-                                mSettings.Add(settingName, section.Keys[valueKey]);
+                                mSettings.Add(settingName, section.Properties[valueKey]);
                             }
                         }
                     }

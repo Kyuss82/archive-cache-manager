@@ -63,7 +63,7 @@ namespace ArchiveCacheManager
         static void Main(string[] args)
         {
 #if DEBUG
-            Debugger.Launch();
+            //Debugger.Launch();
 #endif
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();

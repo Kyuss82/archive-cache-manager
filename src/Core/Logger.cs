@@ -61,11 +61,14 @@ namespace ArchiveCacheManager
         public static void Log(string message, LogLevel logLevel = LogLevel.Info)
         {
             StreamWriter writer = null;
+            string formattedMessage = string.Format("{0} - {1}\r\n", GetDateTime(), message);
+            Console.WriteLine(formattedMessage);
 
             try
             {
                 writer = new StreamWriter(PathUtils.GetLogFilePath(), true);
-                writer.Write(string.Format("{0} - {1}\r\n", GetDateTime(), message));
+                writer.Write(formattedMessage);
+                writer.Flush();
             }
             catch (IOException)
             {

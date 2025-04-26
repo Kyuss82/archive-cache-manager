@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 using IniParser;
+using IniParser.Configuration;
 using IniParser.Model;
 
 namespace ArchiveCacheManager
@@ -27,12 +28,13 @@ namespace ArchiveCacheManager
 
             if (File.Exists(gameIndexPath))
             {
-                var parser = new FileIniDataParser();
+                var parser = new IniDataParser();
                 mGameIndex = new IniData();
 
                 try
                 {
-                    mGameIndex = parser.ReadFile(gameIndexPath);
+                    var reader = new StreamReader(gameIndexPath);
+                    mGameIndex = parser.Parse(reader);
                 }
                 catch (Exception e)
                 {
@@ -50,11 +52,14 @@ namespace ArchiveCacheManager
 
             if (mGameIndex != null)
             {
-                var parser = new FileIniDataParser();
+                var formatter = new IniDataFormatter();
+                var configuration = new IniFormattingConfiguration();
 
                 try
                 {
-                    parser.WriteFile(gameIndexPath, mGameIndex);
+                    using var writer = new StreamWriter(gameIndexPath);
+                    writer.Write(formatter.Format(mGameIndex, configuration));
+                    writer.Flush();
                 }
                 catch (Exception e)
                 {
@@ -68,7 +73,7 @@ namespace ArchiveCacheManager
         {
             string selectedFile = string.Empty;
 
-            if (mGameIndex != null && mGameIndex.Sections.ContainsSection(gameId))
+            if (mGameIndex != null && mGameIndex.Sections.Contains(gameId))
             {
                 selectedFile = mGameIndex[gameId][nameof(SelectedFile)] ?? string.Empty;
             }
@@ -81,6 +86,7 @@ namespace ArchiveCacheManager
             if (mGameIndex == null)
             {
                 mGameIndex = new IniData();
+                mGameIndex.CreateSectionsIfTheyDontExist = true;
             }
 
             mGameIndex[gameId][nameof(SelectedFile)] = selectedFile;

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace ArchiveCacheManager
 {
@@ -895,11 +896,13 @@ namespace ArchiveCacheManager
             /// <summary>
             /// The text that is been used for the heading.
             /// </summary>
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public string CaptionText { get; set; }
 
             /// <summary>
             /// The text that is been used in the FlexibleMessageBoxForm.
             /// </summary>
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             public string MessageText { get; set; }
 
             #endregion

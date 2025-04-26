@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using IniParser;
+using IniParser.Configuration;
 using IniParser.Model;
 
 namespace ArchiveCacheManager
@@ -145,8 +146,9 @@ namespace ArchiveCacheManager
             {
                 try
                 {
-                    var parser = new FileIniDataParser();
-                    IniData iniData = parser.ReadFile(mGameInfoPath);
+                    var parser = new IniDataParser();
+                    var reader = new StreamReader(mGameInfoPath);
+                    IniData iniData = parser.Parse(reader);
 
                     mGameId = iniData[gameSection][nameof(GameId)];
                     mArchivePath = iniData[gameSection][nameof(ArchivePath)];
@@ -162,15 +164,15 @@ namespace ArchiveCacheManager
                     mTotalDiscs = Convert.ToInt32(iniData[gameSection][nameof(TotalDiscs)]);
                     mSelectedDisc = Convert.ToInt32(iniData[gameSection][nameof(SelectedDisc)]);
 
-                    foreach (SectionData sectionData in iniData.Sections)
+                    foreach (Section sectionData in iniData.Sections)
                     {
-                        if (sectionData.SectionName.StartsWith(discSection, StringComparison.InvariantCultureIgnoreCase))
+                        if (sectionData.Name.StartsWith(discSection, StringComparison.InvariantCultureIgnoreCase))
                         {
                             DiscInfo discInfo = new DiscInfo();
-                            discInfo.ApplicationId = sectionData.Keys[nameof(DiscInfo.ApplicationId)];
-                            discInfo.ArchivePath = sectionData.Keys[nameof(DiscInfo.ArchivePath)];
-                            discInfo.Version = sectionData.Keys[nameof(DiscInfo.Version)];
-                            discInfo.Disc = Convert.ToInt32(sectionData.Keys[nameof(DiscInfo.Disc)]);
+                            discInfo.ApplicationId = sectionData.Properties[nameof(DiscInfo.ApplicationId)];
+                            discInfo.ArchivePath = sectionData.Properties[nameof(DiscInfo.ArchivePath)];
+                            discInfo.Version = sectionData.Properties[nameof(DiscInfo.Version)];
+                            discInfo.Disc = Convert.ToInt32(sectionData.Properties[nameof(DiscInfo.Disc)]);
                             mDiscs.Add(discInfo);
                         }
                     }
@@ -202,8 +204,10 @@ namespace ArchiveCacheManager
         public bool Save(string savePath = null)
         {
             savePath = savePath ?? mGameInfoPath;
-            var parser = new FileIniDataParser();
+            var formatter = new IniDataFormatter();
+            var configuration = new IniFormattingConfiguration();
             IniData iniData = new IniData();
+            iniData.CreateSectionsIfTheyDontExist = true;
 
             try
             {
@@ -234,7 +238,9 @@ namespace ArchiveCacheManager
                     }
                 }
 
-                parser.WriteFile(savePath, iniData);
+                using var writer = new StreamWriter(savePath);
+                writer.Write(formatter.Format(iniData, configuration));
+                writer.Flush();
 
                 return true;
             }

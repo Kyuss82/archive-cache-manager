@@ -10,7 +10,7 @@ namespace ArchiveCacheManager
             if (eventType == "PluginInitialized")
             {
 #if DEBUG
-                Debugger.Launch();
+                //Debugger.Launch();
 #endif
                 Logger.Init();
                 Logger.Log("-------- PLUGIN INITIALIZED --------");
