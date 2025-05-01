@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using IniParser;
-using IniParser.Configuration;
-using IniParser.Model;
+using Salaros.Configuration;
 
 namespace ArchiveCacheManager
 {
@@ -368,206 +366,92 @@ namespace ArchiveCacheManager
         /// </summary>
         public static void Load()
         {
-            bool configMissing = false;
+            bool confignotMissing = false;
 
             if (File.Exists(PathUtils.GetPluginConfigPath()))
             {
-                var parser = new IniDataParser();
-                IniData iniData = new IniData();
+                ConfigParser iniData = new ConfigParser(PathUtils.GetPluginConfigPath());
 
                 try
                 {
-                    var reader = new StreamReader(PathUtils.GetPluginConfigPath());
-                    iniData = parser.Parse(reader);
-
                     mEmulatorPlatformConfig.Clear();
-                    foreach (Section section in iniData.Sections)
+                    foreach (var section in iniData.Sections)
                     {
-                        if (section.Name == configSection)
+                        if (section.SectionName == configSection)
                         {
-                            if (section.Properties.Contains(nameof(CachePath)))
-                            {
-                                mCachePath = section.Properties[nameof(CachePath)];
-                            }
-                            // Older config file version used lower case first letter
-                            else if (section.Properties.Contains("cachePath"))
-                            {
-                                mCachePath = section.Properties["cachePath"];
-                            }
-
-                            if (section.Properties.Contains(nameof(CacheSize)))
-                            {
-                                mCacheSize = Convert.ToInt64(section.Properties[nameof(CacheSize)]);
-                            }
-                            // Older config file version used lower case first letter
-                            else if (section.Properties.Contains("cacheSize"))
-                            {
-                                mCacheSize = Convert.ToInt64(section.Properties["cacheSize"]);
-                            }
-
-                            if (section.Properties.Contains(nameof(MinArchiveSize)))
-                            {
-                                mMinArchiveSize = Convert.ToInt64(section.Properties[nameof(MinArchiveSize)]);
-                            }
-                            // Older config file version used lower case first letter
-                            else if (section.Properties.Contains("minArchiveSize"))
-                            {
-                                mMinArchiveSize = Convert.ToInt64(section.Properties["minArchiveSize"]);
-                            }
-
-                            if (section.Properties.Contains(nameof(UpdateCheck)))
-                            {
-                                mUpdateCheck = Convert.ToBoolean(section.Properties[nameof(UpdateCheck)]);
-                            }
-                            else
-                            {
-                                // Set this null to indicate the option has never been set.
-                                mUpdateCheck = null;
-                            }
-
-                            if (section.Properties.Contains(nameof(SkipUpdate)))
-                            {
-                                mSkipUpdate = section.Properties[nameof(SkipUpdate)];
-                            }
-
-                            if (section.Properties.Contains(nameof(StandaloneExtensions)))
-                            {
-                                mStandaloneExtensions = section.Properties[nameof(StandaloneExtensions)];
-                            }
-
-                            if (section.Properties.Contains(nameof(MetadataExtensions)))
-                            {
-                                mMetadataExtensions = section.Properties[nameof(MetadataExtensions)];
-                            }
-
-                            if (section.Properties.Contains(nameof(BypassPathCheck)))
-                            {
-                                mBypassPathCheck = Convert.ToBoolean(section.Properties[nameof(BypassPathCheck)]);
-                            }
-
-
-                            if (section.Properties.Contains("MultiDiscSupport"))
-                            {
-                                mMultiDiscSupport = Convert.ToBoolean(section.Properties["MultiDiscSupport"]);
-                            }
-
-                            if (section.Properties.Contains("UseGameIdAsM3uFilename"))
-                            {
-                                mUseGameIdAsM3uFilename = Convert.ToBoolean(section.Properties["UseGameIdAsM3uFilename"]);
-                            }
+                            mCachePath = iniData.GetValue(configSection, "CachePath");
+                            mCacheSize = Convert.ToInt64(iniData.GetValue(configSection, "CacheSize"));
+                            mMinArchiveSize = Convert.ToInt64(iniData.GetValue(configSection, "MinArchiveSize"));
+                            mUpdateCheck = Convert.ToBoolean(iniData.GetValue(configSection, "UpdateCheck"));
+                            mSkipUpdate = iniData.GetValue(configSection, "SkipUpdate");
+                            mStandaloneExtensions = iniData.GetValue(configSection, "StandaloneExtensions");
+                            mMetadataExtensions = iniData.GetValue(configSection, "MetadataExtensions");
+                            mBypassPathCheck = Convert.ToBoolean(iniData.GetValue(configSection, "BypassPathCheck"));
+                            mMultiDiscSupport = Convert.ToBoolean(iniData.GetValue(configSection, "MultiDiscSupport"));
+                            mUseGameIdAsM3uFilename = Convert.ToBoolean(iniData.GetValue(configSection, "UseGameIdAsM3uFilename"));
                         }
                         else
                         {
                             // If this is the first time we've seen this section ("emulator \ platform" pair), create the EmulatorPlatformConfig object
-                            if (!mEmulatorPlatformConfig.ContainsKey(section.Name))
+                            if (!mEmulatorPlatformConfig.ContainsKey(section.SectionName))
                             {
-                                mEmulatorPlatformConfig.Add(section.Name, new EmulatorPlatformConfig());
+                                mEmulatorPlatformConfig.Add(section.SectionName, new EmulatorPlatformConfig());
                             }
 
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.FilenamePriority)))
-                            {
-                                mEmulatorPlatformConfig[section.Name].FilenamePriority = section.Properties[nameof(EmulatorPlatformConfig.FilenamePriority)];
-                            }
-                            else if (section.Properties.Contains("ExtensionPriority"))
-                            {
-                                mEmulatorPlatformConfig[section.Name].FilenamePriority = section.Properties["ExtensionPriority"];
-                            }
-                            else if (section.Properties.Contains("extensionPriority"))
-                            {
-                                mEmulatorPlatformConfig[section.Name].FilenamePriority = section.Properties["extensionPriority"];
-                            }
-
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.Action)))
-                            {
-                                Enum.TryParse(section.Properties[nameof(EmulatorPlatformConfig.Action)], out mEmulatorPlatformConfig[section.Name].Action);
-                            }
-
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.LaunchPath)))
-                            {
-                                Enum.TryParse(section.Properties[nameof(EmulatorPlatformConfig.LaunchPath)], out mEmulatorPlatformConfig[section.Name].LaunchPath);
-                            }
-
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.MultiDisc)))
-                            {
-                                mEmulatorPlatformConfig[section.Name].MultiDisc = Convert.ToBoolean(section.Properties[nameof(EmulatorPlatformConfig.MultiDisc)]);
-                            }
-                            else
-                            {
-                                mEmulatorPlatformConfig[section.Name].MultiDisc = mMultiDiscSupport;
-                            }
-
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.M3uName)))
-                            {
-                                Enum.TryParse(section.Properties[nameof(EmulatorPlatformConfig.M3uName)], out mEmulatorPlatformConfig[section.Name].M3uName);
-                            }
-                            else
-                            {
-                                mEmulatorPlatformConfig[section.Name].M3uName = mUseGameIdAsM3uFilename ? M3uName.GameId : M3uName.TitleVersion;
-                            }
-
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.SmartExtract)))
-                            {
-                                mEmulatorPlatformConfig[section.Name].SmartExtract = Convert.ToBoolean(section.Properties[nameof(EmulatorPlatformConfig.SmartExtract)]);
-                            }
-
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.Chdman)))
-                            {
-                                mEmulatorPlatformConfig[section.Name].Chdman = Convert.ToBoolean(section.Properties[nameof(EmulatorPlatformConfig.Chdman)]);
-                            }
-
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.DolphinTool)))
-                            {
-                                mEmulatorPlatformConfig[section.Name].DolphinTool = Convert.ToBoolean(section.Properties[nameof(EmulatorPlatformConfig.DolphinTool)]);
-                            }
-
-                            if (section.Properties.Contains(nameof(EmulatorPlatformConfig.ExtractXiso)))
-                            {
-                                mEmulatorPlatformConfig[section.Name].ExtractXiso = Convert.ToBoolean(section.Properties[nameof(EmulatorPlatformConfig.ExtractXiso)]);
-                            }
-                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.PS3dec)))
-                            {
-                                mEmulatorPlatformConfig[section.SectionName].PS3dec = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.PS3dec)]);
-                            }
+                            mEmulatorPlatformConfig[section.SectionName].FilenamePriority = iniData.GetValue(section.SectionName, "FilenamePriority");
+                            Enum.TryParse(iniData.GetValue(section.SectionName, "Action"), out mEmulatorPlatformConfig[section.SectionName].Action);
+                            Enum.TryParse(iniData.GetValue(section.SectionName, "LaunchPath"), out mEmulatorPlatformConfig[section.SectionName].LaunchPath);
+                            mEmulatorPlatformConfig[section.SectionName].MultiDisc = Convert.ToBoolean(iniData.GetValue(section.SectionName, "MultiDisc"));
+                            Enum.TryParse(iniData.GetValue(section.SectionName, "M3uName"), out mEmulatorPlatformConfig[section.SectionName].M3uName);
+                            mEmulatorPlatformConfig[section.SectionName].SmartExtract = Convert.ToBoolean(iniData.GetValue(section.SectionName, "SmartExtract"));
+                            mEmulatorPlatformConfig[section.SectionName].Chdman = Convert.ToBoolean(iniData.GetValue(section.SectionName, "Chdman"));
+                            mEmulatorPlatformConfig[section.SectionName].DolphinTool = Convert.ToBoolean(iniData.GetValue(section.SectionName, "DolphinTool"));
+                            mEmulatorPlatformConfig[section.SectionName].ExtractXiso = Convert.ToBoolean(iniData.GetValue(section.SectionName, "ExtractXiso"));
+                            mEmulatorPlatformConfig[section.SectionName].PS3dec = Convert.ToBoolean(iniData.GetValue(section.SectionName, "PS3dec"));
                         }
                     }
 
                     // Check if the [All \ All] section exists.
-                    if (!iniData.Sections.Contains(defaultEmulatorPlatform))
+                    foreach (var section in iniData.Sections)
                     {
-                        if (!mEmulatorPlatformConfig.ContainsKey(defaultEmulatorPlatform))
+                        if (section.SectionName == defaultEmulatorPlatform)
                         {
-                            mEmulatorPlatformConfig.Add(defaultEmulatorPlatform, new EmulatorPlatformConfig());
+                            confignotMissing |= true;
+
                         }
-                        configMissing |= true;
                     }
+                    if (!mEmulatorPlatformConfig.ContainsKey(defaultEmulatorPlatform))
+                    {
+                        mEmulatorPlatformConfig.Add(defaultEmulatorPlatform, new EmulatorPlatformConfig());
+                    }
+
                 }
                 catch (Exception e)
                 {
                     Logger.Log(string.Format("Error parsing config file from {0}. Using default config.", PathUtils.GetPluginConfigPath()));
                     Logger.Log(e.ToString(), Logger.LogLevel.Exception);
                     SetDefaultConfig();
-                    configMissing |= true;
+                    confignotMissing |= false;
                 }
-
                 if (!PathUtils.IsPathSafe(mCachePath))
                 {
                     Logger.Log(string.Format("Config CachePath can not be set to \"{0}\", using default ({1}).", mCachePath, defaultCachePath));
                     mCachePath = defaultCachePath;
-                    configMissing |= true;
+                    confignotMissing |= false;
                 }
                 // CacheSize must be larger than 0
                 if (mCacheSize <= 0)
                 {
                     Logger.Log(string.Format("Config CacheSize can not be less than or equal 0, using default ({0:n0}).", defaultCacheSize));
                     mCacheSize = defaultCacheSize;
-                    configMissing |= true;
+                    confignotMissing |= false;
                 }
                 // MinArchiveSize can be zero
                 if (mMinArchiveSize < 0)
                 {
                     Logger.Log(string.Format("Config MinArchiveSize can not be less than 0, using default ({0:n0}).", defaultMinArchiveSize));
                     mMinArchiveSize = defaultMinArchiveSize;
-                    configMissing |= true;
+                    confignotMissing |= false;
                 }
 
             }
@@ -575,10 +459,10 @@ namespace ArchiveCacheManager
             {
                 Logger.Log("Config file does not exist, using default config.");
                 SetDefaultConfig();
-                configMissing |= true;
+                confignotMissing |= false;
             }
 
-            if (configMissing)
+            if (!confignotMissing)
             {
                 Save();
             }
@@ -589,45 +473,40 @@ namespace ArchiveCacheManager
         /// </summary>
         public static void Save()
         {
-            var formatter = new IniDataFormatter();
-            var configuration = new IniFormattingConfiguration();
-            IniData iniData = new IniData();
-            iniData.CreateSectionsIfTheyDontExist = true;
+            ConfigParser iniData = new ConfigParser();
 
-            iniData[configSection][nameof(CachePath)] = mCachePath;
-            iniData[configSection][nameof(CacheSize)] = mCacheSize.ToString();
-            iniData[configSection][nameof(MinArchiveSize)] = mMinArchiveSize.ToString();
+            iniData.SetValue(configSection, nameof(CachePath), mCachePath);
+            iniData.SetValue(configSection, nameof(CacheSize), mCacheSize.ToString());
+            iniData.SetValue(configSection, nameof(MinArchiveSize), mMinArchiveSize.ToString());
             if (mUpdateCheck != null)
             {
-                iniData[configSection][nameof(UpdateCheck)] = mUpdateCheck.ToString();
+                iniData.SetValue(configSection, nameof(UpdateCheck), mUpdateCheck.ToString());
             }
             if (!string.IsNullOrEmpty(mSkipUpdate))
             {
-                iniData[configSection][nameof(SkipUpdate)] = mSkipUpdate;
+                iniData.SetValue(configSection, nameof(SkipUpdate), mSkipUpdate);
             }
-            iniData[configSection][nameof(StandaloneExtensions)] = mStandaloneExtensions;
-            iniData[configSection][nameof(MetadataExtensions)] = mMetadataExtensions;
-            iniData[configSection][nameof(BypassPathCheck)] = mBypassPathCheck.ToString();
+            iniData.SetValue(configSection, nameof(StandaloneExtensions), mStandaloneExtensions);
+            iniData.SetValue(configSection, nameof(MetadataExtensions), mMetadataExtensions);
+            iniData.SetValue(configSection, nameof(BypassPathCheck), mBypassPathCheck.ToString());
 
             foreach (KeyValuePair<string, EmulatorPlatformConfig> priority in mEmulatorPlatformConfig)
             {
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.FilenamePriority)] = priority.Value.FilenamePriority;
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.Action)] = priority.Value.Action.ToString();
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.LaunchPath)] = priority.Value.LaunchPath.ToString();
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.MultiDisc)] = priority.Value.MultiDisc.ToString();
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.M3uName)] = priority.Value.M3uName.ToString();
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.SmartExtract)] = priority.Value.SmartExtract.ToString();
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.Chdman)] = priority.Value.Chdman.ToString();
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.DolphinTool)] = priority.Value.DolphinTool.ToString();
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.ExtractXiso)] = priority.Value.ExtractXiso.ToString();
-                iniData[priority.Key][nameof(EmulatorPlatformConfig.PS3dec)] = priority.Value.PS3dec.ToString();
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.FilenamePriority), priority.Value.FilenamePriority);
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.Action), priority.Value.Action.ToString());
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.LaunchPath), priority.Value.LaunchPath.ToString());
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.MultiDisc), priority.Value.MultiDisc.ToString());
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.M3uName), priority.Value.M3uName.ToString());
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.SmartExtract), priority.Value.SmartExtract.ToString());
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.Chdman), priority.Value.Chdman.ToString());
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.DolphinTool), priority.Value.DolphinTool.ToString());
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.ExtractXiso), priority.Value.ExtractXiso.ToString());
+                iniData.SetValue(priority.Key, nameof(EmulatorPlatformConfig.PS3dec), priority.Value.PS3dec.ToString());
             }
 
             try
             {
-                using var writer = new StreamWriter(PathUtils.GetPluginConfigPath());
-                writer.Write(formatter.Format(iniData, configuration));
-                writer.Flush();
+                iniData.Save(PathUtils.GetPluginConfigPath());
             }
             catch (Exception e)
             {
