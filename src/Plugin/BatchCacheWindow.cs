@@ -103,6 +103,7 @@ namespace ArchiveCacheManager
             Extractor dolphinTool = new DolphinTool();
             Extractor extractXiso = new ExtractXiso();
             Extractor robocopy = new Robocopy();
+            Extractor ps3dec = new PS3dec();
             long archiveSize = 0;
             double archiveSizeMb = 0;
             requiredCacheSize = 0;
@@ -165,6 +166,8 @@ namespace ArchiveCacheManager
                         extractor = dolphinTool;
                     else if (extract && Config.GetExtractXiso(key) && ExtractXiso.SupportedType(path))
                         extractor = extractXiso;
+                    else if (extract && Config.GetPS3dec(key) && PS3dec.SupportedType(path))
+                        extractor = ps3dec;
                     else if (extract && Zip.SupportedType(path))
                         extractor = zip;
                     else
