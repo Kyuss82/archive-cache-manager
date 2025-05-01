@@ -6,9 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using IniParser;
-using IniParser.Configuration;
-using IniParser.Model;
+using Salaros.Configuration;
 using Unbroken.LaunchBox.Plugins;
 using Unbroken.LaunchBox.Plugins.Data;
 
@@ -270,28 +268,23 @@ namespace ArchiveCacheManager
         /// </summary>
         public static void Save()
         {
-            var formatter = new IniDataFormatter();
-            var configuration = new IniFormattingConfiguration();
-            IniData iniData = new IniData();
-            iniData.CreateSectionsIfTheyDontExist = true;
+            ConfigParser iniData = new ConfigParser();
 
-            iniData[launchInfoSection][nameof(GameId)] = GameId;
-            iniData[launchInfoSection][nameof(Title)] = Title;
-            iniData[launchInfoSection][nameof(ApplicationId)] = ApplicationId;
-            iniData[launchInfoSection][nameof(ApplicationName)] = ApplicationName;
-            iniData[launchInfoSection][nameof(EmulatorId)] = EmulatorId;
-            iniData[launchInfoSection][nameof(Platform)] = Platform;
+            iniData.SetValue(launchInfoSection, nameof(GameId), GameId);
+            iniData.SetValue(launchInfoSection, nameof(Title), Title);
+            iniData.SetValue(launchInfoSection, nameof(ApplicationId), ApplicationId);
+            iniData.SetValue(launchInfoSection, nameof(ApplicationName), ApplicationName);
+            iniData.SetValue(launchInfoSection, nameof(EmulatorId), EmulatorId);
+            iniData.SetValue(launchInfoSection, nameof(Platform), Platform);
 
             foreach (var setting in mSettings)
             {
-                iniData[setting.Key.ToString()][valueKey] = setting.Value.ToString();
+                iniData.SetValue(setting.Key.ToString(), valueKey, setting.Value.ToString());
             }
 
             try
             {
-                using var writer = new StreamWriter(mSettingsPath);
-                writer.Write(formatter.Format(iniData, configuration));
-                writer.Flush();
+                iniData.Save(mSettingsPath);
             }
             catch (Exception e)
             {
@@ -309,27 +302,25 @@ namespace ArchiveCacheManager
             {
                 try
                 {
-                    var parser = new IniDataParser();
-                    var reader = new StreamReader(mSettingsPath);
-                    IniData iniData = parser.Parse(reader);
+                    ConfigParser iniData = new ConfigParser(mSettingsPath);
 
                     foreach (var section in iniData.Sections)
                     {
-                        if (string.Equals(section.Name, launchInfoSection))
+                        if (string.Equals(section.SectionName, launchInfoSection))
                         {
-                            mGameId = iniData[launchInfoSection][nameof(GameId)];
-                            mTitle = iniData[launchInfoSection][nameof(Title)];
-                            mApplicationId = iniData[launchInfoSection][nameof(ApplicationId)];
-                            mApplicationName = iniData[launchInfoSection][nameof(ApplicationName)];
-                            mEmulatorId = iniData[launchInfoSection][nameof(EmulatorId)];
-                            mPlatform = iniData[launchInfoSection][nameof(Platform)];
+                            mGameId = iniData.GetValue(launchInfoSection, nameof(GameId));
+                            mTitle = iniData.GetValue(launchInfoSection, nameof(Title));
+                            mApplicationId = iniData.GetValue(launchInfoSection, nameof(ApplicationId));
+                            mApplicationName = iniData.GetValue(launchInfoSection, nameof(ApplicationName));
+                            mEmulatorId = iniData.GetValue(launchInfoSection, nameof(EmulatorId));
+                            mPlatform = iniData.GetValue(launchInfoSection, nameof(Platform));
                         }
                         else
                         {
                             SettingName settingName;
-                            if (Enum.TryParse(section.Name, out settingName))
+                            if (Enum.TryParse(section.SectionName, out settingName))
                             {
-                                mSettings.Add(settingName, section.Properties[valueKey]);
+                                mSettings.Add(settingName, iniData.GetValue(section.SectionName, valueKey));
                             }
                         }
                     }

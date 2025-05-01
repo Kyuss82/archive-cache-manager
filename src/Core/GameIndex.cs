@@ -4,17 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IniParser;
-using IniParser.Configuration;
-using IniParser.Model;
+using Salaros.Configuration;
 
 namespace ArchiveCacheManager
 {
     public class GameIndex
     {
-        private readonly string SelectedFile = "SelectedFile";
-
-        private static IniData mGameIndex = null;
+        private static ConfigParser mGameIndex = null;
 
         static GameIndex()
         {
@@ -28,20 +24,16 @@ namespace ArchiveCacheManager
 
             if (File.Exists(gameIndexPath))
             {
-                var parser = new IniDataParser();
-                mGameIndex = new IniData();
-
                 try
                 {
-                    var reader = new StreamReader(gameIndexPath);
-                    mGameIndex = parser.Parse(reader);
+                    mGameIndex = new ConfigParser(gameIndexPath);
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(string.Format("Error parsing game index file from {0}. Deleting invalid file.", gameIndexPath));
+                    Logger.Log(string.Format("Error parsing game index file from {0}.", gameIndexPath));
                     Logger.Log(e.ToString(), Logger.LogLevel.Exception);
-                    File.Delete(gameIndexPath);
-                    mGameIndex = null;
+                    //                    File.Delete(gameIndexPath);
+                    //                    mGameIndex = null;
                 }
             }
         }
@@ -52,14 +44,9 @@ namespace ArchiveCacheManager
 
             if (mGameIndex != null)
             {
-                var formatter = new IniDataFormatter();
-                var configuration = new IniFormattingConfiguration();
-
                 try
                 {
-                    using var writer = new StreamWriter(gameIndexPath);
-                    writer.Write(formatter.Format(mGameIndex, configuration));
-                    writer.Flush();
+                    mGameIndex.Save(gameIndexPath);
                 }
                 catch (Exception e)
                 {
@@ -73,9 +60,10 @@ namespace ArchiveCacheManager
         {
             string selectedFile = string.Empty;
 
-            if (mGameIndex != null && mGameIndex.Sections.Contains(gameId))
+            if (mGameIndex != null)
             {
-                selectedFile = mGameIndex[gameId][nameof(SelectedFile)] ?? string.Empty;
+                selectedFile = mGameIndex[gameId]["SelectedFile"];
+                Logger.Log(string.Format("selected {1} for Gameid {0} in index.", gameId, selectedFile));
             }
 
             return selectedFile;
@@ -85,11 +73,10 @@ namespace ArchiveCacheManager
         {
             if (mGameIndex == null)
             {
-                mGameIndex = new IniData();
-                mGameIndex.CreateSectionsIfTheyDontExist = true;
+                mGameIndex = new ConfigParser();
             }
-
-            mGameIndex[gameId][nameof(SelectedFile)] = selectedFile;
+            Logger.Log(string.Format("writing selected {1} for {0} in index.", gameId, selectedFile));
+            mGameIndex.SetValue(gameId, "SelectedFile", string.Format("\"{0}\"", selectedFile));
 
             Save();
         }

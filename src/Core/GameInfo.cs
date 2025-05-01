@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using IniParser;
-using IniParser.Configuration;
-using IniParser.Model;
+using Salaros.Configuration;
 
 namespace ArchiveCacheManager
 {
@@ -146,9 +144,7 @@ namespace ArchiveCacheManager
             {
                 try
                 {
-                    var parser = new IniDataParser();
-                    var reader = new StreamReader(mGameInfoPath);
-                    IniData iniData = parser.Parse(reader);
+                    ConfigParser iniData = new ConfigParser(mGameInfoPath);
 
                     mGameId = iniData[gameSection][nameof(GameId)];
                     mArchivePath = iniData[gameSection][nameof(ArchivePath)];
@@ -164,15 +160,15 @@ namespace ArchiveCacheManager
                     mTotalDiscs = Convert.ToInt32(iniData[gameSection][nameof(TotalDiscs)]);
                     mSelectedDisc = Convert.ToInt32(iniData[gameSection][nameof(SelectedDisc)]);
 
-                    foreach (Section sectionData in iniData.Sections)
+                    foreach (ConfigSection sectionData in iniData.Sections)
                     {
-                        if (sectionData.Name.StartsWith(discSection, StringComparison.InvariantCultureIgnoreCase))
+                        if (sectionData.SectionName.StartsWith(discSection, StringComparison.InvariantCultureIgnoreCase))
                         {
                             DiscInfo discInfo = new DiscInfo();
-                            discInfo.ApplicationId = sectionData.Properties[nameof(DiscInfo.ApplicationId)];
-                            discInfo.ArchivePath = sectionData.Properties[nameof(DiscInfo.ArchivePath)];
-                            discInfo.Version = sectionData.Properties[nameof(DiscInfo.Version)];
-                            discInfo.Disc = Convert.ToInt32(sectionData.Properties[nameof(DiscInfo.Disc)]);
+                            discInfo.ApplicationId = iniData[sectionData.SectionName][nameof(DiscInfo.ApplicationId)];
+                            discInfo.ArchivePath = iniData[sectionData.SectionName][nameof(DiscInfo.ArchivePath)];
+                            discInfo.Version = iniData[sectionData.SectionName][nameof(DiscInfo.Version)];
+                            discInfo.Disc = Convert.ToInt32(iniData[sectionData.SectionName][nameof(DiscInfo.Disc)]);
                             mDiscs.Add(discInfo);
                         }
                     }
@@ -204,44 +200,38 @@ namespace ArchiveCacheManager
         public bool Save(string savePath = null)
         {
             savePath = savePath ?? mGameInfoPath;
-            var formatter = new IniDataFormatter();
-            var configuration = new IniFormattingConfiguration();
-            IniData iniData = new IniData();
-            iniData.CreateSectionsIfTheyDontExist = true;
+            ConfigParser iniData = new ConfigParser();
 
             try
             {
-                iniData[gameSection][nameof(GameId)] = mGameId;
-                iniData[gameSection][nameof(ArchivePath)] = mArchivePath;
-                iniData[gameSection][nameof(Emulator)] = mEmulator;
-                iniData[gameSection][nameof(Platform)] = mPlatform;
-                iniData[gameSection][nameof(Title)] = mTitle;
-                iniData[gameSection][nameof(Version)] = mVersion;
-                iniData[gameSection][nameof(SelectedFile)] = mSelectedFile;
-                iniData[gameSection][nameof(DecompressedSize)] = mDecompressedSize.ToString();
-                iniData[gameSection][nameof(KeepInCache)] = mKeepInCache.ToString();
-                iniData[gameSection][nameof(EmulatorPlatformM3u)] = mEmulatorPlatformM3u.ToString();
-                iniData[gameSection][nameof(MultiDisc)] = mMultiDisc.ToString();
+                iniData.SetValue(gameSection, nameof(GameId), mGameId);
+                iniData.SetValue(gameSection, nameof(ArchivePath), mArchivePath);
+                iniData.SetValue(gameSection, nameof(Emulator), mEmulator);
+                iniData.SetValue(gameSection, nameof(Platform), mPlatform);
+                iniData.SetValue(gameSection, nameof(Title), mTitle);
+                iniData.SetValue(gameSection, nameof(Version), mVersion);
+                iniData.SetValue(gameSection, nameof(SelectedFile), mSelectedFile);
+                iniData.SetValue(gameSection, nameof(DecompressedSize), mDecompressedSize.ToString());
+                iniData.SetValue(gameSection, nameof(KeepInCache), mKeepInCache.ToString());
+                iniData.SetValue(gameSection, nameof(EmulatorPlatformM3u), mEmulatorPlatformM3u.ToString());
+                iniData.SetValue(gameSection, nameof(MultiDisc), mMultiDisc.ToString());
                 if (mMultiDisc)
                 {
-                    iniData[gameSection][nameof(TotalDiscs)] = mTotalDiscs.ToString();
-                    iniData[gameSection][nameof(SelectedDisc)] = mSelectedDisc.ToString();
+                    iniData.SetValue(gameSection, nameof(TotalDiscs), mTotalDiscs.ToString());
+                    iniData.SetValue(gameSection, nameof(SelectedDisc), mSelectedDisc.ToString());
 
                     foreach (DiscInfo discInfo in mDiscs)
                     {
                         string discNumberSection = string.Format("{0}{1}", discSection, discInfo.Disc);
 
-                        iniData[discNumberSection][nameof(DiscInfo.ApplicationId)] = discInfo.ApplicationId;
-                        iniData[discNumberSection][nameof(DiscInfo.ArchivePath)] = discInfo.ArchivePath;
-                        iniData[discNumberSection][nameof(DiscInfo.Version)] = discInfo.Version;
-                        iniData[discNumberSection][nameof(DiscInfo.Disc)] = discInfo.Disc.ToString();
+                        iniData.SetValue(discNumberSection, nameof(DiscInfo.ApplicationId), discInfo.ApplicationId);
+                        iniData.SetValue(discNumberSection, nameof(DiscInfo.ArchivePath), discInfo.ArchivePath);
+                        iniData.SetValue(discNumberSection, nameof(DiscInfo.Version), discInfo.Version);
+                        iniData.SetValue(discNumberSection, nameof(DiscInfo.Disc), discInfo.Disc.ToString());
                     }
                 }
 
-                using var writer = new StreamWriter(savePath);
-                writer.Write(formatter.Format(iniData, configuration));
-                writer.Flush();
-
+                iniData.Save(savePath);
                 return true;
             }
             catch (Exception e)
@@ -251,6 +241,7 @@ namespace ArchiveCacheManager
 
             return false;
         }
+
 
         /// <summary>
         /// Merges a GameInfo object from the archive cache into this object. Will merge DecompressedSize and KeepInCache.
