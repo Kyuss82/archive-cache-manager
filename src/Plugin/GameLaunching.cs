@@ -155,10 +155,10 @@ namespace ArchiveCacheManager
             if (gameInfo.MultiDisc)
             {
                 Logger.Log("Multi-disc game detected.");
-                var (totalDiscs, selectedDisc, discs) = PluginUtils.GetMultiDiscInfo(game, app);
+                var (totalDiscs, selectedDiscApp, discs) = PluginUtils.GetMultiDiscInfo(game, app);
 
                 gameInfo.TotalDiscs = totalDiscs;
-                gameInfo.SelectedDisc = selectedDisc;
+                gameInfo.SelectedDiscApp = selectedDiscApp;
                 gameInfo.Discs = discs;
             }
             gameInfo.Save();
@@ -222,7 +222,7 @@ namespace ArchiveCacheManager
                         Logger.Log(string.Format("Temporarily set IGame.ApplicationPath for {0} ({1}) to {2}.", game.Title, game.Platform, game.ApplicationPath));
                     }
                 }
-                
+
                 #endregion
                 if (LaunchBoxDataBackup.Settings.Count > 0)
                 {
@@ -265,6 +265,8 @@ namespace ArchiveCacheManager
             paths.Add(Path.Combine(pluginRootPath, "ArchiveCacheManager.Core.dll"), Path.Combine(launchBox7zRootPath, "ArchiveCacheManager.Core.dll"));
             paths.Add(Path.Combine(pluginRootPath, "INIFileParser.dll"), Path.Combine(launchBox7zRootPath, "INIFileParser.dll"));
             paths.Add(Path.Combine(pluginRootPath, "ArchiveCacheManager.exe"), Path.Combine(launchBox7zRootPath, "7z.exe"));
+            paths.Add(Path.Combine(pluginRootPath, "ArchiveCacheManager.dll"), Path.Combine(launchBox7zRootPath, "ArchiveCacheManager.dll"));
+            paths.Add(Path.Combine(pluginRootPath, "ArchiveCacheManager.runtimeconfig.json"), Path.Combine(launchBox7zRootPath, "ArchiveCacheManager.runtimeconfig.json"));
             paths.Add(Path.Combine(plugin7zRootPath, "7z.exe.original"), Path.Combine(launchBox7zRootPath, "7-zip.exe"));
 
             foreach (var path in paths)
@@ -304,18 +306,15 @@ namespace ArchiveCacheManager
 
             string[] paths = new string[] { Path.Combine(launchBox7zRootPath, "ArchiveCacheManager.Core.dll"),
                                             Path.Combine(launchBox7zRootPath, "INIFileParser.dll"),
+                                            Path.Combine(launchBox7zRootPath, "ArchiveCacheManager.dll"),
+                                            Path.Combine(launchBox7zRootPath, "ArchiveCacheManager.runtimeconfig.json"),
                                             Path.Combine(launchBox7zRootPath, "7-zip.exe"),
                                             PathUtils.GetGameInfoPath() };
 
-            try
-            {
-                File.Copy(Path.Combine(plugin7zRootPath, "7z.exe.original"), Path.Combine(launchBox7zRootPath, "7z.exe"), true);
-                File.Copy(Path.Combine(plugin7zRootPath, "7z.dll.original"), Path.Combine(launchBox7zRootPath, "7z.dll"), true);
-            }
-            catch (Exception e)
-            {
-                Logger.Log(e.ToString(), Logger.LogLevel.Exception);
-            }
+            // Retry the copy a few times — covers the race where a lingering 7z.exe/backup
+            // still holds the shim open when we try to swap it back (see TODO above).
+            CopyWithRetry(Path.Combine(plugin7zRootPath, "7z.exe.original"), Path.Combine(launchBox7zRootPath, "7z.exe"));
+            CopyWithRetry(Path.Combine(plugin7zRootPath, "7z.dll.original"), Path.Combine(launchBox7zRootPath, "7z.dll"));
 
             foreach (string path in paths)
             {
@@ -329,6 +328,29 @@ namespace ArchiveCacheManager
                 catch (Exception e)
                 {
                     Logger.Log(e.ToString(), Logger.LogLevel.Exception);
+                }
+            }
+        }
+
+        private static void CopyWithRetry(string source, string destination, int maxAttempts = 5, int initialDelayMs = 100)
+        {
+            int delay = initialDelayMs;
+            for (int attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                try
+                {
+                    File.Copy(source, destination, true);
+                    return;
+                }
+                catch (IOException) when (attempt < maxAttempts)
+                {
+                    System.Threading.Thread.Sleep(delay);
+                    delay *= 2;
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e.ToString(), Logger.LogLevel.Exception);
+                    return;
                 }
             }
         }

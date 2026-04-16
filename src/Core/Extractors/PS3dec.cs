@@ -11,7 +11,7 @@ namespace ArchiveCacheManager
     public class PS3dec : Extractor
     {
         string executablePath = Path.Combine(PathUtils.GetExtractorRootPath(), "PS3Dec.exe");
-        
+
         public PS3dec()
         {
 
@@ -26,7 +26,7 @@ namespace ArchiveCacheManager
         {
             string isoPath = string.Empty;
             string extension = Path.GetExtension(archivePath).ToLower();
-            
+
             if (extension.Equals(".zip") || extension.Equals(".7z"))
             {
                 Extractor zip = new Zip();
@@ -62,11 +62,11 @@ namespace ArchiveCacheManager
             string key = File.ReadLines(keypath).First();
 
             string temppath = Path.Combine(PathUtils.GetTempPath(), "temp.iso");
-           
+
             // -d    decrypt
             // key decryption key
-            string args = string.Format(" d key {0} \"{1}\"  \"{2}\"", key,isoPath,temppath);
-           
+            string args = string.Format(" d key {0} \"{1}\"  \"{2}\"", key, isoPath, temppath);
+
             (string stdout, string stderr, int exitCode) = ProcessUtils.RunProcess(executablePath, args, false, null, false, ExtractionProgress);
 
             if (exitCode != 0)
@@ -91,12 +91,12 @@ namespace ArchiveCacheManager
                 Extractor zip = new Zip();
                 return zip.GetSize(archivePath, fileInArchive);
             }
-            
+
             string args = string.Format("-l \"{0}\"", archivePath);
 
             (string stdout, string stderr, int exitCode) = ProcessUtils.RunProcess(executablePath, args);
 
-           
+
 
             long size = 0;
 

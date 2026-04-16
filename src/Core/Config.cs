@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Policy;
 using IniParser;
 using IniParser.Model;
 
@@ -525,7 +524,6 @@ namespace ArchiveCacheManager
                             {
                                 mEmulatorPlatformConfig[section.SectionName].ExtractXiso = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.ExtractXiso)]);
                             }
-
                             if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.PS3dec)))
                             {
                                 mEmulatorPlatformConfig[section.SectionName].PS3dec = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.PS3dec)]);

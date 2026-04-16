@@ -19,7 +19,7 @@ namespace ArchiveCacheManager
 
         public static bool SupportedType(string archivePath)
         {
-            return PathUtils.HasExtension(archivePath, new string[] { ".zip", ".iso", ".7z" });
+            return PathUtils.HasExtension(archivePath, new string[] { ".zip", ".iso", ".7z"  });
         }
 
         public override bool Extract(string archivePath, string cachePath, string[] includeList = null, string[] excludeList = null)
@@ -76,7 +76,7 @@ namespace ArchiveCacheManager
             // If iso is still zipped, get its decompressed size. This will be (much) larger than the final xiso size.
             // This size will be used when calculating how much room to make in the cache, so no harm in over-estimating.
             // Actual converted xiso size will be checked and set in LaunchInfo.UpdateSizeFromCache() once extraction is complete.
-            if (extension.Equals(".zip") || extension.Equals(".7z"))
+            if (extension.Equals(".zip")|| extension.Equals(".7z"))
             {
                 Extractor zip = new Zip();
                 return zip.GetSize(archivePath, fileInArchive);

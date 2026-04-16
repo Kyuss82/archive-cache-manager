@@ -128,7 +128,8 @@ namespace ArchiveCacheManager
                     for (int i = 0; i < fileList.Length; i++)
                     {
                         // Split the string at the 53rd char, after the date/time/attr/size/compressed info.
-                        fileList[i] = fileList[i].Substring(53).Trim();
+                        // Guard against malformed/truncated lines so we don't crash on unexpected 7z output.
+                        fileList[i] = fileList[i].Length > 53 ? fileList[i].Substring(53).Trim() : fileList[i].Trim();
                     }
                 }
             }

@@ -116,12 +116,18 @@ namespace ArchiveCacheManager
         /// <param name="args"></param>
         static void ExtractArchive(string[] args)
         {
-            // Remove leading -o
-            string outputPath = args[2].Remove(0, 2);
+            // Expected: x <rom path> -o<output path> ...
+            // If the invocation doesn't match that shape, don't try to parse it —
+            // pass straight through to 7-Zip so we never crash LaunchBox's shim.
+            string outputPath = args.Skip(1).FirstOrDefault(a => a != null && a.StartsWith("-o", StringComparison.Ordinal))?.Substring(2)?.TrimEnd('\\', '/');
 
-            // Check if the destination path ends in 7-Zip\Temp, which is assumed to be for a game
-            // Any other path is likely to be either Metadata, or some other non-game archive
-            if (outputPath.EndsWith(@"7-Zip\Temp", StringComparison.InvariantCultureIgnoreCase))
+            // Accept both stock LaunchBox (`...\7-Zip\Temp`) and variants that append a
+            // platform subfolder (`...\7-Zip\Temp\<Platform>`, e.g. eXoDREAMM).
+            bool isLaunchBoxTempPath = outputPath != null
+                && (outputPath.EndsWith(@"7-Zip\Temp", StringComparison.InvariantCultureIgnoreCase)
+                    || outputPath.IndexOf(@"7-Zip\Temp\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+            if (isLaunchBoxTempPath)
             {
                 CacheManager.ExtractArchive(args);
             }

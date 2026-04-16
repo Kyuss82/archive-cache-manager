@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf /mnt/c/Users/giorg/source/repos/archive-cache-manager/src/Core/obj /mnt/c/Users/giorg/source/repos/archive-cache-manager/src/ArchiveCacheManager/obj /mnt/c/Users/giorg/source/repos/archive-cache-manager/src/Plugin/obj)",
+      "Bash(\"/mnt/c/Program Files/dotnet/dotnet.exe\" restore ArchiveCacheManager.sln --force)"
+    ]
+  }
+}

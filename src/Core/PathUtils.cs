@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Linq;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace ArchiveCacheManager
 {
@@ -20,9 +21,30 @@ namespace ArchiveCacheManager
          */
         public static readonly int MAX_PATH = 255; // Should be 260, but RetroArch fails to load anything over 255 chars
 
+        /// <summary>
+        /// A case-insensitive set of reserved device names that are invalid as file names on Windows systems,
+        /// regardless of file extension. This includes standard reserved names such as "CON", "PRN", "AUX", and "NUL",
+        /// serial port identifiers like "COM1" through "COM9", printer port identifiers like "LPT1" through "LPT9",
+        /// and their superscript Unicode variants (e.g., "COM¹", "LPT³") which are treated equivalently by Windows.
+        /// </summary>
+        /// <remarks>
+        /// Windows disallows these names even when followed by extensions (e.g., "NUL.txt", "PRN.csv", "COM1.log").
+        /// See the following documentation for detailed information:
+        /// https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/FileIO/naming-a-file.md
+        /// </remarks>
+        private static readonly HashSet<string> ReservedFileNames = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "CON", "PRN", "AUX", "NUL",
+            "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+            "COM¹", "COM²", "COM³",
+            "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+            "LPT¹", "LPT²", "LPT³"
+        };
+
         private static readonly string configFileName = @"config.ini";
         private static readonly string gameIndexFileName = @"game-index.ini";
         private static readonly string gameInfoFileName = @"game.ini";
+        private static readonly string linkFlagFileName = @"link";
         private static readonly string default7zFileName = @"7z.exe";
         private static readonly string alt7zFileName = @"7-zip.exe";
         private static readonly string tempPath = @"Temp";
@@ -30,14 +52,15 @@ namespace ArchiveCacheManager
         private static readonly string restoreSettingsFileName = @"restore-settings.ini";
         private static readonly string relativePluginPath = @"Plugins\ArchiveCacheManager";
         private static readonly string relative7zPath = @"ThirdParty\7-Zip";
-        private static readonly string relativePs3keyPath = @"ThirdParty\PS3key";
         private static readonly string relativeExtractorPath = Path.Combine(relativePluginPath, "Extractors");
         private static readonly string relativeLogPath = Path.Combine(relativePluginPath, "Logs");
+        private static readonly string relativePs3keyPath = @"ThirdParty\PS3key";
         private static readonly DateTime dateTimeNow = DateTime.Now;
         private static readonly string logFileName = string.Format("events-{0}-{1:00}-{2:00}.log", dateTimeNow.Year, dateTimeNow.Month, dateTimeNow.Day);
 
         private static string assemblyPath;
         private static string assemblyFileName;
+        private static string expectedPluginAssemblyFileName;
         private static string assemblyDirectory;
         private static string launchBoxRootPath;
 
@@ -49,6 +72,7 @@ namespace ArchiveCacheManager
             assemblyPath = Assembly.GetEntryAssembly().Location;
             assemblyFileName = Path.GetFileName(assemblyPath);
             assemblyDirectory = Path.GetDirectoryName(assemblyPath);
+            expectedPluginAssemblyFileName = typeof(PathUtils).Namespace + ".dll";
             launchBoxRootPath = GetLaunchBoxRootPath();
         }
 
@@ -115,7 +139,7 @@ namespace ArchiveCacheManager
             string path;
 
             // Called from <LaunchBox>\ThirdParty\7-Zip\7z.exe
-            if (string.Equals(assemblyFileName, default7zFileName, StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(assemblyFileName, expectedPluginAssemblyFileName, StringComparison.InvariantCultureIgnoreCase))
             {
                 // Call GetFullPath to resolve ..\.. in path
                 path = Path.GetFullPath(Path.Combine(assemblyDirectory, @"..\.."));
@@ -161,7 +185,7 @@ namespace ArchiveCacheManager
             string path;
 
             // Called from <LaunchBox>\ThirdParty\7-Zip\7z.exe
-            if (string.Equals(assemblyFileName, default7zFileName, StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(assemblyFileName, expectedPluginAssemblyFileName, StringComparison.InvariantCultureIgnoreCase))
             {
                 path = Path.Combine(launchBoxRootPath, relative7zPath, alt7zFileName);
             }
@@ -249,11 +273,32 @@ namespace ArchiveCacheManager
         public static string GetArchiveCacheExtractingFlagPath(string archiveCachePath) => Path.Combine(archiveCachePath, "extracting");
 
         /// <summary>
-        /// Absolute path to the link flag file for the given archive cache path.
+        /// Absolute path to the link flag file for the given archive launch or cache path.
         /// </summary>
-        /// <param name="archiveLaunchPath">Location of the launch path in the cache.</param>
+        /// <param name="archiveLaunchOrCachePath">Location of the archive launch or cache path in the cache.</param>
         /// <returns>Absolute path to the link flag file.</returns>
-        public static string GetArchiveCacheLinkFlagPath(string archiveLaunchPath) => Path.Combine(archiveLaunchPath, "link");
+        public static string GetArchiveCacheLinkFlagPath(string archiveLaunchOrCachePath) => Path.Combine(archiveLaunchOrCachePath, linkFlagFileName);
+
+        /// <summary>
+        /// Reads the contents of the link flag file located in the specified archive launch or cache path.
+        /// </summary>
+        /// <param name="archiveLaunchOrCachePath">Location of the archive launch or cache path in the cache.</param>
+        /// <returns>
+        /// The string contents of the link flag file, or an empty string if the file could not be read.
+        /// </returns>
+        public static string ReadLinkSourceFromArchiveCache(string archiveLaunchOrCachePath)
+        {
+            string linkSource = String.Empty;
+            try
+            {
+                linkSource = File.ReadAllText(GetArchiveCacheLinkFlagPath(archiveLaunchOrCachePath));
+            }
+            catch (Exception)
+            {
+            }
+
+            return linkSource;
+        }
 
         /// <summary>
         /// Absolute path to the m3u file for the given archive cache path. Filename includes the game ID.
@@ -313,6 +358,12 @@ namespace ArchiveCacheManager
         /// </summary>
         /// <returns></returns>
         public static string GetGameInfoFileName() => gameInfoFileName;
+
+        /// <summary>
+        /// Link flag filename.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetLinkFlagFileName() => linkFlagFileName;
 
         /// <summary>
         /// Calculates an MD5 hash of the given path.
@@ -430,27 +481,22 @@ namespace ArchiveCacheManager
         /// <returns>The validated filename.</returns>
         public static string GetValidFilename(string filenameToValidate, string safeFilename)
         {
+            if (string.IsNullOrWhiteSpace(filenameToValidate))
+                return safeFilename;
+
             var invalidChars = Path.GetInvalidFileNameChars();
             var validFilename = String.Join("_", filenameToValidate.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-            var reservedNames = new[]
-            {
-                "CON", "PRN", "AUX", "CLOCK$", "NUL", "COM0", "COM1", "COM2", "COM3", "COM4",
-                "COM5", "COM6", "COM7", "COM8", "COM9", "LPT0", "LPT1", "LPT2", "LPT3", "LPT4",
-                "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
-            };
 
-            foreach (var reserved in reservedNames)
-            {
-                if (String.Equals(validFilename, reserved, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    validFilename = safeFilename;
-                    break;
-                }
-            }
+            if (string.IsNullOrWhiteSpace(validFilename))
+                return safeFilename;
+
+            var baseName = Path.GetFileNameWithoutExtension(validFilename);
+            if (ReservedFileNames.Contains(baseName))
+                return safeFilename;
 
             try
             {
-                FileInfo fileInfo = new FileInfo(validFilename);
+                Path.GetFullPath(Path.Combine("C:\\", validFilename));
             }
             catch
             {
@@ -458,45 +504,6 @@ namespace ArchiveCacheManager
             }
 
             return validFilename;
-        }
-
-        /// <summary>
-        /// Get a valid path from the input string. Will replace invalid characters with '_'.
-        /// If the path is reserved or otherwise generates an exception, safePath will be used.
-        /// </summary>
-        /// <param name="pathToValidate">The path to validate.</param>
-        /// <param name="safePath">The fallback path to use if path validation fails.</param>
-        /// <returns>The validated filename.</returns>
-        public static string GetValidPath(string pathToValidate, string safePath)
-        {
-            var invalidChars = Path.GetInvalidPathChars();
-            var validPath = String.Join("_", pathToValidate.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
-            var reservedNames = new[]
-            {
-                "CON", "PRN", "AUX", "CLOCK$", "NUL", "COM0", "COM1", "COM2", "COM3", "COM4",
-                "COM5", "COM6", "COM7", "COM8", "COM9", "LPT0", "LPT1", "LPT2", "LPT3", "LPT4",
-                "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
-            };
-
-            foreach (var reserved in reservedNames)
-            {
-                if (String.Equals(validPath, reserved, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    validPath = safePath;
-                    break;
-                }
-            }
-
-            try
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(validPath);
-            }
-            catch
-            {
-                validPath = safePath;
-            }
-
-            return validPath;
         }
 
         /// <summary>
@@ -585,8 +592,8 @@ namespace ArchiveCacheManager
         /// <returns></returns>
         public static bool HasExtension(string filename, string[] extensions)
         {
-            string extension = Path.GetExtension(filename).ToLower();
-            return extensions.Contains(extension);
+            string extension = Path.GetExtension(filename);
+            return extensions.Any(e => string.Equals(e, extension, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

@@ -22,14 +22,7 @@ namespace ArchiveCacheManager
             {
                 if (Directory.Exists(path))
                 {
-                    string linkSource = string.Empty;
-                    try
-                    {
-                        linkSource = File.ReadAllText(PathUtils.GetArchiveCacheLinkFlagPath(path));
-                    }
-                    catch (Exception)
-                    {
-                    }
+                    string linkSource = PathUtils.ReadLinkSourceFromArchiveCache(path);
 
                     // Enumerate and delete all files in all subdirectories
                     foreach (string filePath in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
@@ -201,25 +194,19 @@ namespace ArchiveCacheManager
         /// <param name="path"></param>
         public static bool CreateFile(string path)
         {
-            StreamWriter writer = null;
-            bool success = false;
-
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                writer = new StreamWriter(path, true);
-                success = true;
+                using (new StreamWriter(path, true))
+                {
+                }
+                return true;
             }
             catch (Exception e)
             {
                 Logger.Log(e.ToString(), Logger.LogLevel.Exception);
+                return false;
             }
-            finally
-            {
-                writer.Close();
-            }
-
-            return success;
         }
 
         public static void HardLink(string dest, string source)
