@@ -10,6 +10,8 @@ namespace ArchiveCacheManager
 {
     public abstract class Extractor
     {
+        protected static readonly int ThreadCount = Environment.ProcessorCount;
+
         private static int mProgressDivisor = 1;
         private static int mProgressOffset = 0;
         // This regex handles 7z, robocopy, and chdman.

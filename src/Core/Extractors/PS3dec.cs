@@ -10,7 +10,7 @@ namespace ArchiveCacheManager
 {
     public class PS3dec : Extractor
     {
-        string executablePath = Path.Combine(PathUtils.GetExtractorRootPath(), "PS3Dec.exe");
+        string executablePath = Path.Combine(PathUtils.GetExtractorRootPath(), "ps3decrs.exe");
 
         public PS3dec()
         {
@@ -63,9 +63,13 @@ namespace ArchiveCacheManager
 
             string temppath = Path.Combine(PathUtils.GetTempPath(), "temp.iso");
 
-            // -d    decrypt
-            // key decryption key
-            string args = string.Format(" d key {0} \"{1}\"  \"{2}\"", key, isoPath, temppath);
+            // -k / --dk    decryption key (32 hex chars)
+            // -t / --tc    thread count
+            // -o / --output-dir   output directory
+            // -n / --output-name  output filename without extension
+            // -s / --skip  disables exit confirmation prompt
+            // ISO path is a positional argument at the end
+            string args = string.Format("--dk {0} --tc {1} --output-dir \"{2}\" --output-name \"temp\" --skip \"{3}\"", key, ThreadCount, PathUtils.GetTempPath(), isoPath);
 
             (string stdout, string stderr, int exitCode) = ProcessUtils.RunProcess(executablePath, args, false, null, false, ExtractionProgress);
 
@@ -92,31 +96,9 @@ namespace ArchiveCacheManager
                 return zip.GetSize(archivePath, fileInArchive);
             }
 
-            string args = string.Format("-l \"{0}\"", archivePath);
-
-            (string stdout, string stderr, int exitCode) = ProcessUtils.RunProcess(executablePath, args);
-
-
-
-            long size = 0;
-
-            if (exitCode == 0)
-            {
-                // Split on the archive path, which appears just before the byte size. Result should be two elements.
-                string[] stdoutArray = stdout.Split(new string[] { archivePath }, StringSplitOptions.RemoveEmptyEntries);
-                // Second element should be in form " total xxxxx bytes"
-                string sizeString = stdoutArray[1];
-                // Convert to array of 3 elements, where second element is the size.
-                sizeString = sizeString.Split(" ".ToSingleArray(), StringSplitOptions.RemoveEmptyEntries)[1];
-                size = Convert.ToInt64(sizeString);
-            }
-            else
-            {
-                Logger.Log($"PS3dec returned exit code {exitCode} with error output:\r\n{stderr}");
-                Environment.ExitCode = exitCode;
-            }
-
-            return size;
+            // New PS3dec does not support a list/size command; read the file size directly.
+            // Decryption does not change the ISO size, so this is accurate.
+            return new FileInfo(archivePath).Length;
         }
 
         public override string[] List(string archivePath)

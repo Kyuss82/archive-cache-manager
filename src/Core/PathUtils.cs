@@ -249,7 +249,7 @@ namespace ArchiveCacheManager
         /// Absolute path to the folder containing the plugin's extractors.
         /// </summary>
         /// <returns>Absolute path to the folder containing the plugin's extractors.</returns>
-        public static string GetPS3keyRootPath() => Path.Combine(launchBoxRootPath, relativePs3keyPath);
+        public static string GetPS3keyRootPath() => GetAbsolutePath(Config.PS3KeyPath);
 
         /// <summary>
         /// Absolute path to the last played file for the given archive cache path.

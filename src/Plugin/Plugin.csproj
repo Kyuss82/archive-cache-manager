@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Unbroken.LaunchBox.Plugins">
-      <HintPath>C:\LaunchBox\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
+      <HintPath>D:\eXoWin9x\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
@@ -21,6 +21,19 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Octokit" Version="0.50.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <AssemblyTitle>Archive Cache Manager Plugin</AssemblyTitle>
@@ -31,6 +44,6 @@
   </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Target Name="AfterClean" AfterTargets="Clean">
-    <Exec Command="rmdir /s /q $(BaseOutputPath) >nul 2>nul" />
+    <Exec Command="rmdir /s /q $(BaseOutputPath) &gt;nul 2&gt;nul" />
   </Target>
 </Project> 

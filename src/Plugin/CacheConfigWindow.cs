@@ -85,5 +85,6 @@ namespace ArchiveCacheManager
 
             updateEnabledState();
         }
+
     }
 }

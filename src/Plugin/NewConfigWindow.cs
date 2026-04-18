@@ -105,6 +105,7 @@ namespace ArchiveCacheManager
             standaloneExtensions.Text = Config.StandaloneExtensions;
             metadataExtensions.Text = Config.MetadataExtensions;
             bypassPathCheckCheckBox.Checked = Config.BypassPathCheck;
+            ps3KeyPath.Text = Config.PS3KeyPath;
 
             updateCacheInfo(true);
             updateEnabledState();
@@ -239,6 +240,7 @@ namespace ArchiveCacheManager
             Config.StandaloneExtensions = standaloneExtensions.Text;
             Config.MetadataExtensions = metadataExtensions.Text;
             Config.BypassPathCheck = bypassPathCheckCheckBox.Checked;
+            Config.PS3KeyPath = ps3KeyPath.Text;
 
             Config.Save();
 
@@ -322,6 +324,20 @@ namespace ArchiveCacheManager
         {
             sourceLink.LinkVisited = true;
             PluginUtils.OpenURL("https://github.com/fraganator/archive-cache-manager");
+        }
+
+        private void ps3KeyPathBrowseButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            string browsePath = PathUtils.GetAbsolutePath(ps3KeyPath.Text);
+
+            dialog.SelectedPath = Directory.Exists(browsePath) ? browsePath : PathUtils.GetLaunchBoxRootPath();
+            dialog.ShowNewFolderButton = true;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                ps3KeyPath.Text = PathUtils.GetRelativePath(PathUtils.GetLaunchBoxRootPath(), dialog.SelectedPath);
+            }
         }
 
         private void configureCacheButton_Click(object sender, EventArgs e)

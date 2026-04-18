@@ -68,7 +68,8 @@ namespace ArchiveCacheManager
             // -y = answer yes to any queries
             // -aoa = overwrite all existing files
             // -bsp1 = redirect progress to stdout
-            string args = string.Format("x \"{0}\" \"-o{1}\" -y -aoa -bsp1 {2}", archivePath, cachePath, GetIncludeExcludeArgs(includeList, excludeList, false));
+            // -mmt{2} = thread count
+            string args = string.Format("x \"{0}\" \"-o{1}\" -y -aoa -bsp1 -mmt{2} {3}", archivePath, cachePath, ThreadCount, GetIncludeExcludeArgs(includeList, excludeList, false));
 
             var (_, _, exitCode) = Run7z(args, true);
             return exitCode == 0;

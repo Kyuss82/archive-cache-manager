@@ -57,6 +57,7 @@ namespace ArchiveCacheManager
         private static readonly bool defaultDolphinTool = false;
         private static readonly bool defaultExtractXiso = false;
         private static readonly bool defaultPS3dec = false;
+        private static readonly string defaultPS3KeyPath = @"ThirdParty\PS3key";
 
         public class EmulatorPlatformConfig
         {
@@ -96,6 +97,7 @@ namespace ArchiveCacheManager
         private static string mStandaloneExtensions = defaultStandaloneExtensions;
         private static string mMetadataExtensions = defaultMetadataExtensions;
         private static bool mBypassPathCheck = defaultBypassPathCheck;
+        private static string mPS3KeyPath = defaultPS3KeyPath;
 
         private static Dictionary<string, EmulatorPlatformConfig> mEmulatorPlatformConfig;
 
@@ -163,6 +165,12 @@ namespace ArchiveCacheManager
         {
             get => mBypassPathCheck;
             set => mBypassPathCheck = value;
+        }
+
+        public static string PS3KeyPath
+        {
+            get => mPS3KeyPath;
+            set => mPS3KeyPath = value;
         }
 
         public static Dictionary<string, EmulatorPlatformConfig> GetAllEmulatorPlatformConfig()
@@ -445,6 +453,11 @@ namespace ArchiveCacheManager
                                 mBypassPathCheck = Convert.ToBoolean(section.Keys[nameof(BypassPathCheck)]);
                             }
 
+                            if (section.Keys.ContainsKey(nameof(PS3KeyPath)))
+                            {
+                                mPS3KeyPath = section.Keys[nameof(PS3KeyPath)];
+                            }
+
 
                             if (section.Keys.ContainsKey("MultiDiscSupport"))
                             {
@@ -606,6 +619,7 @@ namespace ArchiveCacheManager
             iniData[configSection][nameof(StandaloneExtensions)] = mStandaloneExtensions;
             iniData[configSection][nameof(MetadataExtensions)] = mMetadataExtensions;
             iniData[configSection][nameof(BypassPathCheck)] = mBypassPathCheck.ToString();
+            iniData[configSection][nameof(PS3KeyPath)] = mPS3KeyPath;
 
             foreach (KeyValuePair<string, EmulatorPlatformConfig> priority in mEmulatorPlatformConfig)
             {
@@ -643,6 +657,7 @@ namespace ArchiveCacheManager
             mStandaloneExtensions = defaultStandaloneExtensions;
             mMetadataExtensions = defaultMetadataExtensions;
             mBypassPathCheck = defaultBypassPathCheck;
+            mPS3KeyPath = defaultPS3KeyPath;
 
             mEmulatorPlatformConfig = new Dictionary<string, EmulatorPlatformConfig>();
             mEmulatorPlatformConfig.Add(defaultEmulatorPlatform, new EmulatorPlatformConfig());

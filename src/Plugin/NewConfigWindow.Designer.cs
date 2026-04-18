@@ -81,6 +81,9 @@ namespace ArchiveCacheManager
             this.tab4PluginSettings = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
             this.bypassPathCheckCheckBox = new System.Windows.Forms.CheckBox();
+            this.ps3KeyPathLabel = new System.Windows.Forms.Label();
+            this.ps3KeyPath = new System.Windows.Forms.TextBox();
+            this.ps3KeyPathBrowseButton = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.updateCheckCheckBox = new System.Windows.Forms.CheckBox();
@@ -652,6 +655,9 @@ namespace ArchiveCacheManager
             this.tab4PluginSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tab4PluginSettings.Controls.Add(this.label8);
             this.tab4PluginSettings.Controls.Add(this.bypassPathCheckCheckBox);
+            this.tab4PluginSettings.Controls.Add(this.ps3KeyPathLabel);
+            this.tab4PluginSettings.Controls.Add(this.ps3KeyPath);
+            this.tab4PluginSettings.Controls.Add(this.ps3KeyPathBrowseButton);
             this.tab4PluginSettings.Controls.Add(this.label7);
             this.tab4PluginSettings.Controls.Add(this.label3);
             this.tab4PluginSettings.Controls.Add(this.updateCheckCheckBox);
@@ -682,16 +688,50 @@ namespace ArchiveCacheManager
             this.bypassPathCheckCheckBox.Text = "Always Bypass LaunchBox Path Check";
             this.bypassPathCheckCheckBox.UseVisualStyleBackColor = true;
             // 
+            //
+            // ps3KeyPathLabel
+            //
+            this.ps3KeyPathLabel.AutoSize = true;
+            this.ps3KeyPathLabel.Location = new System.Drawing.Point(6, 155);
+            this.ps3KeyPathLabel.Name = "ps3KeyPathLabel";
+            this.ps3KeyPathLabel.Size = new System.Drawing.Size(78, 13);
+            this.ps3KeyPathLabel.TabIndex = 20;
+            this.ps3KeyPathLabel.Text = "PS3 Keys Path:";
+            //
+            // ps3KeyPath
+            //
+            this.ps3KeyPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ps3KeyPath.Location = new System.Drawing.Point(9, 171);
+            this.ps3KeyPath.MaxLength = 260;
+            this.ps3KeyPath.Name = "ps3KeyPath";
+            this.ps3KeyPath.Size = new System.Drawing.Size(618, 20);
+            this.ps3KeyPath.TabIndex = 21;
+            //
+            // ps3KeyPathBrowseButton
+            //
+            this.ps3KeyPathBrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ps3KeyPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ps3KeyPathBrowseButton.Location = new System.Drawing.Point(633, 168);
+            this.ps3KeyPathBrowseButton.Name = "ps3KeyPathBrowseButton";
+            this.ps3KeyPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ps3KeyPathBrowseButton.TabIndex = 22;
+            this.ps3KeyPathBrowseButton.Text = "Browse...";
+            this.ps3KeyPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ps3KeyPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ps3KeyPathBrowseButton.UseVisualStyleBackColor = true;
+            this.ps3KeyPathBrowseButton.Click += new System.EventHandler(this.ps3KeyPathBrowseButton_Click);
+            //
             // label7
-            // 
+            //
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 193);
+            this.label7.Location = new System.Drawing.Point(6, 244);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(489, 13);
             this.label7.TabIndex = 99;
             this.label7.Text = "Be notified of plugin updates when LaunchBox starts. Nothing is automatically dow" +
     "nloaded or installed.";
-            // 
+            //
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -709,7 +749,7 @@ namespace ArchiveCacheManager
             // updateCheckCheckBox
             // 
             this.updateCheckCheckBox.AutoSize = true;
-            this.updateCheckCheckBox.Location = new System.Drawing.Point(7, 164);
+            this.updateCheckCheckBox.Location = new System.Drawing.Point(7, 215);
             this.updateCheckCheckBox.Name = "updateCheckCheckBox";
             this.updateCheckCheckBox.Size = new System.Drawing.Size(172, 17);
             this.updateCheckCheckBox.TabIndex = 17;
@@ -901,6 +941,9 @@ namespace ArchiveCacheManager
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox bypassPathCheckCheckBox;
+        private System.Windows.Forms.Label ps3KeyPathLabel;
+        private System.Windows.Forms.TextBox ps3KeyPath;
+        private System.Windows.Forms.Button ps3KeyPathBrowseButton;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.DataGridViewTextBoxColumn ArchivePath;

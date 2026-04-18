@@ -46,43 +46,43 @@ namespace ArchiveCacheManager
             this.SuspendLayout();
             // 
             // minArchiveSizeUnitLabel
-            // 
+            //
             this.minArchiveSizeUnitLabel.AutoSize = true;
             this.minArchiveSizeUnitLabel.Location = new System.Drawing.Point(315, 75);
             this.minArchiveSizeUnitLabel.Name = "minArchiveSizeUnitLabel";
             this.minArchiveSizeUnitLabel.Size = new System.Drawing.Size(23, 13);
             this.minArchiveSizeUnitLabel.TabIndex = 14;
             this.minArchiveSizeUnitLabel.Text = "MB";
-            // 
+            //
             // cacheSizeUnitLabel
-            // 
+            //
             this.cacheSizeUnitLabel.AutoSize = true;
             this.cacheSizeUnitLabel.Location = new System.Drawing.Point(138, 75);
             this.cacheSizeUnitLabel.Name = "cacheSizeUnitLabel";
             this.cacheSizeUnitLabel.Size = new System.Drawing.Size(23, 13);
             this.cacheSizeUnitLabel.TabIndex = 15;
             this.cacheSizeUnitLabel.Text = "MB";
-            // 
+            //
             // minArchiveSizeLabel
-            // 
+            //
             this.minArchiveSizeLabel.AutoSize = true;
             this.minArchiveSizeLabel.Location = new System.Drawing.Point(186, 57);
             this.minArchiveSizeLabel.Name = "minArchiveSizeLabel";
             this.minArchiveSizeLabel.Size = new System.Drawing.Size(113, 13);
             this.minArchiveSizeLabel.TabIndex = 12;
             this.minArchiveSizeLabel.Text = "Minimum Archive Size:";
-            // 
+            //
             // cacheSizeLabel
-            // 
+            //
             this.cacheSizeLabel.AutoSize = true;
             this.cacheSizeLabel.Location = new System.Drawing.Point(9, 57);
             this.cacheSizeLabel.Name = "cacheSizeLabel";
             this.cacheSizeLabel.Size = new System.Drawing.Size(64, 13);
             this.cacheSizeLabel.TabIndex = 13;
             this.cacheSizeLabel.Text = "Cache Size:";
-            // 
+            //
             // minArchiveSize
-            // 
+            //
             this.minArchiveSize.Location = new System.Drawing.Point(189, 73);
             this.minArchiveSize.Maximum = new decimal(new int[] {
             2147483647,
@@ -98,9 +98,9 @@ namespace ArchiveCacheManager
             0,
             0,
             0});
-            // 
+            //
             // cacheSize
-            // 
+            //
             this.cacheSize.Location = new System.Drawing.Point(12, 73);
             this.cacheSize.Maximum = new decimal(new int[] {
             2147483647,
@@ -132,16 +132,16 @@ namespace ArchiveCacheManager
             this.cachePath.TextChanged += new System.EventHandler(this.cachePath_TextChanged);
             // 
             // cachePathLabel
-            // 
+            //
             this.cachePathLabel.AutoSize = true;
             this.cachePathLabel.Location = new System.Drawing.Point(9, 9);
             this.cachePathLabel.Name = "cachePathLabel";
             this.cachePathLabel.Size = new System.Drawing.Size(66, 13);
             this.cachePathLabel.TabIndex = 16;
             this.cachePathLabel.Text = "Cache Path:";
-            // 
+            //
             // okButton
-            // 
+            //
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.okButton.Image = global::ArchiveCacheManager.Resources.tick;
             this.okButton.Location = new System.Drawing.Point(12, 110);
