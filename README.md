@@ -75,6 +75,16 @@ The build's `AfterBuild` target assembles `release/ArchiveCacheManager.zip` read
 
 CI on GitHub Actions only compiles the SDK-independent **Core** assembly (a sanity check for the bulk of the code). The Plugin assembly is built locally for releases.
 
+### Cutting a release
+
+Once a new HISTORY.md entry is in place and committed:
+
+```
+scripts/release.sh v2.17.0
+```
+
+The script builds Release, validates the working tree is clean and that HISTORY.md has the matching changelog section, creates an annotated tag, pushes it, and publishes a GitHub release with `release/ArchiveCacheManager.zip` attached and release notes extracted from HISTORY.md. Needs `gh` authenticated (`gh auth login`).
+
 ## Legal posture
 
 This plugin **invokes** third-party tools (CDecrypt, ZArchive, Sharpii-NetCore) — it does not redistribute them. It does not bundle Nintendo cert blobs, the Wii U common key, or any community title-key databases. Users provide their own keys/certs from their own dumps. Same posture as upstream `fraganator/archive-cache-manager` and as the underlying tools each plugin invokes.

@@ -19,6 +19,7 @@
 *.yaml      text eol=lf
 *.json      text eol=lf
 *.txt       text eol=lf
+*.sh        text eol=lf
 
 # SVGs are text; XML-like, LF is fine
 *.svg       text eol=lf
