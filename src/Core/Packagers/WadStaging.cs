@@ -29,12 +29,6 @@ namespace ArchiveCacheManager
                 return results;
             }
 
-            if (!SharpiiWad.IsAvailable())
-            {
-                results.Add(new WadBuildResult { Success = false, ErrorMessage = string.Format("Sharpii-NetCore.exe not found in {0}", PathUtils.GetExtractorRootPath()) });
-                return results;
-            }
-
             string tempDir = Path.Combine(Path.GetTempPath(), "ACM_WadBuild_" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(tempDir);
 
@@ -90,6 +84,31 @@ namespace ArchiveCacheManager
                     {
                         Logger.Log(string.Format("Ticket missing, downloading from NUS for title {0}", titleId));
                         ticketReady = NusFetcher.DownloadTicket(titleId, sharedTik);
+                        if (!ticketReady)
+                        {
+                            // Last resort: forge a fakesigned ticket from wii-titlekeys.bin.
+                            // NUS only serves system titles; VC / WiiWare hit this path.
+                            byte[] encKey = WiiTitleKeys.Lookup(titleId);
+                            if (encKey != null)
+                            {
+                                try
+                                {
+                                    ulong tid = Convert.ToUInt64(titleId, 16);
+                                    byte[] forged = WiiTicketBuilder.Build(tid, encKey);
+                                    File.WriteAllBytes(sharedTik, forged);
+                                    Logger.Log(string.Format("Wii build: forged fakesigned ticket for {0} from wii-titlekeys.bin.", titleId));
+                                    ticketReady = true;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.Log(string.Format("Wii build: ticket forge failed for {0}: {1}", titleId, ex.Message), Logger.LogLevel.Exception);
+                                }
+                            }
+                            else
+                            {
+                                Logger.Log(string.Format("Wii build: no encrypted title key for {0} in wii-titlekeys.bin.", titleId));
+                            }
+                        }
                         if (ticketReady)
                         {
                             TryStoreCachedTicket(titleId, sharedTik);
@@ -120,7 +139,9 @@ namespace ArchiveCacheManager
 
                 Directory.CreateDirectory(outputDir);
 
-                bool multipleTmds = tmdFiles.Count > 1;
+                // Name the highest-version output as <baseName>.wad (no suffix) so the launch-time
+                // file-list prediction matches. Older versions get .v<N>.wad suffix.
+                int highestVersion = tmdFiles.Count > 0 ? tmdFiles[tmdFiles.Count - 1].Version : 0;
 
                 foreach (var tmd in tmdFiles)
                 {
@@ -130,9 +151,9 @@ namespace ArchiveCacheManager
                         TmdVersion = tmd.Version,
                     };
 
-                    string outName = multipleTmds
-                        ? string.Format("{0}.v{1}.wad", baseName, tmd.Version)
-                        : string.Format("{0}.wad", baseName);
+                    string outName = (tmd.Version == highestVersion)
+                        ? string.Format("{0}.wad", baseName)
+                        : string.Format("{0}.v{1}.wad", baseName, tmd.Version);
                     result.OutputPath = Path.Combine(outputDir, outName);
 
                     if (!ticketReady)
@@ -159,28 +180,30 @@ namespace ArchiveCacheManager
                         continue;
                     }
 
-                    string stagingDir = Path.Combine(tempDir, "stage_v" + tmd.Version);
                     try
                     {
-                        Directory.CreateDirectory(stagingDir);
-                        StageVersion(workDir, stagingDir, tmd.Path, sharedTik, sharedCert);
+                        byte[] tmdBytes = File.ReadAllBytes(tmd.Path);
+                        byte[] ticketBytes = TicketUtils.TruncateToBody(File.ReadAllBytes(sharedTik));
+                        byte[] certBytes = File.ReadAllBytes(sharedCert);
 
-                        var (ok, stdout, stderr, exitCode) = SharpiiWad.PackWad(stagingDir, result.OutputPath);
-                        if (ok)
+                        var contentPaths = new Dictionary<uint, string>();
+                        foreach (string appPath in Directory.GetFiles(workDir, "*.app", SearchOption.TopDirectoryOnly))
                         {
-                            result.Success = true;
+                            string nameNoExt = Path.GetFileNameWithoutExtension(appPath);
+                            if (uint.TryParse(nameNoExt, System.Globalization.NumberStyles.HexNumber,
+                                              System.Globalization.CultureInfo.InvariantCulture, out uint cid))
+                            {
+                                contentPaths[cid] = appPath;
+                            }
                         }
-                        else
-                        {
-                            result.Success = false;
-                            string detail = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
-                            result.ErrorMessage = string.Format("Sharpii failed (exit {0}). {1}", exitCode, detail);
-                        }
+
+                        WadBuilder.Build(result.OutputPath, certBytes, ticketBytes, tmdBytes, contentPaths);
+                        result.Success = true;
                     }
                     catch (Exception ex)
                     {
                         result.Success = false;
-                        result.ErrorMessage = ex.Message;
+                        result.ErrorMessage = string.Format("WAD build failed: {0}", ex.Message);
                         Logger.Log(ex.ToString(), Logger.LogLevel.Exception);
                     }
 
@@ -265,17 +288,6 @@ namespace ArchiveCacheManager
             }
 
             return (true, null);
-        }
-
-        private static void StageVersion(string workDir, string stagingDir, string tmdPath, string sharedTik, string sharedCert)
-        {
-            foreach (string f in Directory.GetFiles(workDir, "*.app", SearchOption.TopDirectoryOnly))
-            {
-                File.Copy(f, Path.Combine(stagingDir, Path.GetFileName(f)), true);
-            }
-            File.Copy(sharedTik, Path.Combine(stagingDir, "tik"), true);
-            File.Copy(sharedCert, Path.Combine(stagingDir, "cert"), true);
-            File.Copy(tmdPath, Path.Combine(stagingDir, "tmd"), true);
         }
 
         private static int ParseTmdVersion(string fileName)

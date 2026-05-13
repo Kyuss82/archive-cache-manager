@@ -19,6 +19,8 @@ namespace ArchiveCacheManager
     {
         public override string Name() => "DSi TAD";
 
+        public override bool AlwaysCache => true;
+
         public override string GetExtractorPath() => null;
 
         public static bool SupportedType(string archivePath) => Zip.SupportedType(archivePath);

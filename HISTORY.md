@@ -1,4 +1,17 @@
 # Archive Cache Manager change history
+## v2.18 (Kyuss82 fork)
+* **Wii `.wad` builder is now internal C#** (`WadBuilder.cs`, port of the `wii.py` `packdir` logic). Sharpii-NetCore.exe is no longer required in `Extractors/` for the Wii flow — one less external dependency and one fewer command-line-syntax footgun.
+* **Wii fakesigned ticket forge** for VC / WiiWare titles whose cetk is not on NUS. When the archive has no cetk and NUS returns 404, the plugin now falls back to a lookup in **`wii-titlekeys.bin`** (`Extractors/wii-titlekeys.bin` or `WadTitleKeysPath` in INI) → `WiiTicketBuilder.Build` (port of `wii.py` `Ticket.fakesign` + `fixpayload`: construct ticket from scratch, zero the RSA signature, iterate the padding field until `SHA1[0] == 0x00`). Accepted by Dolphin and by cIOS-patched real Wii.
+* **3DS `.cia` fake-signed ticket forge** for retail / VC / eShop titles whose cetk is not on NUS. When the archive has no cetk and NUS returns 404, the plugin now falls back to:
+    1. lookup of the encrypted title key in **`encTitleKeys.bin`** (user-supplied, `Extractors/encTitleKeys.bin` or `CiaEncTitleKeysPath` in INI), then
+    2. forge a fakesigned `cetk` from a **donor template** (`Extractors/cetk-donor.bin` or `CiaCetkDonorPath`).
+    Same trujivuelta-style fakesign trick used elsewhere; accepted by Citra/Lime3DS and 3DS CFW (FBI/Luma3DS).
+* **Packager extractors now opt-in to `AlwaysCache`** — `MinArchiveSize` no longer skips the cache for `.wua`/`.cia`/`.wad`/`.tad` builds. Small CDN dumps (typical VC titles, a few MB) get cached and reused on subsequent launches instead of rebuilding every time.
+* **Multi-TMD output naming** for Cia/Tad/Wad: the highest-version build now lands at `<baseName>.<ext>` (no suffix) and older versions get `<baseName>.v<N>.<ext>`. Previously every output got `.v<N>` and the launch-time file-list prediction couldn't find the bare-named file. Single-TMD archives are unchanged.
+* `Plugin.csproj` HintPath for the LaunchBox SDK reverted to the upstream relative form (`../../thirdparty/Unbroken.LaunchBox.Plugins/12.8/`) so anyone can build the plugin by dropping their own copy of the SDK there.
+* CI workflow restricted to building the `Core` assembly only (Plugin needs the closed-source LaunchBox SDK which CI runners don't have).
+* `scripts/release.sh`: one-shot build + tag + GitHub release helper. Detects `dotnet` vs `dotnet.exe` (WSL interop), checks git identity is configured, passes `--repo` to `gh` explicitly.
+
 ## v2.17 (Kyuss82 fork)
 * **PS3 support**
     * `PS3Dec` extractor for decrypting PS3 ISOs using a `.dkey` file (`ps3decrs.exe` in `Extractors/`); new per-emulator-platform column in *Extraction Settings*.

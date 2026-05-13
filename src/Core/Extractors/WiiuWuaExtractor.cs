@@ -17,6 +17,8 @@ namespace ArchiveCacheManager
     {
         public override string Name() => "Wii U WUA";
 
+        public override bool AlwaysCache => true;
+
         public override string GetExtractorPath() => CDecryptInvoker.GetExecutablePath();
 
         public static bool SupportedType(string archivePath) => Zip.SupportedType(archivePath);

@@ -80,10 +80,51 @@ namespace ArchiveCacheManager
                     else
                     {
                         Logger.Log(string.Format("CIA build: ticket missing, downloading from 3DS NUS for {0}", titleId));
-                        if (!NusFetcher.DownloadCtrTicket(titleId, ticketPath))
+                        bool ticketReady = NusFetcher.DownloadCtrTicket(titleId, ticketPath);
+                        if (ticketReady)
+                        {
+                            TryStoreCachedTicket(titleId, ticketPath);
+                        }
+                        else
+                        {
+                            // Last resort: forge a fake-signed ticket from encTitleKeys.bin + donor cetk.
+                            // Works on Citra/Lime3DS and on CFW 3DS systems (Luma3DS / FBI). NUS only
+                            // serves system titles after eShop closure, so retail/VC titles hit this path.
+                            byte[] encKey = CtrTitleKeys.Lookup(titleId);
+                            byte[] donor = CtrTicketBuilder.TryLoadDonor();
+
+                            if (encKey != null && donor != null)
+                            {
+                                try
+                                {
+                                    byte[] forged = CtrTicketBuilder.Build(donor, anyTmd.TitleId, encKey, anyTmd.TitleVersion);
+                                    File.WriteAllBytes(ticketPath, forged);
+                                    TryStoreCachedTicket(titleId, ticketPath);
+                                    Logger.Log(string.Format("CIA build: forged fake-signed ticket for {0} from encTitleKeys.bin + donor cetk.", titleId));
+                                    ticketReady = true;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.Log(string.Format("CIA build: cetk forge failed for {0}: {1}", titleId, ex.Message), Logger.LogLevel.Exception);
+                                }
+                            }
+                            else
+                            {
+                                Logger.Log(string.Format(
+                                    "CIA build: cannot forge ticket for {0} — encTitleKeys.bin {1}, donor cetk {2}.",
+                                    titleId,
+                                    encKey != null ? "found" : "missing",
+                                    donor != null ? "found" : "missing"));
+                            }
+                        }
+
+                        if (!ticketReady)
                         {
                             string err = string.Format(
-                                "Ticket (cetk) is missing and could not be downloaded from 3DS NUS for title {0}.",
+                                "Ticket (cetk) for title {0} is missing. The 3DS NUS only serves system titles; " +
+                                "for retail / VC / eShop titles either include the original cetk in the archive, " +
+                                "populate the cetk cache folder, or set up encTitleKeys.bin + a donor cetk in " +
+                                "Extractors/ to forge a fake-signed ticket.",
                                 titleId);
                             foreach (var tmd in tmdFiles)
                             {
@@ -97,14 +138,15 @@ namespace ArchiveCacheManager
                             }
                             return results;
                         }
-                        TryStoreCachedTicket(titleId, ticketPath);
                     }
                 }
 
                 byte[] ticketBytes = TicketUtils.TruncateToBody(File.ReadAllBytes(ticketPath));
 
                 Directory.CreateDirectory(outputBaseDir);
-                bool multipleTmds = tmdFiles.Count > 1;
+                // Name the highest-version output as <baseName>.cia (no suffix) so the launch-time
+                // file-list prediction matches. Older versions get .v<N>.cia suffix.
+                int highestVersion = tmdFiles.Count > 0 ? tmdFiles[tmdFiles.Count - 1].Version : 0;
 
                 foreach (var tmd in tmdFiles)
                 {
@@ -141,9 +183,9 @@ namespace ArchiveCacheManager
                         ? rawTmd.AsSpan(0, parsedTmd.BodySize).ToArray()
                         : rawTmd;
 
-                    string outName = multipleTmds
-                        ? string.Format("{0}.v{1}.cia", baseName, tmd.Version)
-                        : string.Format("{0}.cia", baseName);
+                    string outName = (tmd.Version == highestVersion)
+                        ? string.Format("{0}.cia", baseName)
+                        : string.Format("{0}.v{1}.cia", baseName, tmd.Version);
                     result.OutputPath = Path.Combine(outputBaseDir, outName);
 
                     try

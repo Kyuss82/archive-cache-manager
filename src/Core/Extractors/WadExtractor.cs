@@ -20,7 +20,9 @@ namespace ArchiveCacheManager
     {
         public override string Name() => "Wii WAD";
 
-        public override string GetExtractorPath() => SharpiiWad.GetExecutablePath();
+        public override bool AlwaysCache => true;
+
+        public override string GetExtractorPath() => null;
 
         public static bool SupportedType(string archivePath) => Zip.SupportedType(archivePath);
 

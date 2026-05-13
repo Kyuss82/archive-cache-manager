@@ -26,14 +26,6 @@ namespace ArchiveCacheManager
 
         public void OnSelected(IGame selectedGame)
         {
-            if (!SharpiiWad.IsAvailable())
-            {
-                UserInterface.ErrorDialog(
-                    string.Format("Sharpii-NetCore.exe not found.\r\n\r\nPlace it in:\r\n{0}",
-                        PathUtils.GetExtractorRootPath()));
-                return;
-            }
-
             string archivePath = !string.IsNullOrWhiteSpace(selectedGame.ApplicationPath)
                 ? PathUtils.GetAbsolutePath(selectedGame.ApplicationPath)
                 : null;

@@ -20,6 +20,8 @@ namespace ArchiveCacheManager
     {
         public override string Name() => "3DS CIA";
 
+        public override bool AlwaysCache => true;
+
         public override string GetExtractorPath() => null;
 
         public static bool SupportedType(string archivePath) => Zip.SupportedType(archivePath);

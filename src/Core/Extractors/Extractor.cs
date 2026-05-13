@@ -89,5 +89,12 @@ namespace ArchiveCacheManager
         public abstract string[] List(string archivePath);
 
         public abstract string GetExtractorPath();
+
+        /// <summary>
+        /// When true, the cache pipeline always materialises the output in the plugin cache,
+        /// bypassing the MinArchiveSize threshold. Useful for extractors whose cost is dominated
+        /// by the build itself (decrypt + repack) rather than the source size.
+        /// </summary>
+        public virtual bool AlwaysCache => false;
     }
 }

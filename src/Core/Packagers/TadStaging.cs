@@ -103,7 +103,9 @@ namespace ArchiveCacheManager
                 byte[] ticketBytes = TicketUtils.TruncateToBody(File.ReadAllBytes(ticketPath));
 
                 Directory.CreateDirectory(outputBaseDir);
-                bool multipleTmds = tmdFiles.Count > 1;
+                // Name the highest-version output as <baseName>.tad (no suffix) so the launch-time
+                // file-list prediction matches. Older versions get .v<N>.tad suffix.
+                int highestVersion = tmdFiles.Count > 0 ? tmdFiles[tmdFiles.Count - 1].Version : 0;
 
                 foreach (var tmd in tmdFiles)
                 {
@@ -140,9 +142,9 @@ namespace ArchiveCacheManager
                         ? rawTmd.AsSpan(0, parsedTmd.BodySize).ToArray()
                         : rawTmd;
 
-                    string outName = multipleTmds
-                        ? string.Format("{0}.v{1}.tad", baseName, tmd.Version)
-                        : string.Format("{0}.tad", baseName);
+                    string outName = (tmd.Version == highestVersion)
+                        ? string.Format("{0}.tad", baseName)
+                        : string.Format("{0}.v{1}.tad", baseName, tmd.Version);
                     result.OutputPath = Path.Combine(outputBaseDir, outName);
 
                     try

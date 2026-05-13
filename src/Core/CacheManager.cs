@@ -588,7 +588,8 @@ namespace ArchiveCacheManager
                 if ((LaunchInfo.GetSize() > Config.MinArchiveSize * 1048576)
                     || (LaunchInfo.Game.MultiDisc && LaunchInfo.MultiDiscSupport)
                     || (LaunchInfo.LaunchPathConfig != Config.LaunchPath.Default)
-                    || LaunchInfo.BatchCache)
+                    || LaunchInfo.BatchCache
+                    || LaunchInfo.Extractor.AlwaysCache)
                 {
                     AddArchiveToCache();
                     GenerateM3u();

@@ -62,6 +62,7 @@ namespace ArchiveCacheManager
         private static readonly string defaultWadPlatform = "Nintendo Wii";
         private static readonly string defaultWadOutputPath = "";
         private static readonly string defaultWadCetkCachePath = "";
+        private static readonly string defaultWadTitleKeysPath = "";
         private static readonly bool defaultWadAddToLibrary = false;
         private static readonly string defaultWiiuPlatform = "Nintendo Wii U";
         private static readonly string defaultWiiuOutputPath = "";
@@ -73,6 +74,8 @@ namespace ArchiveCacheManager
         private static readonly string defaultCiaPlatform = "Nintendo 3DS";
         private static readonly string defaultCiaOutputPath = "";
         private static readonly string defaultCiaCetkCachePath = "";
+        private static readonly string defaultCiaEncTitleKeysPath = "";
+        private static readonly string defaultCiaCetkDonorPath = "";
         private static readonly bool defaultCiaAddToLibrary = false;
         private static readonly string defaultTadPlatform = "Nintendo DSi;Nintendo DSiWare";
         private static readonly string defaultTadOutputPath = "";
@@ -134,6 +137,7 @@ namespace ArchiveCacheManager
         private static string mWadPlatform = defaultWadPlatform;
         private static string mWadOutputPath = defaultWadOutputPath;
         private static string mWadCetkCachePath = defaultWadCetkCachePath;
+        private static string mWadTitleKeysPath = defaultWadTitleKeysPath;
         private static bool mWadAddToLibrary = defaultWadAddToLibrary;
         private static string mWiiuPlatform = defaultWiiuPlatform;
         private static string mWiiuOutputPath = defaultWiiuOutputPath;
@@ -145,6 +149,8 @@ namespace ArchiveCacheManager
         private static string mCiaPlatform = defaultCiaPlatform;
         private static string mCiaOutputPath = defaultCiaOutputPath;
         private static string mCiaCetkCachePath = defaultCiaCetkCachePath;
+        private static string mCiaEncTitleKeysPath = defaultCiaEncTitleKeysPath;
+        private static string mCiaCetkDonorPath = defaultCiaCetkDonorPath;
         private static bool mCiaAddToLibrary = defaultCiaAddToLibrary;
         private static string mTadPlatform = defaultTadPlatform;
         private static string mTadOutputPath = defaultTadOutputPath;
@@ -265,6 +271,17 @@ namespace ArchiveCacheManager
         }
 
         /// <summary>
+        /// Path to a Wii title-keys database (binary blob with 8-byte titleID + 16-byte
+        /// encrypted title key pairs). Used as a last-resort source when the archive has
+        /// no cetk and the NUS can't serve one. Empty = auto-detect Extractors/wii-titlekeys.bin.
+        /// </summary>
+        public static string WadTitleKeysPath
+        {
+            get => mWadTitleKeysPath;
+            set => mWadTitleKeysPath = value;
+        }
+
+        /// <summary>
         /// When true, after a WAD is created it is also added as a new game in the LaunchBox library
         /// (Platform = WadPlatform), so the official Dolphin LaunchBox Integration plugin picks it up.
         /// </summary>
@@ -348,6 +365,28 @@ namespace ArchiveCacheManager
         {
             get => mCiaCetkCachePath;
             set => mCiaCetkCachePath = value;
+        }
+
+        /// <summary>
+        /// Path to a 3DS encTitleKeys.bin (binary DB of encrypted title keys, scene-distributed).
+        /// When set, the CIA builder uses it as a last-resort source for the title key after NUS
+        /// fetch fails. Empty = auto-detect Extractors/encTitleKeys.bin.
+        /// </summary>
+        public static string CiaEncTitleKeysPath
+        {
+            get => mCiaEncTitleKeysPath;
+            set => mCiaEncTitleKeysPath = value;
+        }
+
+        /// <summary>
+        /// Path to a "donor" cetk (any real Nintendo-signed 3DS cetk, 2640 bytes). Required to forge
+        /// fake-signed tickets when only an encrypted title key is available. Empty = auto-detect
+        /// Extractors/cetk-donor.bin.
+        /// </summary>
+        public static string CiaCetkDonorPath
+        {
+            get => mCiaCetkDonorPath;
+            set => mCiaCetkDonorPath = value;
         }
 
         /// <summary>If true, the produced .cia is added to the LaunchBox library.</summary>
@@ -736,6 +775,11 @@ namespace ArchiveCacheManager
                                 mWadCetkCachePath = section.Keys[nameof(WadCetkCachePath)];
                             }
 
+                            if (section.Keys.ContainsKey(nameof(WadTitleKeysPath)))
+                            {
+                                mWadTitleKeysPath = section.Keys[nameof(WadTitleKeysPath)];
+                            }
+
                             if (section.Keys.ContainsKey(nameof(WadAddToLibrary)))
                             {
                                 mWadAddToLibrary = Convert.ToBoolean(section.Keys[nameof(WadAddToLibrary)]);
@@ -789,6 +833,16 @@ namespace ArchiveCacheManager
                             if (section.Keys.ContainsKey(nameof(CiaCetkCachePath)))
                             {
                                 mCiaCetkCachePath = section.Keys[nameof(CiaCetkCachePath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(CiaEncTitleKeysPath)))
+                            {
+                                mCiaEncTitleKeysPath = section.Keys[nameof(CiaEncTitleKeysPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(CiaCetkDonorPath)))
+                            {
+                                mCiaCetkDonorPath = section.Keys[nameof(CiaCetkDonorPath)];
                             }
 
                             if (section.Keys.ContainsKey(nameof(CiaAddToLibrary)))
@@ -1002,6 +1056,7 @@ namespace ArchiveCacheManager
             iniData[configSection][nameof(WadPlatform)] = mWadPlatform;
             iniData[configSection][nameof(WadOutputPath)] = mWadOutputPath;
             iniData[configSection][nameof(WadCetkCachePath)] = mWadCetkCachePath;
+            iniData[configSection][nameof(WadTitleKeysPath)] = mWadTitleKeysPath;
             iniData[configSection][nameof(WadAddToLibrary)] = mWadAddToLibrary.ToString();
             iniData[configSection][nameof(WiiuPlatform)] = mWiiuPlatform;
             iniData[configSection][nameof(WiiuOutputPath)] = mWiiuOutputPath;
@@ -1013,6 +1068,8 @@ namespace ArchiveCacheManager
             iniData[configSection][nameof(CiaPlatform)] = mCiaPlatform;
             iniData[configSection][nameof(CiaOutputPath)] = mCiaOutputPath;
             iniData[configSection][nameof(CiaCetkCachePath)] = mCiaCetkCachePath;
+            iniData[configSection][nameof(CiaEncTitleKeysPath)] = mCiaEncTitleKeysPath;
+            iniData[configSection][nameof(CiaCetkDonorPath)] = mCiaCetkDonorPath;
             iniData[configSection][nameof(CiaAddToLibrary)] = mCiaAddToLibrary.ToString();
             iniData[configSection][nameof(TadPlatform)] = mTadPlatform;
             iniData[configSection][nameof(TadOutputPath)] = mTadOutputPath;
@@ -1064,6 +1121,7 @@ namespace ArchiveCacheManager
             mWadPlatform = defaultWadPlatform;
             mWadOutputPath = defaultWadOutputPath;
             mWadCetkCachePath = defaultWadCetkCachePath;
+            mWadTitleKeysPath = defaultWadTitleKeysPath;
             mWadAddToLibrary = defaultWadAddToLibrary;
             mWiiuPlatform = defaultWiiuPlatform;
             mWiiuOutputPath = defaultWiiuOutputPath;
@@ -1075,6 +1133,8 @@ namespace ArchiveCacheManager
             mCiaPlatform = defaultCiaPlatform;
             mCiaOutputPath = defaultCiaOutputPath;
             mCiaCetkCachePath = defaultCiaCetkCachePath;
+            mCiaEncTitleKeysPath = defaultCiaEncTitleKeysPath;
+            mCiaCetkDonorPath = defaultCiaCetkDonorPath;
             mCiaAddToLibrary = defaultCiaAddToLibrary;
             mTadPlatform = defaultTadPlatform;
             mTadOutputPath = defaultTadOutputPath;
