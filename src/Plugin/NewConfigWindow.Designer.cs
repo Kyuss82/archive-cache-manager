@@ -34,6 +34,7 @@ namespace ArchiveCacheManager
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Extraction Settings");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Smart Extract Settings");
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Plugin Settings");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Packaging");
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -79,11 +80,57 @@ namespace ArchiveCacheManager
             this.standaloneExtensions = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tab4PluginSettings = new System.Windows.Forms.TabPage();
+            this.tab5PackagingSettings = new System.Windows.Forms.TabPage();
+            this.packagingWiiSectionLabel = new System.Windows.Forms.Label();
+            this.wadPlatformLabel = new System.Windows.Forms.Label();
+            this.wadPlatform = new System.Windows.Forms.CheckedListBox();
+            this.wadOutputPathLabel = new System.Windows.Forms.Label();
+            this.wadOutputPath = new System.Windows.Forms.TextBox();
+            this.wadOutputPathBrowseButton = new System.Windows.Forms.Button();
+            this.wadCetkCachePathLabel = new System.Windows.Forms.Label();
+            this.wadCetkCachePath = new System.Windows.Forms.TextBox();
+            this.wadCetkCachePathBrowseButton = new System.Windows.Forms.Button();
+            this.wadAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
+            this.packagingWiiuSectionLabel = new System.Windows.Forms.Label();
+            this.wiiuPlatformLabel = new System.Windows.Forms.Label();
+            this.wiiuPlatform = new System.Windows.Forms.CheckedListBox();
+            this.wiiuOutputPathLabel = new System.Windows.Forms.Label();
+            this.wiiuOutputPath = new System.Windows.Forms.TextBox();
+            this.wiiuOutputPathBrowseButton = new System.Windows.Forms.Button();
+            this.wiiuCommonKeyLabel = new System.Windows.Forms.Label();
+            this.wiiuCommonKey = new System.Windows.Forms.TextBox();
+            this.wiiuTitleKeyPasswordLabel = new System.Windows.Forms.Label();
+            this.wiiuTitleKeyPassword = new System.Windows.Forms.TextBox();
+            this.wiiuAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
+            this.wiiuCemuKeysPathLabel = new System.Windows.Forms.Label();
+            this.wiiuCemuKeysPath = new System.Windows.Forms.TextBox();
+            this.wiiuCemuKeysPathBrowseButton = new System.Windows.Forms.Button();
+            this.packagingCiaSectionLabel = new System.Windows.Forms.Label();
+            this.ciaPlatformLabel = new System.Windows.Forms.Label();
+            this.ciaPlatform = new System.Windows.Forms.CheckedListBox();
+            this.ciaOutputPathLabel = new System.Windows.Forms.Label();
+            this.ciaOutputPath = new System.Windows.Forms.TextBox();
+            this.ciaOutputPathBrowseButton = new System.Windows.Forms.Button();
+            this.ciaCetkCachePathLabel = new System.Windows.Forms.Label();
+            this.ciaCetkCachePath = new System.Windows.Forms.TextBox();
+            this.ciaCetkCachePathBrowseButton = new System.Windows.Forms.Button();
+            this.ciaAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
+            this.packagingTadSectionLabel = new System.Windows.Forms.Label();
+            this.tadPlatformLabel = new System.Windows.Forms.Label();
+            this.tadPlatform = new System.Windows.Forms.CheckedListBox();
+            this.tadOutputPathLabel = new System.Windows.Forms.Label();
+            this.tadOutputPath = new System.Windows.Forms.TextBox();
+            this.tadOutputPathBrowseButton = new System.Windows.Forms.Button();
+            this.tadCetkCachePathLabel = new System.Windows.Forms.Label();
+            this.tadCetkCachePath = new System.Windows.Forms.TextBox();
+            this.tadCetkCachePathBrowseButton = new System.Windows.Forms.Button();
+            this.tadAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.bypassPathCheckCheckBox = new System.Windows.Forms.CheckBox();
             this.ps3KeyPathLabel = new System.Windows.Forms.Label();
             this.ps3KeyPath = new System.Windows.Forms.TextBox();
             this.ps3KeyPathBrowseButton = new System.Windows.Forms.Button();
+            this.ps3UseIsoMountLauncherCheckBox = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.updateCheckCheckBox = new System.Windows.Forms.CheckBox();
@@ -98,6 +145,11 @@ namespace ArchiveCacheManager
             this.Chdman = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.DolphinTool = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ExtractXiso = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.PS3dec = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.WiiuCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.CiaCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.WadCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.TadCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tab1CacheSettings.SuspendLayout();
@@ -106,6 +158,7 @@ namespace ArchiveCacheManager
             ((System.ComponentModel.ISupportInitialize)(this.emulatorPlatformConfigDataGridView)).BeginInit();
             this.tab3SmartExtractSettings.SuspendLayout();
             this.tab4PluginSettings.SuspendLayout();
+            this.tab5PackagingSettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // openInExplorerButton
@@ -277,11 +330,14 @@ namespace ArchiveCacheManager
             treeNode3.Text = "Smart Extract Settings";
             treeNode4.Name = "PluginSettings";
             treeNode4.Text = "Plugin Settings";
+            treeNode5.Name = "Packaging";
+            treeNode5.Text = "Packaging";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
             treeNode3,
-            treeNode4});
+            treeNode4,
+            treeNode5});
             this.treeView1.ShowLines = false;
             this.treeView1.Size = new System.Drawing.Size(166, 550);
             this.treeView1.TabIndex = 3;
@@ -308,6 +364,7 @@ namespace ArchiveCacheManager
             this.tabControl1.Controls.Add(this.tab2ExtractionSettings);
             this.tabControl1.Controls.Add(this.tab3SmartExtractSettings);
             this.tabControl1.Controls.Add(this.tab4PluginSettings);
+            this.tabControl1.Controls.Add(this.tab5PackagingSettings);
             this.tabControl1.Location = new System.Drawing.Point(184, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -543,7 +600,12 @@ namespace ArchiveCacheManager
             this.SmartExtract,
             this.Chdman,
             this.DolphinTool,
-            this.ExtractXiso});
+            this.ExtractXiso,
+            this.PS3dec,
+            this.WiiuCacheOnLaunch,
+            this.CiaCacheOnLaunch,
+            this.WadCacheOnLaunch,
+            this.TadCacheOnLaunch});
             this.emulatorPlatformConfigDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.emulatorPlatformConfigDataGridView.Location = new System.Drawing.Point(6, 62);
             this.emulatorPlatformConfigDataGridView.MultiSelect = false;
@@ -658,6 +720,7 @@ namespace ArchiveCacheManager
             this.tab4PluginSettings.Controls.Add(this.ps3KeyPathLabel);
             this.tab4PluginSettings.Controls.Add(this.ps3KeyPath);
             this.tab4PluginSettings.Controls.Add(this.ps3KeyPathBrowseButton);
+            this.tab4PluginSettings.Controls.Add(this.ps3UseIsoMountLauncherCheckBox);
             this.tab4PluginSettings.Controls.Add(this.label7);
             this.tab4PluginSettings.Controls.Add(this.label3);
             this.tab4PluginSettings.Controls.Add(this.updateCheckCheckBox);
@@ -668,7 +731,490 @@ namespace ArchiveCacheManager
             this.tab4PluginSettings.TabIndex = 2;
             this.tab4PluginSettings.Text = "Plugin Settings";
             this.tab4PluginSettings.UseVisualStyleBackColor = true;
-            // 
+            //
+            // tab5PackagingSettings
+            //
+            this.tab5PackagingSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tab5PackagingSettings.Controls.Add(this.packagingWiiSectionLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wadPlatformLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wadPlatform);
+            this.tab5PackagingSettings.Controls.Add(this.wadOutputPathLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wadOutputPath);
+            this.tab5PackagingSettings.Controls.Add(this.wadOutputPathBrowseButton);
+            this.tab5PackagingSettings.Controls.Add(this.wadCetkCachePathLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wadCetkCachePath);
+            this.tab5PackagingSettings.Controls.Add(this.wadCetkCachePathBrowseButton);
+            this.tab5PackagingSettings.Controls.Add(this.wadAddToLibraryCheckBox);
+            this.tab5PackagingSettings.Controls.Add(this.packagingWiiuSectionLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuPlatformLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuPlatform);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuOutputPathLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuOutputPath);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuOutputPathBrowseButton);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuCommonKeyLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuCommonKey);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuTitleKeyPasswordLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuTitleKeyPassword);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuAddToLibraryCheckBox);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuCemuKeysPathLabel);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuCemuKeysPath);
+            this.tab5PackagingSettings.Controls.Add(this.wiiuCemuKeysPathBrowseButton);
+            this.tab5PackagingSettings.Controls.Add(this.packagingCiaSectionLabel);
+            this.tab5PackagingSettings.Controls.Add(this.ciaPlatformLabel);
+            this.tab5PackagingSettings.Controls.Add(this.ciaPlatform);
+            this.tab5PackagingSettings.Controls.Add(this.ciaOutputPathLabel);
+            this.tab5PackagingSettings.Controls.Add(this.ciaOutputPath);
+            this.tab5PackagingSettings.Controls.Add(this.ciaOutputPathBrowseButton);
+            this.tab5PackagingSettings.Controls.Add(this.ciaCetkCachePathLabel);
+            this.tab5PackagingSettings.Controls.Add(this.ciaCetkCachePath);
+            this.tab5PackagingSettings.Controls.Add(this.ciaCetkCachePathBrowseButton);
+            this.tab5PackagingSettings.Controls.Add(this.ciaAddToLibraryCheckBox);
+            this.tab5PackagingSettings.Controls.Add(this.packagingTadSectionLabel);
+            this.tab5PackagingSettings.Controls.Add(this.tadPlatformLabel);
+            this.tab5PackagingSettings.Controls.Add(this.tadPlatform);
+            this.tab5PackagingSettings.Controls.Add(this.tadOutputPathLabel);
+            this.tab5PackagingSettings.Controls.Add(this.tadOutputPath);
+            this.tab5PackagingSettings.Controls.Add(this.tadOutputPathBrowseButton);
+            this.tab5PackagingSettings.Controls.Add(this.tadCetkCachePathLabel);
+            this.tab5PackagingSettings.Controls.Add(this.tadCetkCachePath);
+            this.tab5PackagingSettings.Controls.Add(this.tadCetkCachePathBrowseButton);
+            this.tab5PackagingSettings.Controls.Add(this.tadAddToLibraryCheckBox);
+            this.tab5PackagingSettings.AutoScroll = true;
+            this.tab5PackagingSettings.Location = new System.Drawing.Point(4, 22);
+            this.tab5PackagingSettings.Name = "tab5PackagingSettings";
+            this.tab5PackagingSettings.Padding = new System.Windows.Forms.Padding(3);
+            this.tab5PackagingSettings.Size = new System.Drawing.Size(740, 524);
+            this.tab5PackagingSettings.TabIndex = 4;
+            this.tab5PackagingSettings.Text = "Packaging";
+            this.tab5PackagingSettings.UseVisualStyleBackColor = true;
+            //
+            // packagingWiiSectionLabel
+            //
+            this.packagingWiiSectionLabel.AutoSize = true;
+            this.packagingWiiSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingWiiSectionLabel.Location = new System.Drawing.Point(9, 12);
+            this.packagingWiiSectionLabel.Name = "packagingWiiSectionLabel";
+            this.packagingWiiSectionLabel.Size = new System.Drawing.Size(86, 15);
+            this.packagingWiiSectionLabel.TabIndex = 100;
+            this.packagingWiiSectionLabel.Text = "Wii (WAD)  ·  Right-click 'Create Wii WAD...' menu + shared ticket cache";
+            //
+            // wadPlatformLabel
+            //
+            this.wadPlatformLabel.AutoSize = true;
+            this.wadPlatformLabel.Location = new System.Drawing.Point(9, 36);
+            this.wadPlatformLabel.Name = "wadPlatformLabel";
+            this.wadPlatformLabel.Size = new System.Drawing.Size(180, 13);
+            this.wadPlatformLabel.TabIndex = 101;
+            this.wadPlatformLabel.Text = "Menu platforms — show 'Create Wii WAD...' on these (multi-select):";
+            //
+            // wadPlatform
+            //
+            this.wadPlatform.CheckOnClick = true;
+            this.wadPlatform.IntegralHeight = false;
+            this.wadPlatform.Location = new System.Drawing.Point(12, 52);
+            this.wadPlatform.Name = "wadPlatform";
+            this.wadPlatform.Size = new System.Drawing.Size(297, 120);
+            this.wadPlatform.TabIndex = 1;
+            //
+            // wadOutputPathLabel
+            //
+            this.wadOutputPathLabel.AutoSize = true;
+            this.wadOutputPathLabel.Location = new System.Drawing.Point(9, 180);
+            this.wadOutputPathLabel.Name = "wadOutputPathLabel";
+            this.wadOutputPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.wadOutputPathLabel.TabIndex = 102;
+            this.wadOutputPathLabel.Text = "Menu output folder (empty = next to source):";
+            //
+            // wadOutputPath
+            //
+            this.wadOutputPath.Location = new System.Drawing.Point(12, 196);
+            this.wadOutputPath.MaxLength = 260;
+            this.wadOutputPath.Name = "wadOutputPath";
+            this.wadOutputPath.Size = new System.Drawing.Size(497, 20);
+            this.wadOutputPath.TabIndex = 2;
+            //
+            // wadOutputPathBrowseButton
+            //
+            this.wadOutputPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.wadOutputPathBrowseButton.Location = new System.Drawing.Point(515, 193);
+            this.wadOutputPathBrowseButton.Name = "wadOutputPathBrowseButton";
+            this.wadOutputPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.wadOutputPathBrowseButton.TabIndex = 3;
+            this.wadOutputPathBrowseButton.Text = "Browse...";
+            this.wadOutputPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.wadOutputPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.wadOutputPathBrowseButton.UseVisualStyleBackColor = true;
+            this.wadOutputPathBrowseButton.Click += new System.EventHandler(this.wadOutputPathBrowseButton_Click);
+            //
+            // wadCetkCachePathLabel
+            //
+            this.wadCetkCachePathLabel.AutoSize = true;
+            this.wadCetkCachePathLabel.Location = new System.Drawing.Point(9, 228);
+            this.wadCetkCachePathLabel.Name = "wadCetkCachePathLabel";
+            this.wadCetkCachePathLabel.Size = new System.Drawing.Size(220, 13);
+            this.wadCetkCachePathLabel.TabIndex = 103;
+            this.wadCetkCachePathLabel.Text = "Ticket cache folder — shared with auto-cache (empty = no cache):";
+            //
+            // wadCetkCachePath
+            //
+            this.wadCetkCachePath.Location = new System.Drawing.Point(12, 244);
+            this.wadCetkCachePath.MaxLength = 260;
+            this.wadCetkCachePath.Name = "wadCetkCachePath";
+            this.wadCetkCachePath.Size = new System.Drawing.Size(497, 20);
+            this.wadCetkCachePath.TabIndex = 4;
+            //
+            // wadCetkCachePathBrowseButton
+            //
+            this.wadCetkCachePathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.wadCetkCachePathBrowseButton.Location = new System.Drawing.Point(515, 241);
+            this.wadCetkCachePathBrowseButton.Name = "wadCetkCachePathBrowseButton";
+            this.wadCetkCachePathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.wadCetkCachePathBrowseButton.TabIndex = 5;
+            this.wadCetkCachePathBrowseButton.Text = "Browse...";
+            this.wadCetkCachePathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.wadCetkCachePathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.wadCetkCachePathBrowseButton.UseVisualStyleBackColor = true;
+            this.wadCetkCachePathBrowseButton.Click += new System.EventHandler(this.wadCetkCachePathBrowseButton_Click);
+            //
+            // wadAddToLibraryCheckBox
+            //
+            this.wadAddToLibraryCheckBox.AutoSize = true;
+            this.wadAddToLibraryCheckBox.Location = new System.Drawing.Point(12, 276);
+            this.wadAddToLibraryCheckBox.Name = "wadAddToLibraryCheckBox";
+            this.wadAddToLibraryCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.wadAddToLibraryCheckBox.TabIndex = 6;
+            this.wadAddToLibraryCheckBox.Text = "Menu: add created WAD to LaunchBox library";
+            this.wadAddToLibraryCheckBox.UseVisualStyleBackColor = true;
+            //
+            // packagingWiiuSectionLabel
+            //
+            this.packagingWiiuSectionLabel.AutoSize = true;
+            this.packagingWiiuSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingWiiuSectionLabel.Location = new System.Drawing.Point(9, 310);
+            this.packagingWiiuSectionLabel.Name = "packagingWiiuSectionLabel";
+            this.packagingWiiuSectionLabel.Size = new System.Drawing.Size(40, 15);
+            this.packagingWiiuSectionLabel.TabIndex = 104;
+            this.packagingWiiuSectionLabel.Text = "Wii U  ·  Right-click 'Create Wii U Package...' menu + shared keys/password";
+            //
+            // wiiuPlatformLabel
+            //
+            this.wiiuPlatformLabel.AutoSize = true;
+            this.wiiuPlatformLabel.Location = new System.Drawing.Point(9, 334);
+            this.wiiuPlatformLabel.Name = "wiiuPlatformLabel";
+            this.wiiuPlatformLabel.Size = new System.Drawing.Size(180, 13);
+            this.wiiuPlatformLabel.TabIndex = 105;
+            this.wiiuPlatformLabel.Text = "Menu platforms — show 'Create Wii U Package...' on these (multi-select):";
+            //
+            // wiiuPlatform
+            //
+            this.wiiuPlatform.CheckOnClick = true;
+            this.wiiuPlatform.IntegralHeight = false;
+            this.wiiuPlatform.Location = new System.Drawing.Point(12, 350);
+            this.wiiuPlatform.Name = "wiiuPlatform";
+            this.wiiuPlatform.Size = new System.Drawing.Size(297, 120);
+            this.wiiuPlatform.TabIndex = 7;
+            //
+            // wiiuOutputPathLabel
+            //
+            this.wiiuOutputPathLabel.AutoSize = true;
+            this.wiiuOutputPathLabel.Location = new System.Drawing.Point(9, 478);
+            this.wiiuOutputPathLabel.Name = "wiiuOutputPathLabel";
+            this.wiiuOutputPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.wiiuOutputPathLabel.TabIndex = 106;
+            this.wiiuOutputPathLabel.Text = "Menu output folder (empty = next to source):";
+            //
+            // wiiuOutputPath
+            //
+            this.wiiuOutputPath.Location = new System.Drawing.Point(12, 494);
+            this.wiiuOutputPath.MaxLength = 260;
+            this.wiiuOutputPath.Name = "wiiuOutputPath";
+            this.wiiuOutputPath.Size = new System.Drawing.Size(497, 20);
+            this.wiiuOutputPath.TabIndex = 8;
+            //
+            // wiiuOutputPathBrowseButton
+            //
+            this.wiiuOutputPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.wiiuOutputPathBrowseButton.Location = new System.Drawing.Point(515, 491);
+            this.wiiuOutputPathBrowseButton.Name = "wiiuOutputPathBrowseButton";
+            this.wiiuOutputPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.wiiuOutputPathBrowseButton.TabIndex = 9;
+            this.wiiuOutputPathBrowseButton.Text = "Browse...";
+            this.wiiuOutputPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.wiiuOutputPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.wiiuOutputPathBrowseButton.UseVisualStyleBackColor = true;
+            this.wiiuOutputPathBrowseButton.Click += new System.EventHandler(this.wiiuOutputPathBrowseButton_Click);
+            //
+            // wiiuCommonKeyLabel
+            //
+            this.wiiuCommonKeyLabel.AutoSize = true;
+            this.wiiuCommonKeyLabel.Location = new System.Drawing.Point(9, 526);
+            this.wiiuCommonKeyLabel.Name = "wiiuCommonKeyLabel";
+            this.wiiuCommonKeyLabel.Size = new System.Drawing.Size(220, 13);
+            this.wiiuCommonKeyLabel.TabIndex = 107;
+            this.wiiuCommonKeyLabel.Text = "Common Key — shared with auto-cache (32 hex characters):";
+            //
+            // wiiuCommonKey
+            //
+            this.wiiuCommonKey.Location = new System.Drawing.Point(12, 542);
+            this.wiiuCommonKey.MaxLength = 32;
+            this.wiiuCommonKey.Name = "wiiuCommonKey";
+            this.wiiuCommonKey.Size = new System.Drawing.Size(297, 20);
+            this.wiiuCommonKey.TabIndex = 10;
+            this.wiiuCommonKey.UseSystemPasswordChar = true;
+            //
+            // wiiuTitleKeyPasswordLabel
+            //
+            this.wiiuTitleKeyPasswordLabel.AutoSize = true;
+            this.wiiuTitleKeyPasswordLabel.Location = new System.Drawing.Point(9, 574);
+            this.wiiuTitleKeyPasswordLabel.Name = "wiiuTitleKeyPasswordLabel";
+            this.wiiuTitleKeyPasswordLabel.Size = new System.Drawing.Size(180, 13);
+            this.wiiuTitleKeyPasswordLabel.TabIndex = 108;
+            this.wiiuTitleKeyPasswordLabel.Text = "Title Key Password — shared with auto-cache:";
+            //
+            // wiiuTitleKeyPassword
+            //
+            this.wiiuTitleKeyPassword.Location = new System.Drawing.Point(12, 590);
+            this.wiiuTitleKeyPassword.MaxLength = 64;
+            this.wiiuTitleKeyPassword.Name = "wiiuTitleKeyPassword";
+            this.wiiuTitleKeyPassword.Size = new System.Drawing.Size(297, 20);
+            this.wiiuTitleKeyPassword.TabIndex = 11;
+            //
+            // wiiuCemuKeysPathLabel
+            //
+            this.wiiuCemuKeysPathLabel.AutoSize = true;
+            this.wiiuCemuKeysPathLabel.Location = new System.Drawing.Point(9, 614);
+            this.wiiuCemuKeysPathLabel.Name = "wiiuCemuKeysPathLabel";
+            this.wiiuCemuKeysPathLabel.Size = new System.Drawing.Size(420, 13);
+            this.wiiuCemuKeysPathLabel.TabIndex = 130;
+            this.wiiuCemuKeysPathLabel.Text = "Cemu keys.txt path — shared with auto-cache (empty = auto-detect %APPDATA%\\Cemu\\keys.txt):";
+            //
+            // wiiuCemuKeysPath
+            //
+            this.wiiuCemuKeysPath.Location = new System.Drawing.Point(12, 630);
+            this.wiiuCemuKeysPath.MaxLength = 260;
+            this.wiiuCemuKeysPath.Name = "wiiuCemuKeysPath";
+            this.wiiuCemuKeysPath.Size = new System.Drawing.Size(497, 20);
+            this.wiiuCemuKeysPath.TabIndex = 131;
+            //
+            // wiiuCemuKeysPathBrowseButton
+            //
+            this.wiiuCemuKeysPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.wiiuCemuKeysPathBrowseButton.Location = new System.Drawing.Point(515, 627);
+            this.wiiuCemuKeysPathBrowseButton.Name = "wiiuCemuKeysPathBrowseButton";
+            this.wiiuCemuKeysPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.wiiuCemuKeysPathBrowseButton.TabIndex = 132;
+            this.wiiuCemuKeysPathBrowseButton.Text = "Browse...";
+            this.wiiuCemuKeysPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.wiiuCemuKeysPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.wiiuCemuKeysPathBrowseButton.UseVisualStyleBackColor = true;
+            this.wiiuCemuKeysPathBrowseButton.Click += new System.EventHandler(this.wiiuCemuKeysPathBrowseButton_Click);
+            //
+            // wiiuAddToLibraryCheckBox
+            //
+            this.wiiuAddToLibraryCheckBox.AutoSize = true;
+            this.wiiuAddToLibraryCheckBox.Location = new System.Drawing.Point(12, 668);
+            this.wiiuAddToLibraryCheckBox.Name = "wiiuAddToLibraryCheckBox";
+            this.wiiuAddToLibraryCheckBox.Size = new System.Drawing.Size(290, 17);
+            this.wiiuAddToLibraryCheckBox.TabIndex = 12;
+            this.wiiuAddToLibraryCheckBox.Text = "Menu: add created Wii U package to LaunchBox library";
+            this.wiiuAddToLibraryCheckBox.UseVisualStyleBackColor = true;
+            //
+            // packagingCiaSectionLabel
+            //
+            this.packagingCiaSectionLabel.AutoSize = true;
+            this.packagingCiaSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingCiaSectionLabel.Location = new System.Drawing.Point(9, 708);
+            this.packagingCiaSectionLabel.Name = "packagingCiaSectionLabel";
+            this.packagingCiaSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingCiaSectionLabel.TabIndex = 109;
+            this.packagingCiaSectionLabel.Text = "3DS (CIA)  ·  Right-click 'Create CIA Package...' menu + shared ticket cache";
+            //
+            // ciaPlatformLabel
+            //
+            this.ciaPlatformLabel.AutoSize = true;
+            this.ciaPlatformLabel.Location = new System.Drawing.Point(9, 732);
+            this.ciaPlatformLabel.Name = "ciaPlatformLabel";
+            this.ciaPlatformLabel.Size = new System.Drawing.Size(180, 13);
+            this.ciaPlatformLabel.TabIndex = 110;
+            this.ciaPlatformLabel.Text = "Menu platforms — show 'Create CIA Package...' on these (multi-select):";
+            //
+            // ciaPlatform
+            //
+            this.ciaPlatform.CheckOnClick = true;
+            this.ciaPlatform.IntegralHeight = false;
+            this.ciaPlatform.Location = new System.Drawing.Point(12, 748);
+            this.ciaPlatform.Name = "ciaPlatform";
+            this.ciaPlatform.Size = new System.Drawing.Size(297, 120);
+            this.ciaPlatform.TabIndex = 13;
+            //
+            // ciaOutputPathLabel
+            //
+            this.ciaOutputPathLabel.AutoSize = true;
+            this.ciaOutputPathLabel.Location = new System.Drawing.Point(9, 972);
+            this.ciaOutputPathLabel.Name = "ciaOutputPathLabel";
+            this.ciaOutputPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.ciaOutputPathLabel.TabIndex = 111;
+            this.ciaOutputPathLabel.Text = "Menu output folder (empty = next to source):";
+            //
+            // ciaOutputPath
+            //
+            this.ciaOutputPath.Location = new System.Drawing.Point(12, 940);
+            this.ciaOutputPath.MaxLength = 260;
+            this.ciaOutputPath.Name = "ciaOutputPath";
+            this.ciaOutputPath.Size = new System.Drawing.Size(497, 20);
+            this.ciaOutputPath.TabIndex = 14;
+            //
+            // ciaOutputPathBrowseButton
+            //
+            this.ciaOutputPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ciaOutputPathBrowseButton.Location = new System.Drawing.Point(515, 937);
+            this.ciaOutputPathBrowseButton.Name = "ciaOutputPathBrowseButton";
+            this.ciaOutputPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ciaOutputPathBrowseButton.TabIndex = 15;
+            this.ciaOutputPathBrowseButton.Text = "Browse...";
+            this.ciaOutputPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ciaOutputPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ciaOutputPathBrowseButton.UseVisualStyleBackColor = true;
+            this.ciaOutputPathBrowseButton.Click += new System.EventHandler(this.ciaOutputPathBrowseButton_Click);
+            //
+            // ciaCetkCachePathLabel
+            //
+            this.ciaCetkCachePathLabel.AutoSize = true;
+            this.ciaCetkCachePathLabel.Location = new System.Drawing.Point(9, 972);
+            this.ciaCetkCachePathLabel.Name = "ciaCetkCachePathLabel";
+            this.ciaCetkCachePathLabel.Size = new System.Drawing.Size(220, 13);
+            this.ciaCetkCachePathLabel.TabIndex = 112;
+            this.ciaCetkCachePathLabel.Text = "Ticket cache folder — shared with auto-cache (empty = no cache):";
+            //
+            // ciaCetkCachePath
+            //
+            this.ciaCetkCachePath.Location = new System.Drawing.Point(12, 940);
+            this.ciaCetkCachePath.MaxLength = 260;
+            this.ciaCetkCachePath.Name = "ciaCetkCachePath";
+            this.ciaCetkCachePath.Size = new System.Drawing.Size(497, 20);
+            this.ciaCetkCachePath.TabIndex = 16;
+            //
+            // ciaCetkCachePathBrowseButton
+            //
+            this.ciaCetkCachePathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ciaCetkCachePathBrowseButton.Location = new System.Drawing.Point(515, 937);
+            this.ciaCetkCachePathBrowseButton.Name = "ciaCetkCachePathBrowseButton";
+            this.ciaCetkCachePathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ciaCetkCachePathBrowseButton.TabIndex = 17;
+            this.ciaCetkCachePathBrowseButton.Text = "Browse...";
+            this.ciaCetkCachePathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ciaCetkCachePathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ciaCetkCachePathBrowseButton.UseVisualStyleBackColor = true;
+            this.ciaCetkCachePathBrowseButton.Click += new System.EventHandler(this.ciaCetkCachePathBrowseButton_Click);
+            //
+            // ciaAddToLibraryCheckBox
+            //
+            this.ciaAddToLibraryCheckBox.AutoSize = true;
+            this.ciaAddToLibraryCheckBox.Location = new System.Drawing.Point(12, 972);
+            this.ciaAddToLibraryCheckBox.Name = "ciaAddToLibraryCheckBox";
+            this.ciaAddToLibraryCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.ciaAddToLibraryCheckBox.TabIndex = 18;
+            this.ciaAddToLibraryCheckBox.Text = "Menu: add created CIA to LaunchBox library";
+            this.ciaAddToLibraryCheckBox.UseVisualStyleBackColor = true;
+            //
+            // packagingTadSectionLabel
+            //
+            this.packagingTadSectionLabel.AutoSize = true;
+            this.packagingTadSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingTadSectionLabel.Location = new System.Drawing.Point(9, 1006);
+            this.packagingTadSectionLabel.Name = "packagingTadSectionLabel";
+            this.packagingTadSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingTadSectionLabel.TabIndex = 113;
+            this.packagingTadSectionLabel.Text = "DSi (TAD)  ·  Right-click 'Create TAD Package...' menu + shared ticket cache";
+            //
+            // tadPlatformLabel
+            //
+            this.tadPlatformLabel.AutoSize = true;
+            this.tadPlatformLabel.Location = new System.Drawing.Point(9, 1030);
+            this.tadPlatformLabel.Name = "tadPlatformLabel";
+            this.tadPlatformLabel.Size = new System.Drawing.Size(180, 13);
+            this.tadPlatformLabel.TabIndex = 114;
+            this.tadPlatformLabel.Text = "Menu platforms — show 'Create TAD Package...' on these (multi-select):";
+            //
+            // tadPlatform
+            //
+            this.tadPlatform.CheckOnClick = true;
+            this.tadPlatform.IntegralHeight = false;
+            this.tadPlatform.Location = new System.Drawing.Point(12, 1046);
+            this.tadPlatform.Name = "tadPlatform";
+            this.tadPlatform.Size = new System.Drawing.Size(297, 120);
+            this.tadPlatform.TabIndex = 19;
+            //
+            // tadOutputPathLabel
+            //
+            this.tadOutputPathLabel.AutoSize = true;
+            this.tadOutputPathLabel.Location = new System.Drawing.Point(9, 1270);
+            this.tadOutputPathLabel.Name = "tadOutputPathLabel";
+            this.tadOutputPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.tadOutputPathLabel.TabIndex = 115;
+            this.tadOutputPathLabel.Text = "Menu output folder (empty = next to source):";
+            //
+            // tadOutputPath
+            //
+            this.tadOutputPath.Location = new System.Drawing.Point(12, 1238);
+            this.tadOutputPath.MaxLength = 260;
+            this.tadOutputPath.Name = "tadOutputPath";
+            this.tadOutputPath.Size = new System.Drawing.Size(497, 20);
+            this.tadOutputPath.TabIndex = 20;
+            //
+            // tadOutputPathBrowseButton
+            //
+            this.tadOutputPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.tadOutputPathBrowseButton.Location = new System.Drawing.Point(515, 1235);
+            this.tadOutputPathBrowseButton.Name = "tadOutputPathBrowseButton";
+            this.tadOutputPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.tadOutputPathBrowseButton.TabIndex = 21;
+            this.tadOutputPathBrowseButton.Text = "Browse...";
+            this.tadOutputPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.tadOutputPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.tadOutputPathBrowseButton.UseVisualStyleBackColor = true;
+            this.tadOutputPathBrowseButton.Click += new System.EventHandler(this.tadOutputPathBrowseButton_Click);
+            //
+            // tadCetkCachePathLabel
+            //
+            this.tadCetkCachePathLabel.AutoSize = true;
+            this.tadCetkCachePathLabel.Location = new System.Drawing.Point(9, 1270);
+            this.tadCetkCachePathLabel.Name = "tadCetkCachePathLabel";
+            this.tadCetkCachePathLabel.Size = new System.Drawing.Size(220, 13);
+            this.tadCetkCachePathLabel.TabIndex = 116;
+            this.tadCetkCachePathLabel.Text = "Ticket cache folder — shared with auto-cache (empty = no cache):";
+            //
+            // tadCetkCachePath
+            //
+            this.tadCetkCachePath.Location = new System.Drawing.Point(12, 1238);
+            this.tadCetkCachePath.MaxLength = 260;
+            this.tadCetkCachePath.Name = "tadCetkCachePath";
+            this.tadCetkCachePath.Size = new System.Drawing.Size(497, 20);
+            this.tadCetkCachePath.TabIndex = 22;
+            //
+            // tadCetkCachePathBrowseButton
+            //
+            this.tadCetkCachePathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.tadCetkCachePathBrowseButton.Location = new System.Drawing.Point(515, 1235);
+            this.tadCetkCachePathBrowseButton.Name = "tadCetkCachePathBrowseButton";
+            this.tadCetkCachePathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.tadCetkCachePathBrowseButton.TabIndex = 23;
+            this.tadCetkCachePathBrowseButton.Text = "Browse...";
+            this.tadCetkCachePathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.tadCetkCachePathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.tadCetkCachePathBrowseButton.UseVisualStyleBackColor = true;
+            this.tadCetkCachePathBrowseButton.Click += new System.EventHandler(this.tadCetkCachePathBrowseButton_Click);
+            //
+            // tadAddToLibraryCheckBox
+            //
+            this.tadAddToLibraryCheckBox.AutoSize = true;
+            this.tadAddToLibraryCheckBox.Location = new System.Drawing.Point(12, 1270);
+            this.tadAddToLibraryCheckBox.Name = "tadAddToLibraryCheckBox";
+            this.tadAddToLibraryCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.tadAddToLibraryCheckBox.TabIndex = 24;
+            this.tadAddToLibraryCheckBox.Text = "Menu: add created TAD to LaunchBox library";
+            this.tadAddToLibraryCheckBox.UseVisualStyleBackColor = true;
+            //
             // label8
             // 
             this.label8.AutoSize = true;
@@ -721,6 +1267,16 @@ namespace ArchiveCacheManager
             this.ps3KeyPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.ps3KeyPathBrowseButton.UseVisualStyleBackColor = true;
             this.ps3KeyPathBrowseButton.Click += new System.EventHandler(this.ps3KeyPathBrowseButton_Click);
+            //
+            // ps3UseIsoMountLauncherCheckBox
+            //
+            this.ps3UseIsoMountLauncherCheckBox.AutoSize = true;
+            this.ps3UseIsoMountLauncherCheckBox.Location = new System.Drawing.Point(7, 202);
+            this.ps3UseIsoMountLauncherCheckBox.Name = "ps3UseIsoMountLauncherCheckBox";
+            this.ps3UseIsoMountLauncherCheckBox.Size = new System.Drawing.Size(360, 17);
+            this.ps3UseIsoMountLauncherCheckBox.TabIndex = 23;
+            this.ps3UseIsoMountLauncherCheckBox.Text = "Mount decrypted PS3 ISOs at launch and run RPCS3 on EBOOT.BIN";
+            this.ps3UseIsoMountLauncherCheckBox.UseVisualStyleBackColor = true;
             //
             // label7
             //
@@ -865,7 +1421,42 @@ namespace ArchiveCacheManager
             this.ExtractXiso.Name = "ExtractXiso";
             this.ExtractXiso.ToolTipText = "Extract ZIP and ISO files in xiso format.";
             this.ExtractXiso.Width = 66;
-            // 
+            //
+            // PS3dec
+            //
+            this.PS3dec.HeaderText = "PS3Dec";
+            this.PS3dec.Name = "PS3dec";
+            this.PS3dec.ToolTipText = "Decrypt PS3 ISO files using a .dkey file.";
+            this.PS3dec.Width = 55;
+            //
+            // WiiuCacheOnLaunch
+            //
+            this.WiiuCacheOnLaunch.HeaderText = "Wii U .wua";
+            this.WiiuCacheOnLaunch.Name = "WiiuCacheOnLaunch";
+            this.WiiuCacheOnLaunch.ToolTipText = "Build a .wua from a Wii U CDN-dump archive on launch (CDecrypt + zarchive).";
+            this.WiiuCacheOnLaunch.Width = 68;
+            //
+            // CiaCacheOnLaunch
+            //
+            this.CiaCacheOnLaunch.HeaderText = "3DS .cia";
+            this.CiaCacheOnLaunch.Name = "CiaCacheOnLaunch";
+            this.CiaCacheOnLaunch.ToolTipText = "Build a .cia from a 3DS CDN-dump archive on launch.";
+            this.CiaCacheOnLaunch.Width = 58;
+            //
+            // WadCacheOnLaunch
+            //
+            this.WadCacheOnLaunch.HeaderText = "Wii .wad";
+            this.WadCacheOnLaunch.Name = "WadCacheOnLaunch";
+            this.WadCacheOnLaunch.ToolTipText = "Build .wad file(s) from a Wii CDN-dump archive on launch (Sharpii).";
+            this.WadCacheOnLaunch.Width = 60;
+            //
+            // TadCacheOnLaunch
+            //
+            this.TadCacheOnLaunch.HeaderText = "DSi .tad";
+            this.TadCacheOnLaunch.Name = "TadCacheOnLaunch";
+            this.TadCacheOnLaunch.ToolTipText = "Build a .tad from a DSi CDN-dump archive on launch.";
+            this.TadCacheOnLaunch.Width = 58;
+            //
             // NewConfigWindow
             // 
             this.AcceptButton = this.okButton;
@@ -898,6 +1489,8 @@ namespace ArchiveCacheManager
             this.tab3SmartExtractSettings.ResumeLayout(false);
             this.tab3SmartExtractSettings.PerformLayout();
             this.tab4PluginSettings.ResumeLayout(false);
+            this.tab5PackagingSettings.ResumeLayout(false);
+            this.tab5PackagingSettings.PerformLayout();
             this.tab4PluginSettings.PerformLayout();
             this.ResumeLayout(false);
 
@@ -932,6 +1525,48 @@ namespace ArchiveCacheManager
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label extractionSettingsTipLabel;
         private System.Windows.Forms.TabPage tab3SmartExtractSettings;
+        private System.Windows.Forms.TabPage tab5PackagingSettings;
+        private System.Windows.Forms.Label packagingWiiSectionLabel;
+        private System.Windows.Forms.Label wadPlatformLabel;
+        private System.Windows.Forms.CheckedListBox wadPlatform;
+        private System.Windows.Forms.Label wadOutputPathLabel;
+        private System.Windows.Forms.TextBox wadOutputPath;
+        private System.Windows.Forms.Button wadOutputPathBrowseButton;
+        private System.Windows.Forms.Label wadCetkCachePathLabel;
+        private System.Windows.Forms.TextBox wadCetkCachePath;
+        private System.Windows.Forms.Button wadCetkCachePathBrowseButton;
+        private System.Windows.Forms.CheckBox wadAddToLibraryCheckBox;
+        private System.Windows.Forms.Label packagingWiiuSectionLabel;
+        private System.Windows.Forms.Label wiiuPlatformLabel;
+        private System.Windows.Forms.CheckedListBox wiiuPlatform;
+        private System.Windows.Forms.Label wiiuOutputPathLabel;
+        private System.Windows.Forms.TextBox wiiuOutputPath;
+        private System.Windows.Forms.Button wiiuOutputPathBrowseButton;
+        private System.Windows.Forms.Label wiiuCommonKeyLabel;
+        private System.Windows.Forms.TextBox wiiuCommonKey;
+        private System.Windows.Forms.Label wiiuTitleKeyPasswordLabel;
+        private System.Windows.Forms.TextBox wiiuTitleKeyPassword;
+        private System.Windows.Forms.CheckBox wiiuAddToLibraryCheckBox;
+        private System.Windows.Forms.Label packagingCiaSectionLabel;
+        private System.Windows.Forms.Label ciaPlatformLabel;
+        private System.Windows.Forms.CheckedListBox ciaPlatform;
+        private System.Windows.Forms.Label ciaOutputPathLabel;
+        private System.Windows.Forms.TextBox ciaOutputPath;
+        private System.Windows.Forms.Button ciaOutputPathBrowseButton;
+        private System.Windows.Forms.Label ciaCetkCachePathLabel;
+        private System.Windows.Forms.TextBox ciaCetkCachePath;
+        private System.Windows.Forms.Button ciaCetkCachePathBrowseButton;
+        private System.Windows.Forms.CheckBox ciaAddToLibraryCheckBox;
+        private System.Windows.Forms.Label packagingTadSectionLabel;
+        private System.Windows.Forms.Label tadPlatformLabel;
+        private System.Windows.Forms.CheckedListBox tadPlatform;
+        private System.Windows.Forms.Label tadOutputPathLabel;
+        private System.Windows.Forms.TextBox tadOutputPath;
+        private System.Windows.Forms.Button tadOutputPathBrowseButton;
+        private System.Windows.Forms.Label tadCetkCachePathLabel;
+        private System.Windows.Forms.TextBox tadCetkCachePath;
+        private System.Windows.Forms.Button tadCetkCachePathBrowseButton;
+        private System.Windows.Forms.CheckBox tadAddToLibraryCheckBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox standaloneExtensions;
         private System.Windows.Forms.Label label6;
@@ -944,6 +1579,7 @@ namespace ArchiveCacheManager
         private System.Windows.Forms.Label ps3KeyPathLabel;
         private System.Windows.Forms.TextBox ps3KeyPath;
         private System.Windows.Forms.Button ps3KeyPathBrowseButton;
+        private System.Windows.Forms.CheckBox ps3UseIsoMountLauncherCheckBox;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.DataGridViewTextBoxColumn ArchivePath;
@@ -962,5 +1598,13 @@ namespace ArchiveCacheManager
         private System.Windows.Forms.DataGridViewCheckBoxColumn Chdman;
         private System.Windows.Forms.DataGridViewCheckBoxColumn DolphinTool;
         private System.Windows.Forms.DataGridViewCheckBoxColumn ExtractXiso;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn PS3dec;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn WiiuCacheOnLaunch;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn CiaCacheOnLaunch;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn WadCacheOnLaunch;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn TadCacheOnLaunch;
+        private System.Windows.Forms.Label wiiuCemuKeysPathLabel;
+        private System.Windows.Forms.TextBox wiiuCemuKeysPath;
+        private System.Windows.Forms.Button wiiuCemuKeysPathBrowseButton;
     }
 }

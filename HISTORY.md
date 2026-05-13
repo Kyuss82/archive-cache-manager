@@ -1,4 +1,18 @@
 # Archive Cache Manager change history
+## v2.17 (Kyuss82 fork)
+* **PS3 support**
+    * `PS3Dec` extractor for decrypting PS3 ISOs using a `.dkey` file (`ps3decrs.exe` in `Extractors/`); new per-emulator-platform column in *Extraction Settings*.
+    * Optional **PS3 ISO mount launcher** for RPCS3: mounts the ISO as a virtual drive via PowerShell, launches RPCS3 on the `EBOOT.BIN` inside, dismounts on exit (toggle: `Ps3UseIsoMountLauncher` in plugin INI). Approach adapted from [ptmorris1/RPCS3-ISOLauncher-Launchbox](https://github.com/ptmorris1/RPCS3-ISOLauncher-Launchbox); the in-plugin variant takes RPCS3 path as a parameter so it works without sitting next to `rpcs3.exe`, and replaces the fixed 2 s post-mount sleep with a bounded volume-letter poll.
+* **On-launch native packagers** — turn a CDN-style archive (`.zip`/`.7z`/`.rar`) into the emulator-native format inside the plugin cache, transparently to LaunchBox:
+    * **Wii U `.wua`** (Cemu) — pipeline: CDecrypt + zarchive.
+    * **3DS `.cia`** — internal C# builder; supports multi-TMD archives (base + updates) → one `.cia` per TMD version, latest version selected as primary.
+    * **Wii `.wad`** (Dolphin) — Sharpii-NetCore; supports multi-TMD archives.
+    * **DSi `.tad`** (melonDS) — internal C# builder; supports multi-TMD archives.
+    * Each is opt-in via a new column in *Extraction Settings* per emulator+platform pair (same UX as `chdman` / `DolphinTool` / `ExtractXiso` / `PS3Dec`).
+* **Wii U title-key handling** — primary source is **Cemu's `keys.txt`** (`%APPDATA%\Cemu\keys.txt` auto-detected, overridable in *Packaging* tab). Local, offline, user-curated.
+* **Right-click `Create * Package...` menus** retained for one-off permanent conversions; `WiiuPlatform` / `CiaPlatform` / `WadPlatform` / `TadPlatform` CSVs gate where the menu appears.
+* **Packaging tab** label cleanup: each control now clearly states whether it is *menu-only* or *shared with auto-cache*.
+
 ## v2.16 (2023-02-10)
 * New M3U name option - "Disc 1 Filename"
     * Always use the filename of the first disc of a multi-disc game for the m3u file, regardless of which disc was launched

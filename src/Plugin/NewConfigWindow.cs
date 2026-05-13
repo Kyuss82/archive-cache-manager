@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
@@ -79,7 +80,11 @@ namespace ArchiveCacheManager
                                                                                 config.Value.Chdman,
                                                                                 config.Value.DolphinTool,
                                                                                 config.Value.ExtractXiso,
-                                                                                config.Value.PS3dec});
+                                                                                config.Value.PS3dec,
+                                                                                config.Value.WiiuCacheOnLaunch,
+                                                                                config.Value.CiaCacheOnLaunch,
+                                                                                config.Value.WadCacheOnLaunch,
+                                                                                config.Value.TadCacheOnLaunch});
                 }
                 else
                 {
@@ -94,7 +99,11 @@ namespace ArchiveCacheManager
                                                                           config.Value.Chdman,
                                                                           config.Value.DolphinTool,
                                                                           config.Value.ExtractXiso,
-                                                                          config.Value.PS3dec});
+                                                                          config.Value.PS3dec,
+                                                                          config.Value.WiiuCacheOnLaunch,
+                                                                          config.Value.CiaCacheOnLaunch,
+                                                                          config.Value.WadCacheOnLaunch,
+                                                                          config.Value.TadCacheOnLaunch});
                 }
             }
             emulatorPlatformConfigDataGridView.ClearSelection();
@@ -106,6 +115,43 @@ namespace ArchiveCacheManager
             metadataExtensions.Text = Config.MetadataExtensions;
             bypassPathCheckCheckBox.Checked = Config.BypassPathCheck;
             ps3KeyPath.Text = Config.PS3KeyPath;
+            ps3UseIsoMountLauncherCheckBox.Checked = Config.Ps3UseIsoMountLauncher;
+
+            string[] platformNames;
+            try
+            {
+                platformNames = PluginHelper.DataManager.GetAllPlatforms()
+                    .Select(p => p.Name)
+                    .Where(n => !string.IsNullOrWhiteSpace(n))
+                    .OrderBy(n => n)
+                    .ToArray();
+            }
+            catch (Exception)
+            {
+                platformNames = new string[0];
+            }
+
+            PopulatePlatformList(wadPlatform, platformNames, Config.WadPlatform);
+            wadOutputPath.Text = Config.WadOutputPath;
+            wadCetkCachePath.Text = Config.WadCetkCachePath;
+            wadAddToLibraryCheckBox.Checked = Config.WadAddToLibrary;
+
+            PopulatePlatformList(wiiuPlatform, platformNames, Config.WiiuPlatform);
+            wiiuOutputPath.Text = Config.WiiuOutputPath;
+            wiiuCommonKey.Text = Config.WiiuCommonKey;
+            wiiuTitleKeyPassword.Text = Config.WiiuTitleKeyPassword;
+            wiiuAddToLibraryCheckBox.Checked = Config.WiiuAddToLibrary;
+            wiiuCemuKeysPath.Text = Config.WiiuCemuKeysPath;
+
+            PopulatePlatformList(ciaPlatform, platformNames, Config.CiaPlatform);
+            ciaOutputPath.Text = Config.CiaOutputPath;
+            ciaCetkCachePath.Text = Config.CiaCetkCachePath;
+            ciaAddToLibraryCheckBox.Checked = Config.CiaAddToLibrary;
+
+            PopulatePlatformList(tadPlatform, platformNames, Config.TadPlatform);
+            tadOutputPath.Text = Config.TadOutputPath;
+            tadCetkCachePath.Text = Config.TadCetkCachePath;
+            tadAddToLibraryCheckBox.Checked = Config.TadAddToLibrary;
 
             updateCacheInfo(true);
             updateEnabledState();
@@ -234,6 +280,10 @@ namespace ArchiveCacheManager
                 config[key].DolphinTool = Convert.ToBoolean(row.Cells[9].Value);
                 config[key].ExtractXiso = Convert.ToBoolean(row.Cells[10].Value);
                 config[key].PS3dec = Convert.ToBoolean(row.Cells[11].Value);
+                config[key].WiiuCacheOnLaunch = Convert.ToBoolean(row.Cells[12].Value);
+                config[key].CiaCacheOnLaunch = Convert.ToBoolean(row.Cells[13].Value);
+                config[key].WadCacheOnLaunch = Convert.ToBoolean(row.Cells[14].Value);
+                config[key].TadCacheOnLaunch = Convert.ToBoolean(row.Cells[15].Value);
             }
 
             Config.UpdateCheck = updateCheckCheckBox.Checked;
@@ -241,6 +291,28 @@ namespace ArchiveCacheManager
             Config.MetadataExtensions = metadataExtensions.Text;
             Config.BypassPathCheck = bypassPathCheckCheckBox.Checked;
             Config.PS3KeyPath = ps3KeyPath.Text;
+            Config.Ps3UseIsoMountLauncher = ps3UseIsoMountLauncherCheckBox.Checked;
+
+            Config.WadPlatform = SerializePlatformList(wadPlatform);
+            Config.WadOutputPath = wadOutputPath.Text.Trim();
+            Config.WadCetkCachePath = wadCetkCachePath.Text.Trim();
+            Config.WadAddToLibrary = wadAddToLibraryCheckBox.Checked;
+            Config.WiiuPlatform = SerializePlatformList(wiiuPlatform);
+            Config.WiiuOutputPath = wiiuOutputPath.Text.Trim();
+            Config.WiiuCommonKey = wiiuCommonKey.Text.Trim();
+            Config.WiiuTitleKeyPassword = wiiuTitleKeyPassword.Text.Trim();
+            Config.WiiuAddToLibrary = wiiuAddToLibraryCheckBox.Checked;
+            Config.WiiuCemuKeysPath = wiiuCemuKeysPath.Text.Trim();
+
+            Config.CiaPlatform = SerializePlatformList(ciaPlatform);
+            Config.CiaOutputPath = ciaOutputPath.Text.Trim();
+            Config.CiaCetkCachePath = ciaCetkCachePath.Text.Trim();
+            Config.CiaAddToLibrary = ciaAddToLibraryCheckBox.Checked;
+
+            Config.TadPlatform = SerializePlatformList(tadPlatform);
+            Config.TadOutputPath = tadOutputPath.Text.Trim();
+            Config.TadCetkCachePath = tadCetkCachePath.Text.Trim();
+            Config.TadAddToLibrary = tadAddToLibraryCheckBox.Checked;
 
             Config.Save();
 
@@ -292,7 +364,13 @@ namespace ArchiveCacheManager
                                                                                        emulatorPlatformConfigDataGridView[6, 0].Value,
                                                                                        emulatorPlatformConfigDataGridView[7, 0].Value,
                                                                                        emulatorPlatformConfigDataGridView[8, 0].Value,
-                                                                                       emulatorPlatformConfigDataGridView[9, 0].Value });
+                                                                                       emulatorPlatformConfigDataGridView[9, 0].Value,
+                                                                                       emulatorPlatformConfigDataGridView[10, 0].Value,
+                                                                                       emulatorPlatformConfigDataGridView[11, 0].Value,
+                                                                                       emulatorPlatformConfigDataGridView[12, 0].Value,
+                                                                                       emulatorPlatformConfigDataGridView[13, 0].Value,
+                                                                                       emulatorPlatformConfigDataGridView[14, 0].Value,
+                                                                                       emulatorPlatformConfigDataGridView[15, 0].Value });
                 emulatorPlatformConfigDataGridView.Rows[index].Selected = true;
             }
         }
@@ -337,6 +415,87 @@ namespace ArchiveCacheManager
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 ps3KeyPath.Text = PathUtils.GetRelativePath(PathUtils.GetLaunchBoxRootPath(), dialog.SelectedPath);
+            }
+        }
+
+        private static void PopulatePlatformList(CheckedListBox list, string[] allPlatforms, string savedCsv)
+        {
+            var saved = new HashSet<string>(
+                (savedCsv ?? string.Empty).Split(';')
+                    .Select(s => s.Trim())
+                    .Where(s => !string.IsNullOrEmpty(s)),
+                StringComparer.InvariantCultureIgnoreCase);
+
+            list.Items.Clear();
+            foreach (string name in allPlatforms)
+            {
+                int idx = list.Items.Add(name);
+                if (saved.Contains(name)) list.SetItemChecked(idx, true);
+            }
+
+            // Preserve any saved entries that no longer exist in LaunchBox so they're not silently dropped on save.
+            foreach (string s in saved)
+            {
+                if (!allPlatforms.Any(p => string.Equals(p, s, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    int idx = list.Items.Add(s);
+                    list.SetItemChecked(idx, true);
+                }
+            }
+        }
+
+        private static string SerializePlatformList(CheckedListBox list)
+        {
+            return string.Join(";", list.CheckedItems.Cast<object>().Select(o => o.ToString().Trim()).Where(s => !string.IsNullOrEmpty(s)));
+        }
+
+        private void wiiuCemuKeysPathBrowseButton_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Filter = "keys.txt|keys.txt|All files (*.*)|*.*";
+                dialog.Title = "Locate Cemu keys.txt";
+
+                string current = wiiuCemuKeysPath.Text.Trim();
+                string seed = string.IsNullOrEmpty(current)
+                    ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Cemu")
+                    : PathUtils.GetAbsolutePath(current);
+                if (File.Exists(seed))
+                {
+                    dialog.InitialDirectory = Path.GetDirectoryName(seed);
+                    dialog.FileName = Path.GetFileName(seed);
+                }
+                else if (Directory.Exists(seed))
+                {
+                    dialog.InitialDirectory = seed;
+                }
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    wiiuCemuKeysPath.Text = dialog.FileName;
+                }
+            }
+        }
+
+        private void wadOutputPathBrowseButton_Click(object sender, EventArgs e) => BrowseFolderInto(wadOutputPath);
+        private void wadCetkCachePathBrowseButton_Click(object sender, EventArgs e) => BrowseFolderInto(wadCetkCachePath);
+        private void wiiuOutputPathBrowseButton_Click(object sender, EventArgs e) => BrowseFolderInto(wiiuOutputPath);
+        private void ciaOutputPathBrowseButton_Click(object sender, EventArgs e) => BrowseFolderInto(ciaOutputPath);
+        private void ciaCetkCachePathBrowseButton_Click(object sender, EventArgs e) => BrowseFolderInto(ciaCetkCachePath);
+        private void tadOutputPathBrowseButton_Click(object sender, EventArgs e) => BrowseFolderInto(tadOutputPath);
+        private void tadCetkCachePathBrowseButton_Click(object sender, EventArgs e) => BrowseFolderInto(tadCetkCachePath);
+
+        private void BrowseFolderInto(TextBox target)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            string browsePath = string.IsNullOrWhiteSpace(target.Text)
+                ? PathUtils.GetLaunchBoxRootPath()
+                : PathUtils.GetAbsolutePath(target.Text);
+            dialog.SelectedPath = Directory.Exists(browsePath) ? browsePath : PathUtils.GetLaunchBoxRootPath();
+            dialog.ShowNewFolderButton = true;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                target.Text = PathUtils.GetRelativePath(PathUtils.GetLaunchBoxRootPath(), dialog.SelectedPath);
             }
         }
 

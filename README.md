@@ -3,6 +3,61 @@
 
 A LaunchBox plugin which caches extracted ROM archives, letting you play games faster. Also allows launching individual files from archives, and loading preferred file types from an archive.
 
+> **Fork notice.** This is a fork of [fraganator/archive-cache-manager](https://github.com/fraganator/archive-cache-manager) (LGPL 2.1) with added support for on-launch building of native emulator formats from CDN-style archives: **Wii U `.wua`** (Cemu), **3DS `.cia`**, **Wii `.wad`** (Dolphin), and **DSi `.tad`**. The PS3 ISO mount launcher integration is adapted from [ptmorris1/RPCS3-ISOLauncher-Launchbox](https://github.com/ptmorris1/RPCS3-ISOLauncher-Launchbox). See [What this fork adds](#what-this-fork-adds) below.
+
+## What this fork adds
+
+Four new on-launch packagers, integrated into the existing extraction pipeline:
+
+| Extractor (column in *Extraction Settings*) | Source                          | Output (in cache)        | Native emulator |
+|---------------------------------------------|---------------------------------|--------------------------|-----------------|
+| **Wii U .wua**                              | CDN dump (`.zip`/`.7z`/`.rar`)  | `<name>.wua`             | Cemu            |
+| **3DS .cia**                                | CDN dump                        | `<name>.cia` (per TMD)   | Citra / Lime3DS |
+| **Wii .wad**                                | CDN dump                        | `<name>.wad` (per TMD)   | Dolphin         |
+| **DSi .tad**                                | CDN dump                        | `<name>.tad` (per TMD)   | melonDS         |
+
+Each is **opt-in** per emulator+platform via the regular *Extraction Settings* grid (same UX as `chdman` / `DolphinTool` / `extract-xiso` / `PS3Dec`). When checked, launching a CDN-dump archive from LaunchBox transparently:
+
+1. extracts the archive (CDecrypt / native C# builders / Sharpii-NetCore depending on platform),
+2. assembles the native format in the plugin cache,
+3. hands the cached file path to the emulator.
+
+On subsequent launches the cache hit is reused — same lifecycle as every other extractor (LRU eviction, *Keep* pinning, etc.).
+
+For Wii U the encrypted title key is sourced from **Cemu's `keys.txt`** (no network, no extra DB). The right-click `Create * Package...` menus still exist for one-off permanent conversions and adding the artifact as a separate library entry.
+
+## Required external tools
+
+Place these in `<LaunchBox>/Plugins/ArchiveCacheManager/Extractors/`:
+
+| Tool                | Format(s)               | Source |
+|---------------------|-------------------------|--------|
+| `chdman.exe`        | CHD                     | MAME tools |
+| `DolphinTool.exe`   | RVZ / WIA / GCZ         | [Dolphin emulator](https://dolphin-emu.org/) release |
+| `extract-xiso.exe`  | Xbox ISO                | [XboxDev/extract-xiso](https://github.com/XboxDev/extract-xiso) |
+| `ps3decrs.exe`      | PS3 ISO                 | [Redrrx/ps3decrs](https://github.com/Redrrx/ps3decrs) |
+| `CDecrypt.exe`      | Wii U CDN → Loadiine    | [VitaSmith/cdecrypt](https://github.com/VitaSmith/cdecrypt) |
+| `zarchive.exe`      | Wii U Loadiine → `.wua` | [Exzap/ZArchive](https://github.com/Exzap/ZArchive/releases) |
+| `Sharpii-NetCore.exe` | Wii CDN → `.wad`      | [TheShadowEevee/Sharpii-NetCore](https://github.com/TheShadowEevee/Sharpii-NetCore) |
+| `cert.sys` (or `cert`) | Wii cert chain       | extract from any complete `.wad` |
+| `title.cert`        | Wii U + 3DS cert chain  | extract from any complete dump |
+| `cert.tad`          | DSi cert chain          | extract from any complete `.tad` |
+
+3DS `.cia` and DSi `.tad` use internal C# builders — no extra executable needed.
+
+The certificate files (`cert.sys`, `title.cert`, `cert.tad`) are **not bundled** in this public build. They are Nintendo-owned blobs; users provide their own from their legitimate dumps.
+
+## Configuration
+
+Open *Tools → Archive Cache Manager*:
+
+- **Packaging** tab → set the **Wii U Common Key** (32 hex characters). Without it, Wii U package builds will fail with a clear error. Optionally set **Cemu keys.txt path** if Cemu is in a non-standard location (auto-detected from `%APPDATA%\Cemu\keys.txt` otherwise).
+- **Extraction Settings** tab → tick the new `Wii U .wua` / `3DS .cia` / `Wii .wad` / `DSi .tad` checkboxes for the emulator+platform rows you want auto-cache on.
+
+## Legal posture
+
+This plugin **invokes** third-party tools (CDecrypt, ZArchive, Sharpii-NetCore) — it does not redistribute them. It does not bundle Nintendo cert blobs, the Wii U common key, or any community title-key databases. Users provide their own keys/certs from their own dumps. Same posture as upstream `fraganator/archive-cache-manager` and as the underlying tools each plugin invokes.
+
 ## New in v2.16
 * New M3U name option - "Disc 1 Filename"
     * Always use the filename of the first disc of a multi-disc game for the m3u file, regardless of which disc was launched

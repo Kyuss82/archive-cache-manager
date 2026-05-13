@@ -121,6 +121,22 @@ namespace ArchiveCacheManager
             {
                 extractor = new PS3dec();
             }
+            else if (extract && Config.GetWiiuCacheOnLaunch(key) && WiiuWuaExtractor.SupportedType(archivePath))
+            {
+                extractor = new WiiuWuaExtractor();
+            }
+            else if (extract && Config.GetCiaCacheOnLaunch(key) && CiaExtractor.SupportedType(archivePath))
+            {
+                extractor = new CiaExtractor();
+            }
+            else if (extract && Config.GetWadCacheOnLaunch(key) && WadExtractor.SupportedType(archivePath))
+            {
+                extractor = new WadExtractor();
+            }
+            else if (extract && Config.GetTadCacheOnLaunch(key) && TadExtractor.SupportedType(archivePath))
+            {
+                extractor = new TadExtractor();
+            }
             else if (extract && Zip.SupportedType(archivePath))
             {
                 extractor = new Zip();
@@ -221,6 +237,29 @@ namespace ArchiveCacheManager
                         game.ApplicationPath = tempArchivePath;
                         Logger.Log(string.Format("Temporarily set IGame.ApplicationPath for {0} ({1}) to {2}.", game.Title, game.Platform, game.ApplicationPath));
                     }
+                }
+
+                #endregion
+                #region PS3 ISO mount launcher
+
+                if (Config.Ps3UseIsoMountLauncher
+                    && Config.GetPS3dec(Config.EmulatorPlatformKey(emulator.Title, game.Platform))
+                    && Ps3IsoLauncher.LooksLikeRpcs3(emulator.ApplicationPath)
+                    && PathUtils.HasExtension(PluginUtils.GetArchivePath(game, app), new[] { ".iso" }))
+                {
+                    string originalRpcs3 = emulator.ApplicationPath;
+                    string originalArgs = emulator.CommandLine ?? string.Empty;
+                    string scriptPath = Ps3IsoLauncher.GetScriptPath();
+                    string newArgs = string.Format(
+                        "-ExecutionPolicy Bypass -NoProfile -File \"{0}\" -RPCS3path \"{1}\" -ISOpath",
+                        scriptPath, originalRpcs3);
+
+                    LaunchBoxDataBackup.BackupSetting(LaunchBoxDataBackup.SettingName.IEmulator_ApplicationPath, originalRpcs3);
+                    LaunchBoxDataBackup.BackupSetting(LaunchBoxDataBackup.SettingName.IEmulator_CommandLine, originalArgs);
+                    emulator.ApplicationPath = Ps3IsoLauncher.PowerShellExePath;
+                    emulator.CommandLine = newArgs;
+                    Logger.Log(string.Format("PS3 ISO mount launcher: redirected {0} to powershell + {1} (original rpcs3 = {2}).",
+                        emulator.Title, scriptPath, originalRpcs3));
                 }
 
                 #endregion

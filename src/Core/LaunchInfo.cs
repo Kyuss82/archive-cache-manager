@@ -97,6 +97,22 @@ namespace ArchiveCacheManager
             {
                 return new PS3dec();
             }
+            else if (extract && mGameCacheData.Config.WiiuCacheOnLaunch && WiiuWuaExtractor.SupportedType(archivePath))
+            {
+                return new WiiuWuaExtractor();
+            }
+            else if (extract && mGameCacheData.Config.CiaCacheOnLaunch && CiaExtractor.SupportedType(archivePath))
+            {
+                return new CiaExtractor();
+            }
+            else if (extract && mGameCacheData.Config.WadCacheOnLaunch && WadExtractor.SupportedType(archivePath))
+            {
+                return new WadExtractor();
+            }
+            else if (extract && mGameCacheData.Config.TadCacheOnLaunch && TadExtractor.SupportedType(archivePath))
+            {
+                return new TadExtractor();
+            }
             else if (extract && Zip.SupportedType(archivePath))
             {
                 return new Zip();

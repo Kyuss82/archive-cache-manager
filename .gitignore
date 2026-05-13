@@ -352,3 +352,7 @@ MigrationBackup/
 
 # Older versions of LaunchBox plugin assembly
 Unbroken.LaunchBox.Plugins/
+
+# Claude Code per-user settings (contiene permission grants personali)
+.claude/settings.local.json
+**/.claude/settings.local.json

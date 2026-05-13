@@ -50,7 +50,9 @@ namespace ArchiveCacheManager
         {
             IEmulatorPlatform_M3uDiscLoadEnabled,
             IGame_ApplicationPath,
-            IAdditionalApplication_ApplicationPath
+            IAdditionalApplication_ApplicationPath,
+            IEmulator_ApplicationPath,
+            IEmulator_CommandLine
         };
 
         /// <summary>
@@ -108,6 +110,14 @@ namespace ArchiveCacheManager
                     case SettingName.IAdditionalApplication_ApplicationPath:
                         PluginUtils.GetAdditionalApplicationById(mGameId, mApplicationId).ApplicationPath = Convert.ToString(setting.Value);
                         Logger.Log(string.Format("Restored IAdditionalApplication.ApplicationPath for {0} ({1} - {2}) to {3}.", mApplicationName, mTitle, mPlatform, Convert.ToString(setting.Value)));
+                        break;
+                    case SettingName.IEmulator_ApplicationPath:
+                        PluginHelper.DataManager.GetEmulatorById(mEmulatorId).ApplicationPath = Convert.ToString(setting.Value);
+                        Logger.Log(string.Format("Restored IEmulator.ApplicationPath for {0} to {1}.", mEmulator, Convert.ToString(setting.Value)));
+                        break;
+                    case SettingName.IEmulator_CommandLine:
+                        PluginHelper.DataManager.GetEmulatorById(mEmulatorId).CommandLine = Convert.ToString(setting.Value);
+                        Logger.Log(string.Format("Restored IEmulator.CommandLine for {0} to '{1}'.", mEmulator, Convert.ToString(setting.Value)));
                         break;
                     default: break;
                 }
@@ -185,6 +195,30 @@ namespace ArchiveCacheManager
                         if (!string.Equals(Convert.ToString(setting.Value), stringValue))
                         {
                             message += string.Format("Failed to verify IAdditionalApplication.ApplicationPath for {0} ({1} - {2}).\r\nCurrent value = {3}\r\nCorrect value = {4}.\r\n\r\n", mApplicationName, mTitle, mPlatform, stringValue, Convert.ToString(setting.Value));
+                            Logger.Log(message);
+                        }
+                        else
+                        {
+                            verifiedSettings.Add(setting.Key);
+                        }
+                        break;
+                    case SettingName.IEmulator_ApplicationPath:
+                        stringValue = PluginHelper.DataManager.GetEmulatorById(mEmulatorId).ApplicationPath;
+                        if (!string.Equals(Convert.ToString(setting.Value), stringValue))
+                        {
+                            message += string.Format("Failed to verify IEmulator.ApplicationPath for {0}.\r\nCurrent value = {1}\r\nCorrect value = {2}.\r\n\r\n", mEmulator, stringValue, Convert.ToString(setting.Value));
+                            Logger.Log(message);
+                        }
+                        else
+                        {
+                            verifiedSettings.Add(setting.Key);
+                        }
+                        break;
+                    case SettingName.IEmulator_CommandLine:
+                        stringValue = PluginHelper.DataManager.GetEmulatorById(mEmulatorId).CommandLine ?? string.Empty;
+                        if (!string.Equals(Convert.ToString(setting.Value) ?? string.Empty, stringValue))
+                        {
+                            message += string.Format("Failed to verify IEmulator.CommandLine for {0}.\r\nCurrent value = '{1}'\r\nCorrect value = '{2}'.\r\n\r\n", mEmulator, stringValue, Convert.ToString(setting.Value));
                             Logger.Log(message);
                         }
                         else

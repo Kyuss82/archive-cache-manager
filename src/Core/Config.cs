@@ -58,6 +58,30 @@ namespace ArchiveCacheManager
         private static readonly bool defaultExtractXiso = false;
         private static readonly bool defaultPS3dec = false;
         private static readonly string defaultPS3KeyPath = @"ThirdParty\PS3key";
+        private static readonly bool defaultPs3UseIsoMountLauncher = false;
+        private static readonly string defaultWadPlatform = "Nintendo Wii";
+        private static readonly string defaultWadOutputPath = "";
+        private static readonly string defaultWadCetkCachePath = "";
+        private static readonly bool defaultWadAddToLibrary = false;
+        private static readonly string defaultWiiuPlatform = "Nintendo Wii U";
+        private static readonly string defaultWiiuOutputPath = "";
+        private static readonly bool defaultWiiuAddToLibrary = false;
+        private static readonly string defaultWiiuTitleKeyPassword = "nintendo";
+        private static readonly string defaultWiiuCommonKey = "";
+        private static readonly string defaultWiiuCemuKeysPath = "";
+        private static readonly bool defaultWiiuPackAsWua = true;
+        private static readonly string defaultCiaPlatform = "Nintendo 3DS";
+        private static readonly string defaultCiaOutputPath = "";
+        private static readonly string defaultCiaCetkCachePath = "";
+        private static readonly bool defaultCiaAddToLibrary = false;
+        private static readonly string defaultTadPlatform = "Nintendo DSi;Nintendo DSiWare";
+        private static readonly string defaultTadOutputPath = "";
+        private static readonly string defaultTadCetkCachePath = "";
+        private static readonly bool defaultTadAddToLibrary = false;
+        private static readonly bool defaultWiiuCacheOnLaunch = false;
+        private static readonly bool defaultCiaCacheOnLaunch = false;
+        private static readonly bool defaultWadCacheOnLaunch = false;
+        private static readonly bool defaultTadCacheOnLaunch = false;
 
         public class EmulatorPlatformConfig
         {
@@ -71,6 +95,10 @@ namespace ArchiveCacheManager
             public bool DolphinTool;
             public bool ExtractXiso;
             public bool PS3dec;
+            public bool WiiuCacheOnLaunch;
+            public bool CiaCacheOnLaunch;
+            public bool WadCacheOnLaunch;
+            public bool TadCacheOnLaunch;
 
             public EmulatorPlatformConfig()
             {
@@ -84,6 +112,10 @@ namespace ArchiveCacheManager
                 DolphinTool = defaultDolphinTool;
                 ExtractXiso = defaultExtractXiso;
                 PS3dec = defaultPS3dec;
+                WiiuCacheOnLaunch = defaultWiiuCacheOnLaunch;
+                CiaCacheOnLaunch = defaultCiaCacheOnLaunch;
+                WadCacheOnLaunch = defaultWadCacheOnLaunch;
+                TadCacheOnLaunch = defaultTadCacheOnLaunch;
             }
         };
 
@@ -98,6 +130,26 @@ namespace ArchiveCacheManager
         private static string mMetadataExtensions = defaultMetadataExtensions;
         private static bool mBypassPathCheck = defaultBypassPathCheck;
         private static string mPS3KeyPath = defaultPS3KeyPath;
+        private static bool mPs3UseIsoMountLauncher = defaultPs3UseIsoMountLauncher;
+        private static string mWadPlatform = defaultWadPlatform;
+        private static string mWadOutputPath = defaultWadOutputPath;
+        private static string mWadCetkCachePath = defaultWadCetkCachePath;
+        private static bool mWadAddToLibrary = defaultWadAddToLibrary;
+        private static string mWiiuPlatform = defaultWiiuPlatform;
+        private static string mWiiuOutputPath = defaultWiiuOutputPath;
+        private static bool mWiiuAddToLibrary = defaultWiiuAddToLibrary;
+        private static string mWiiuTitleKeyPassword = defaultWiiuTitleKeyPassword;
+        private static string mWiiuCommonKey = defaultWiiuCommonKey;
+        private static string mWiiuCemuKeysPath = defaultWiiuCemuKeysPath;
+        private static bool mWiiuPackAsWua = defaultWiiuPackAsWua;
+        private static string mCiaPlatform = defaultCiaPlatform;
+        private static string mCiaOutputPath = defaultCiaOutputPath;
+        private static string mCiaCetkCachePath = defaultCiaCetkCachePath;
+        private static bool mCiaAddToLibrary = defaultCiaAddToLibrary;
+        private static string mTadPlatform = defaultTadPlatform;
+        private static string mTadOutputPath = defaultTadOutputPath;
+        private static string mTadCetkCachePath = defaultTadCetkCachePath;
+        private static bool mTadAddToLibrary = defaultTadAddToLibrary;
 
         private static Dictionary<string, EmulatorPlatformConfig> mEmulatorPlatformConfig;
 
@@ -171,6 +223,212 @@ namespace ArchiveCacheManager
         {
             get => mPS3KeyPath;
             set => mPS3KeyPath = value;
+        }
+
+        /// <summary>
+        /// When true, PS3 ISO files launched with RPCS3 are routed through a PowerShell launcher that
+        /// mounts the ISO as a virtual drive, runs RPCS3 on the EBOOT.BIN inside, and dismounts on exit.
+        /// </summary>
+        public static bool Ps3UseIsoMountLauncher
+        {
+            get => mPs3UseIsoMountLauncher;
+            set => mPs3UseIsoMountLauncher = value;
+        }
+
+        /// <summary>
+        /// LaunchBox platform name that enables the "Create Wii WAD..." context menu item.
+        /// </summary>
+        public static string WadPlatform
+        {
+            get => mWadPlatform;
+            set => mWadPlatform = value;
+        }
+
+        /// <summary>
+        /// Output folder for generated WAD files. Empty = save next to the source game file.
+        /// Relative paths are resolved against the LaunchBox root folder.
+        /// </summary>
+        public static string WadOutputPath
+        {
+            get => mWadOutputPath;
+            set => mWadOutputPath = value;
+        }
+
+        /// <summary>
+        /// Folder for caching tickets (cetk) downloaded from NUS, keyed by Title ID.
+        /// Empty = no caching (NUS is hit on every build that lacks a ticket).
+        /// </summary>
+        public static string WadCetkCachePath
+        {
+            get => mWadCetkCachePath;
+            set => mWadCetkCachePath = value;
+        }
+
+        /// <summary>
+        /// When true, after a WAD is created it is also added as a new game in the LaunchBox library
+        /// (Platform = WadPlatform), so the official Dolphin LaunchBox Integration plugin picks it up.
+        /// </summary>
+        public static bool WadAddToLibrary
+        {
+            get => mWadAddToLibrary;
+            set => mWadAddToLibrary = value;
+        }
+
+        /// <summary>LaunchBox platform that enables the "Create Wii U Package..." menu item.</summary>
+        public static string WiiuPlatform
+        {
+            get => mWiiuPlatform;
+            set => mWiiuPlatform = value;
+        }
+
+        /// <summary>Output base folder for Wii U Loadiine packages. Empty = next to the source archive.</summary>
+        public static string WiiuOutputPath
+        {
+            get => mWiiuOutputPath;
+            set => mWiiuOutputPath = value;
+        }
+
+        /// <summary>If true, the produced Loadiine .rpx is added to the LaunchBox library.</summary>
+        public static bool WiiuAddToLibrary
+        {
+            get => mWiiuAddToLibrary;
+            set => mWiiuAddToLibrary = value;
+        }
+
+        /// <summary>Password used by the deterministic title key derivation for Wii U.</summary>
+        public static string WiiuTitleKeyPassword
+        {
+            get => mWiiuTitleKeyPassword;
+            set => mWiiuTitleKeyPassword = value;
+        }
+
+        /// <summary>Wii U Common Key as 32 hex characters. Required to forge tickets for CDecrypt.</summary>
+        public static string WiiuCommonKey
+        {
+            get => mWiiuCommonKey;
+            set => mWiiuCommonKey = value;
+        }
+
+        /// <summary>
+        /// Path to Cemu's keys.txt. Used as the primary title-key source for the Wii U packager
+        /// (no network, no extra files to install). Empty = auto-detect %APPDATA%\Cemu\keys.txt.
+        /// </summary>
+        public static string WiiuCemuKeysPath
+        {
+            get => mWiiuCemuKeysPath;
+            set => mWiiuCemuKeysPath = value;
+        }
+
+        /// <summary>
+        /// When true and zarchive.exe is in the Extractors folder, the decrypted Loadiine output is packed
+        /// into a single .wua file (Cemu native archive). The intermediate folder is deleted.
+        /// </summary>
+        public static bool WiiuPackAsWua
+        {
+            get => mWiiuPackAsWua;
+            set => mWiiuPackAsWua = value;
+        }
+
+        /// <summary>LaunchBox platform that enables the "Create CIA Package..." menu item.</summary>
+        public static string CiaPlatform
+        {
+            get => mCiaPlatform;
+            set => mCiaPlatform = value;
+        }
+
+        /// <summary>Output base folder for 3DS CIA packages. Empty = next to the source archive.</summary>
+        public static string CiaOutputPath
+        {
+            get => mCiaOutputPath;
+            set => mCiaOutputPath = value;
+        }
+
+        /// <summary>Optional folder used to cache cetk files downloaded from the 3DS NUS.</summary>
+        public static string CiaCetkCachePath
+        {
+            get => mCiaCetkCachePath;
+            set => mCiaCetkCachePath = value;
+        }
+
+        /// <summary>If true, the produced .cia is added to the LaunchBox library.</summary>
+        public static bool CiaAddToLibrary
+        {
+            get => mCiaAddToLibrary;
+            set => mCiaAddToLibrary = value;
+        }
+
+        /// <summary>True if the supplied LaunchBox platform name matches any entry in the Wii (WAD) platform list.</summary>
+        public static bool MatchesWadPlatform(string platform) => MatchesPlatformCsv(WadPlatform, platform);
+
+        /// <summary>True if the supplied LaunchBox platform name matches any entry in the Wii U platform list.</summary>
+        public static bool MatchesWiiuPlatform(string platform) => MatchesPlatformCsv(WiiuPlatform, platform);
+
+        /// <summary>True if the supplied LaunchBox platform name matches any entry in the 3DS CIA platform list.</summary>
+        public static bool MatchesCiaPlatform(string platform) => MatchesPlatformCsv(CiaPlatform, platform);
+
+        /// <summary>LaunchBox platform that enables the "Create TAD Package..." menu item.</summary>
+        public static string TadPlatform
+        {
+            get => mTadPlatform;
+            set => mTadPlatform = value;
+        }
+
+        /// <summary>Output base folder for DSi TAD packages. Empty = next to the source archive.</summary>
+        public static string TadOutputPath
+        {
+            get => mTadOutputPath;
+            set => mTadOutputPath = value;
+        }
+
+        /// <summary>Optional folder used to cache cetk files downloaded from the DSi NUS.</summary>
+        public static string TadCetkCachePath
+        {
+            get => mTadCetkCachePath;
+            set => mTadCetkCachePath = value;
+        }
+
+        /// <summary>If true, the produced .tad is added to the LaunchBox library.</summary>
+        public static bool TadAddToLibrary
+        {
+            get => mTadAddToLibrary;
+            set => mTadAddToLibrary = value;
+        }
+
+        /// <summary>True if the supplied LaunchBox platform name matches any entry in the DSi TAD platform list.</summary>
+        public static bool MatchesTadPlatform(string platform) => MatchesPlatformCsv(TadPlatform, platform);
+
+        public static bool GetWiiuCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.WiiuCacheOnLaunch, defaultWiiuCacheOnLaunch);
+        public static bool GetCiaCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.CiaCacheOnLaunch, defaultCiaCacheOnLaunch);
+        public static bool GetWadCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.WadCacheOnLaunch, defaultWadCacheOnLaunch);
+        public static bool GetTadCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.TadCacheOnLaunch, defaultTadCacheOnLaunch);
+
+        private static bool GetEmulatorPlatformFlag(string key, Func<EmulatorPlatformConfig, bool> selector, bool fallback)
+        {
+            try
+            {
+                return selector(mEmulatorPlatformConfig[key]);
+            }
+            catch (KeyNotFoundException) { }
+
+            try
+            {
+                return selector(mEmulatorPlatformConfig[defaultEmulatorPlatform]);
+            }
+            catch (KeyNotFoundException) { }
+
+            return fallback;
+        }
+
+        private static bool MatchesPlatformCsv(string csv, string platform)
+        {
+            if (string.IsNullOrWhiteSpace(csv) || string.IsNullOrWhiteSpace(platform)) return false;
+            foreach (string entry in csv.Split(';'))
+            {
+                string trimmed = entry.Trim();
+                if (trimmed.Length == 0) continue;
+                if (string.Equals(trimmed, platform, StringComparison.InvariantCultureIgnoreCase)) return true;
+            }
+            return false;
         }
 
         public static Dictionary<string, EmulatorPlatformConfig> GetAllEmulatorPlatformConfig()
@@ -458,6 +716,106 @@ namespace ArchiveCacheManager
                                 mPS3KeyPath = section.Keys[nameof(PS3KeyPath)];
                             }
 
+                            if (section.Keys.ContainsKey(nameof(Ps3UseIsoMountLauncher)))
+                            {
+                                mPs3UseIsoMountLauncher = Convert.ToBoolean(section.Keys[nameof(Ps3UseIsoMountLauncher)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WadPlatform)))
+                            {
+                                mWadPlatform = section.Keys[nameof(WadPlatform)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WadOutputPath)))
+                            {
+                                mWadOutputPath = section.Keys[nameof(WadOutputPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WadCetkCachePath)))
+                            {
+                                mWadCetkCachePath = section.Keys[nameof(WadCetkCachePath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WadAddToLibrary)))
+                            {
+                                mWadAddToLibrary = Convert.ToBoolean(section.Keys[nameof(WadAddToLibrary)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WiiuPlatform)))
+                            {
+                                mWiiuPlatform = section.Keys[nameof(WiiuPlatform)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WiiuOutputPath)))
+                            {
+                                mWiiuOutputPath = section.Keys[nameof(WiiuOutputPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WiiuAddToLibrary)))
+                            {
+                                mWiiuAddToLibrary = Convert.ToBoolean(section.Keys[nameof(WiiuAddToLibrary)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WiiuTitleKeyPassword)))
+                            {
+                                mWiiuTitleKeyPassword = section.Keys[nameof(WiiuTitleKeyPassword)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WiiuCommonKey)))
+                            {
+                                mWiiuCommonKey = section.Keys[nameof(WiiuCommonKey)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WiiuCemuKeysPath)))
+                            {
+                                mWiiuCemuKeysPath = section.Keys[nameof(WiiuCemuKeysPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(WiiuPackAsWua)))
+                            {
+                                mWiiuPackAsWua = Convert.ToBoolean(section.Keys[nameof(WiiuPackAsWua)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(CiaPlatform)))
+                            {
+                                mCiaPlatform = section.Keys[nameof(CiaPlatform)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(CiaOutputPath)))
+                            {
+                                mCiaOutputPath = section.Keys[nameof(CiaOutputPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(CiaCetkCachePath)))
+                            {
+                                mCiaCetkCachePath = section.Keys[nameof(CiaCetkCachePath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(CiaAddToLibrary)))
+                            {
+                                mCiaAddToLibrary = Convert.ToBoolean(section.Keys[nameof(CiaAddToLibrary)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(TadPlatform)))
+                            {
+                                mTadPlatform = section.Keys[nameof(TadPlatform)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(TadOutputPath)))
+                            {
+                                mTadOutputPath = section.Keys[nameof(TadOutputPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(TadCetkCachePath)))
+                            {
+                                mTadCetkCachePath = section.Keys[nameof(TadCetkCachePath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(TadAddToLibrary)))
+                            {
+                                mTadAddToLibrary = Convert.ToBoolean(section.Keys[nameof(TadAddToLibrary)]);
+                            }
+
 
                             if (section.Keys.ContainsKey("MultiDiscSupport"))
                             {
@@ -541,6 +899,26 @@ namespace ArchiveCacheManager
                             {
                                 mEmulatorPlatformConfig[section.SectionName].PS3dec = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.PS3dec)]);
                             }
+
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.WiiuCacheOnLaunch)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].WiiuCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.WiiuCacheOnLaunch)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.CiaCacheOnLaunch)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].CiaCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.CiaCacheOnLaunch)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.WadCacheOnLaunch)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].WadCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.WadCacheOnLaunch)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.TadCacheOnLaunch)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].TadCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.TadCacheOnLaunch)]);
+                            }
                         }
                     }
 
@@ -620,6 +998,26 @@ namespace ArchiveCacheManager
             iniData[configSection][nameof(MetadataExtensions)] = mMetadataExtensions;
             iniData[configSection][nameof(BypassPathCheck)] = mBypassPathCheck.ToString();
             iniData[configSection][nameof(PS3KeyPath)] = mPS3KeyPath;
+            iniData[configSection][nameof(Ps3UseIsoMountLauncher)] = mPs3UseIsoMountLauncher.ToString();
+            iniData[configSection][nameof(WadPlatform)] = mWadPlatform;
+            iniData[configSection][nameof(WadOutputPath)] = mWadOutputPath;
+            iniData[configSection][nameof(WadCetkCachePath)] = mWadCetkCachePath;
+            iniData[configSection][nameof(WadAddToLibrary)] = mWadAddToLibrary.ToString();
+            iniData[configSection][nameof(WiiuPlatform)] = mWiiuPlatform;
+            iniData[configSection][nameof(WiiuOutputPath)] = mWiiuOutputPath;
+            iniData[configSection][nameof(WiiuAddToLibrary)] = mWiiuAddToLibrary.ToString();
+            iniData[configSection][nameof(WiiuTitleKeyPassword)] = mWiiuTitleKeyPassword;
+            iniData[configSection][nameof(WiiuCommonKey)] = mWiiuCommonKey;
+            iniData[configSection][nameof(WiiuCemuKeysPath)] = mWiiuCemuKeysPath;
+            iniData[configSection][nameof(WiiuPackAsWua)] = mWiiuPackAsWua.ToString();
+            iniData[configSection][nameof(CiaPlatform)] = mCiaPlatform;
+            iniData[configSection][nameof(CiaOutputPath)] = mCiaOutputPath;
+            iniData[configSection][nameof(CiaCetkCachePath)] = mCiaCetkCachePath;
+            iniData[configSection][nameof(CiaAddToLibrary)] = mCiaAddToLibrary.ToString();
+            iniData[configSection][nameof(TadPlatform)] = mTadPlatform;
+            iniData[configSection][nameof(TadOutputPath)] = mTadOutputPath;
+            iniData[configSection][nameof(TadCetkCachePath)] = mTadCetkCachePath;
+            iniData[configSection][nameof(TadAddToLibrary)] = mTadAddToLibrary.ToString();
 
             foreach (KeyValuePair<string, EmulatorPlatformConfig> priority in mEmulatorPlatformConfig)
             {
@@ -633,6 +1031,10 @@ namespace ArchiveCacheManager
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.DolphinTool)] = priority.Value.DolphinTool.ToString();
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.ExtractXiso)] = priority.Value.ExtractXiso.ToString();
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.PS3dec)] = priority.Value.PS3dec.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.WiiuCacheOnLaunch)] = priority.Value.WiiuCacheOnLaunch.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.CiaCacheOnLaunch)] = priority.Value.CiaCacheOnLaunch.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.WadCacheOnLaunch)] = priority.Value.WadCacheOnLaunch.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.TadCacheOnLaunch)] = priority.Value.TadCacheOnLaunch.ToString();
             }
 
             try
@@ -658,6 +1060,26 @@ namespace ArchiveCacheManager
             mMetadataExtensions = defaultMetadataExtensions;
             mBypassPathCheck = defaultBypassPathCheck;
             mPS3KeyPath = defaultPS3KeyPath;
+            mPs3UseIsoMountLauncher = defaultPs3UseIsoMountLauncher;
+            mWadPlatform = defaultWadPlatform;
+            mWadOutputPath = defaultWadOutputPath;
+            mWadCetkCachePath = defaultWadCetkCachePath;
+            mWadAddToLibrary = defaultWadAddToLibrary;
+            mWiiuPlatform = defaultWiiuPlatform;
+            mWiiuOutputPath = defaultWiiuOutputPath;
+            mWiiuAddToLibrary = defaultWiiuAddToLibrary;
+            mWiiuTitleKeyPassword = defaultWiiuTitleKeyPassword;
+            mWiiuCommonKey = defaultWiiuCommonKey;
+            mWiiuCemuKeysPath = defaultWiiuCemuKeysPath;
+            mWiiuPackAsWua = defaultWiiuPackAsWua;
+            mCiaPlatform = defaultCiaPlatform;
+            mCiaOutputPath = defaultCiaOutputPath;
+            mCiaCetkCachePath = defaultCiaCetkCachePath;
+            mCiaAddToLibrary = defaultCiaAddToLibrary;
+            mTadPlatform = defaultTadPlatform;
+            mTadOutputPath = defaultTadOutputPath;
+            mTadCetkCachePath = defaultTadCetkCachePath;
+            mTadAddToLibrary = defaultTadAddToLibrary;
 
             mEmulatorPlatformConfig = new Dictionary<string, EmulatorPlatformConfig>();
             mEmulatorPlatformConfig.Add(defaultEmulatorPlatform, new EmulatorPlatformConfig());
