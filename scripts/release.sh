@@ -34,6 +34,15 @@ if [[ -n "$(git status --porcelain)" ]]; then
     exit 1
 fi
 
+if ! git config user.name >/dev/null || ! git config user.email >/dev/null; then
+    echo "Error: git identity not configured. Annotated tags need a name and email." >&2
+    echo "Set them once for this repo with:" >&2
+    echo "  git config --local user.name \"Your name or GitHub login\"" >&2
+    echo "  git config --local user.email \"you@example.com\"" >&2
+    echo "Or use the GitHub privacy email format: <user-id>+<login>@users.noreply.github.com" >&2
+    exit 1
+fi
+
 if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
     echo "Error: tag $TAG already exists locally." >&2
     exit 1
