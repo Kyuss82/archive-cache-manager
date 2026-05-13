@@ -48,7 +48,7 @@ if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
     exit 1
 fi
 
-if git ls-remote --tags origin "refs/tags/$TAG" | grep -q "$TAG"; then
+if git ls-remote --tags origin "refs/tags/$TAG" 2>/dev/null | grep -q "$TAG"; then
     echo "Error: tag $TAG already exists on origin." >&2
     exit 1
 fi
@@ -71,6 +71,14 @@ fi
 
 if ! gh auth status >/dev/null 2>&1; then
     echo "Error: gh CLI not authenticated. Run: gh auth login" >&2
+    exit 1
+fi
+
+# Derive owner/repo from origin so gh doesn't need 'gh repo set-default'.
+REMOTE_URL="$(git remote get-url origin 2>/dev/null || true)"
+REPO_NWO="$(echo "$REMOTE_URL" | sed -E 's|.*github\.com[:/]([^/]+/[^/.]+)(\.git)?/?$|\1|')"
+if [[ -z "$REPO_NWO" || "$REPO_NWO" == "$REMOTE_URL" ]]; then
+    echo "Error: could not parse owner/repo from origin URL '$REMOTE_URL'." >&2
     exit 1
 fi
 
@@ -122,11 +130,11 @@ git tag -a "$TAG" -m "$TAG"
 echo ">> Pushing tag to origin..."
 git push origin "$TAG"
 
-echo ">> Creating GitHub release..."
+echo ">> Creating GitHub release on $REPO_NWO..."
 gh release create "$TAG" "$ZIP" \
+    --repo "$REPO_NWO" \
     --title "$TAG" \
     --notes-file "$NOTES_FILE"
 
 echo
-echo ">> Done."
-gh release view "$TAG" --web 2>/dev/null || true
+echo ">> Done. View the release with: gh release view $TAG --repo $REPO_NWO --web"
