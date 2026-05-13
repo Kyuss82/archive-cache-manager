@@ -65,10 +65,22 @@ if ! gh auth status >/dev/null 2>&1; then
     exit 1
 fi
 
+# Resolve dotnet command: native 'dotnet' (Linux/macOS, or Windows where it's in PATH)
+# falls through to 'dotnet.exe' which WSL exposes via interop.
+if command -v dotnet >/dev/null 2>&1; then
+    DOTNET=dotnet
+elif command -v dotnet.exe >/dev/null 2>&1; then
+    DOTNET=dotnet.exe
+else
+    echo "Error: neither 'dotnet' nor 'dotnet.exe' found on PATH." >&2
+    echo "Install the .NET SDK: https://dotnet.microsoft.com/download" >&2
+    exit 1
+fi
+
 # --- Build -------------------------------------------------------------------
 
-echo ">> Building Release configuration..."
-(cd src && dotnet build ArchiveCacheManager.sln -c Release --nologo -v minimal)
+echo ">> Building Release configuration using $DOTNET..."
+(cd src && "$DOTNET" build ArchiveCacheManager.sln -c Release --nologo -v minimal)
 
 ZIP="release/ArchiveCacheManager.zip"
 if [[ ! -f "$ZIP" ]]; then
