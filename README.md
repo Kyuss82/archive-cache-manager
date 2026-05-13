@@ -54,6 +54,27 @@ Open *Tools → Archive Cache Manager*:
 - **Packaging** tab → set the **Wii U Common Key** (32 hex characters). Without it, Wii U package builds will fail with a clear error. Optionally set **Cemu keys.txt path** if Cemu is in a non-standard location (auto-detected from `%APPDATA%\Cemu\keys.txt` otherwise).
 - **Extraction Settings** tab → tick the new `Wii U .wua` / `3DS .cia` / `Wii .wad` / `DSi .tad` checkboxes for the emulator+platform rows you want auto-cache on.
 
+## Building from source
+
+The Plugin assembly references `Unbroken.LaunchBox.Plugins.dll`, the LaunchBox plugin SDK. That DLL is not redistributable and lives only inside a real LaunchBox install. Before the first build, copy it from your LaunchBox folder into the repo:
+
+```
+<your LaunchBox install>\Core\Unbroken.LaunchBox.Plugins.dll
+                  →  thirdparty\Unbroken.LaunchBox.Plugins\12.8\Unbroken.LaunchBox.Plugins.dll
+```
+
+The target path is gitignored, so the DLL never ends up in commits by accident.
+
+Then from the `src/` directory:
+
+```
+dotnet build ArchiveCacheManager.sln -c Release
+```
+
+The build's `AfterBuild` target assembles `release/ArchiveCacheManager.zip` ready to drop into `<LaunchBox>\Plugins\ArchiveCacheManager\`.
+
+CI on GitHub Actions only compiles the SDK-independent **Core** assembly (a sanity check for the bulk of the code). The Plugin assembly is built locally for releases.
+
 ## Legal posture
 
 This plugin **invokes** third-party tools (CDecrypt, ZArchive, Sharpii-NetCore) — it does not redistribute them. It does not bundle Nintendo cert blobs, the Wii U common key, or any community title-key databases. Users provide their own keys/certs from their own dumps. Same posture as upstream `fraganator/archive-cache-manager` and as the underlying tools each plugin invokes.

@@ -11,8 +11,14 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <!--
+      The LaunchBox plugin SDK is not redistributable, so it's not committed to the repo. Drop your
+      own copy at thirdparty/Unbroken.LaunchBox.Plugins/12.8/Unbroken.LaunchBox.Plugins.dll before
+      building. The file is gitignored (rule: "Unbroken.LaunchBox.Plugins/") so it never makes it
+      into a commit by accident.
+    -->
     <Reference Include="Unbroken.LaunchBox.Plugins">
-      <HintPath>D:\eXoWin9x\Core\Unbroken.LaunchBox.Plugins.dll</HintPath>
+      <HintPath>..\..\thirdparty\Unbroken.LaunchBox.Plugins\12.8\Unbroken.LaunchBox.Plugins.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
