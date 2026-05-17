@@ -80,6 +80,25 @@ Anything named `*Extractor` is the launch-time hook. The heavier per-platform lo
 
 Key idea for the fork-added formats: a *packager* takes a CDN dump (`tmd` + `.app` blobs + cert chain) and rebuilds the native emulator-installable format (`.cia`, `.wad`, `.wua`, `.tad`). The encrypted title key for Wii U comes from Cemu's `keys.txt`; Nintendo cert chains are user-supplied (`title.cert`, `cert.sys`, `cert.tad`) and live in `<LaunchBox>/Plugins/ArchiveCacheManager/Extractors/`.
 
+### Local Mirror Indexer + library-purge subsystem
+
+A second subsystem orthogonal to the launch pipeline. The user points the indexer at folders holding their offline mirror (`.pkg` / `.cia` / `.wua` / `.wad` / NUS TMD dumps) and `LocalPkgScanner.cs` walks each file, parses headers, classifies, and writes a JSON manifest per platform. Two consumers read those manifests:
+
+1. **The on-launch update/DLC installers** (PS3/PSP/PSV `*UpdateInstaller`, `*DlcInstaller`, Wii U `WiiuUpdateInstaller`, 3DS `Ctr3dsInstallDialog`) — consult the manifest before falling back to Sony/Nintendo CDN.
+2. **The library-purge feature** (`LibraryPurgeWindow` + `LibraryPurgeCandidates`) — matches manifest paths against `IGame.ApplicationPath` and offers to remove the library entry (file on disk untouched).
+
+Three load-bearing structures across this subsystem — touching any one of them usually means updating the others in lockstep:
+
+- **`LocalPkgPlatform` enum** (`Core/Packagers/LocalPkgManifest.cs`). Adding a new platform requires updating *six* switch sites in lockstep: `LocalPkgIndexer.BuildIndex` (dispatch to scanner), `CountFiles` (pre-pass counter), `ResolveManifestPath` (manifest file location), `FoldersForPlatform` (Config key mapping), `LocalPkgIndexerWindow`'s platforms array + `PersistFolders` switch (UI), and the `LibraryPurgeCandidates.EnumerateAll` consumer picks it up automatically because it iterates `Enum.GetValues`. There is **no central registry beyond the enum** — grep for `LocalPkgPlatform.` to find every site.
+- **`EntryRole` enum + `AddToBucket()` helper** (`Core/Packagers/LocalPkgScanner.cs`). Each scanner's `Categorise()` / `AddXxxEntry()` returns an `EntryRole` (`Update` / `Dlc` / `Theme` / `SystemTitle` / `Demo` / `Other`, plus `Skip` for "drop entirely"). `AddToBucket(bucket, entry, role, progress)` routes to the right list on `LocalPkgTitle` and bumps per-category counters. Adding a new role means updating `EntryRole`, `AddToBucket`, the `LocalPkgTitle` schema, the per-platform `Categorise()` switches, *and* `LibraryPurgeCandidates.EnumerateAll` + `LibraryPurgeKind` constants on the UI side.
+- **Manifest schema** (`LocalPkgTitle` + `LocalPkgManifest.Orphans`, both in `LocalPkgManifest.cs`). Title-keyed buckets (`Updates`/`Dlcs`/`Themes`/`SystemTitles`/`Demos`/`Other`) plus a top-level `Orphans` list for non-base entries with no resolvable parent title. **All additions must be additive** — the JSON files persist across plugin versions and old manifests load with missing fields defaulting to empty lists. Don't rename or remove existing fields; if a field is genuinely obsolete, leave it readable and stop writing it.
+
+The scanner deliberately drops base games at `EntryRole.Skip` — they never enter any manifest bucket, so the library-purge feature cannot accidentally surface a base game as a removal candidate. That invariant is enforced **at scan time**, not at UI time. Preserve it.
+
+Standalone files only: `LibraryPurgeCandidates.TryMake` rejects entries with a non-empty `ArchivePath` (zip-wrapped). A `.zip` could contain both the base game and updates/DLCs; the manifest can't tell which the LaunchBox library entry maps to, so wrapper paths are unsafe to offer for removal.
+
+`LibraryPurgeKind` (in `Core/Packagers/LibraryPurgeCandidates.cs`) holds the stable Kind string constants used by the UI. `IsDefaultChecked(kind)` is the single source of truth for which categories get pre-ticked in the purge grid — `Update` + `DLC` only by default; the rest are surfaced but opt-in.
+
 ### Config
 
 `Config.cs` is large (~90KB) because every emulator/platform pair has its own row of toggles. There is a global `[Archive Cache Manager]` section plus one `[<Emulator> \ <Platform>]` section per row. The fallback section is `[All \ All]`. Use `Config.GetEmulatorPlatformConfig(key)` to read a row, where `key = Config.EmulatorPlatformKey(emulatorTitle, platform)`.
