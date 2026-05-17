@@ -56,6 +56,12 @@ namespace ArchiveCacheManager
     {
         [JsonPropertyName("updates")] public List<LocalPkgEntry> Updates { get; set; } = new List<LocalPkgEntry>();
         [JsonPropertyName("dlcs")]    public List<LocalPkgEntry> Dlcs    { get; set; } = new List<LocalPkgEntry>();
+        // v2.79: typed non-base content categories surfaced by the library-purge feature.
+        // Old manifests don't have these fields — JsonSerializer defaults them to empty lists on read.
+        [JsonPropertyName("themes")]        public List<LocalPkgEntry> Themes        { get; set; } = new List<LocalPkgEntry>();
+        [JsonPropertyName("system_titles")] public List<LocalPkgEntry> SystemTitles  { get; set; } = new List<LocalPkgEntry>();
+        [JsonPropertyName("demos")]         public List<LocalPkgEntry> Demos         { get; set; } = new List<LocalPkgEntry>();
+        [JsonPropertyName("other")]         public List<LocalPkgEntry> Other         { get; set; } = new List<LocalPkgEntry>();
     }
 
     public class LocalPkgManifest
@@ -63,6 +69,10 @@ namespace ArchiveCacheManager
         [JsonPropertyName("platform")]     public string Platform     { get; set; }
         [JsonPropertyName("generated_at")] public string GeneratedAt  { get; set; }
         [JsonPropertyName("titles")]       public Dictionary<string, LocalPkgTitle> Titles { get; set; } = new Dictionary<string, LocalPkgTitle>(StringComparer.OrdinalIgnoreCase);
+        // v2.79: typed non-base content that couldn't be attached to a known title (e.g. a PS3
+        // theme whose content id doesn't decode to a base TID, or an unknown content_type with no
+        // recoverable parent). Always purgeable, just not grouped under a title bucket.
+        [JsonPropertyName("orphans")]      public List<LocalPkgEntry> Orphans { get; set; } = new List<LocalPkgEntry>();
     }
 
     /// <summary>

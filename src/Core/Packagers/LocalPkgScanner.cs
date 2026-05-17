@@ -182,14 +182,18 @@ namespace ArchiveCacheManager
             uint low  = (uint)(titleId & 0xFFFFFFFF);
             EntryRole role;
             string skipReason = null;
+            // title_id_high categories for Wii U. v2.79 promotes demos/system-titles from Skip to typed
+            // categories so the library-purge feature can surface them; base (0x00050000) and unknown
+            // values still Skip — base is already in the LB library and unknowns we don't want to
+            // surface blindly. (Add new cases here when concrete examples appear.)
             switch (high)
             {
-                case 0x00050000: role = EntryRole.Skip;   skipReason = "base game (already in library)";   break;   // retail base
-                case 0x0005000E: role = EntryRole.Update; break;
-                case 0x0005000C: role = EntryRole.Dlc;    break;
-                case 0x00050002: role = EntryRole.Skip;   skipReason = "demo";                              break;
-                case 0x00050010: role = EntryRole.Skip;   skipReason = "system title";                     break;
-                default:         role = EntryRole.Skip;   skipReason = "unknown title_id_high";            break;
+                case 0x00050000: role = EntryRole.Skip;        skipReason = "base game (already in library)"; break;
+                case 0x0005000E: role = EntryRole.Update;      break;
+                case 0x0005000C: role = EntryRole.Dlc;         break;
+                case 0x00050002: role = EntryRole.Demo;        break;
+                case 0x00050010: role = EntryRole.SystemTitle; break;
+                default:         role = EntryRole.Skip;        skipReason = "unknown title_id_high"; break;
             }
             if (role == EntryRole.Skip)
             {
@@ -212,11 +216,10 @@ namespace ArchiveCacheManager
                 Size        = sizeBytes,
                 ContentType = high,
             };
-            if (role == EntryRole.Update) { bucket.Updates.Add(entry); progress.Updates++; }
-            else                          { bucket.Dlcs.Add(entry);    progress.Dlcs++;    }
+            string roleLabel = AddToBucket(bucket, entry, role, progress);
             progress.Indexed++;
             EmitLog(progress, onProgress, string.Format("[idx]  {0} — Wii U title_id=0x{1:X16} → base 0x{2} {3}",
-                sourcePath, titleId, baseTid, role == EntryRole.Update ? "UPDATE" : "DLC"));
+                sourcePath, titleId, baseTid, roleLabel));
         }
 
         // ─── 3DS scanning ───────────────────────────────────────────────────────
@@ -420,17 +423,21 @@ namespace ArchiveCacheManager
             uint low  = (uint)(titleId & 0xFFFFFFFF);
             EntryRole role;
             string skipReason = null;
+            // v2.79: system applets / data archives / modules are now surfaced as `SystemTitle` rather
+            // than silently skipped, so the library-purge UI can offer to remove them when they end up
+            // in the LB library. Base (0x00040000) still skips because base games are already in the
+            // library; unknown high values still skip — too risky to surface as a generic Other.
             switch (high)
             {
-                case 0x00040000: role = EntryRole.Skip;   skipReason = "base game (already in library)"; break;
-                case 0x0004000E: role = EntryRole.Update; break;
-                case 0x0004008C: role = EntryRole.Dlc;    break;
-                case 0x00040001: role = EntryRole.Skip;   skipReason = "system application";       break;
-                case 0x00040002: role = EntryRole.Skip;   skipReason = "system data archive";      break;
-                case 0x00040003: role = EntryRole.Skip;   skipReason = "system module";            break;
-                case 0x00040010: role = EntryRole.Skip;   skipReason = "system applet";            break;
-                case 0x00040020: role = EntryRole.Skip;   skipReason = "system auto-update content (not a game patch)"; break;
-                default:         role = EntryRole.Skip;   skipReason = "unknown title_id_high";    break;
+                case 0x00040000: role = EntryRole.Skip;        skipReason = "base game (already in library)"; break;
+                case 0x0004000E: role = EntryRole.Update;      break;
+                case 0x0004008C: role = EntryRole.Dlc;         break;
+                case 0x00040001: role = EntryRole.SystemTitle; break;
+                case 0x00040002: role = EntryRole.SystemTitle; break;
+                case 0x00040003: role = EntryRole.SystemTitle; break;
+                case 0x00040010: role = EntryRole.SystemTitle; break;
+                case 0x00040020: role = EntryRole.SystemTitle; break;
+                default:         role = EntryRole.Skip;        skipReason = "unknown title_id_high"; break;
             }
             if (role == EntryRole.Skip)
             {
@@ -453,14 +460,34 @@ namespace ArchiveCacheManager
                 Size        = sizeBytes,
                 ContentType = high,
             };
-            if (role == EntryRole.Update) { bucket.Updates.Add(entry); progress.Updates++; }
-            else                          { bucket.Dlcs.Add(entry);    progress.Dlcs++;    }
+            string roleLabel = AddToBucket(bucket, entry, role, progress);
             progress.Indexed++;
             EmitLog(progress, onProgress, string.Format("[idx]  {0} — 3DS title_id=0x{1:X16} → base 0x{2} {3}",
-                sourcePath, titleId, baseTid, role == EntryRole.Update ? "UPDATE" : "DLC"));
+                sourcePath, titleId, baseTid, roleLabel));
         }
 
-        private enum EntryRole { Skip, Update, Dlc }
+        // v2.79: typed roles beyond Update/Dlc so the library-purge feature can offer
+        // checkboxes for Theme / System / Demo / Other content. `Skip` still means
+        // "drop entirely without indexing" (base games, unparseable, etc.).
+        private enum EntryRole { Skip, Update, Dlc, Theme, SystemTitle, Demo, Other }
+
+        // Appends an entry into the matching bucket on a LocalPkgTitle and bumps the
+        // per-category progress counter where one exists (Updates/Dlcs). Indexed is
+        // the grand-total counter — callers bump it once per indexed entry, regardless
+        // of bucket. Returns the role label used in [idx] log lines.
+        private static string AddToBucket(LocalPkgTitle bucket, LocalPkgEntry entry, EntryRole role, LocalPkgScanProgress progress)
+        {
+            switch (role)
+            {
+                case EntryRole.Update:      bucket.Updates.Add(entry);      progress.Updates++; return "UPDATE";
+                case EntryRole.Dlc:         bucket.Dlcs.Add(entry);         progress.Dlcs++;    return "DLC";
+                case EntryRole.Theme:       bucket.Themes.Add(entry);                           return "THEME";
+                case EntryRole.SystemTitle: bucket.SystemTitles.Add(entry);                     return "SYSTEM";
+                case EntryRole.Demo:        bucket.Demos.Add(entry);                            return "DEMO";
+                case EntryRole.Other:       bucket.Other.Add(entry);                            return "OTHER";
+                default:                    return "?";
+            }
+        }
 
         // Sony's CDN delivers update PKGs under filenames shaped like:
         //   PS3: <content_id>-A<aaaa>-V<vvvv>-PE.pkg
@@ -495,11 +522,17 @@ namespace ArchiveCacheManager
                     // PS3_DLCS.tsv. 0x0F is the legacy PSN DLC marker (same role, older releases).
                     case 0x04: return EntryRole.Dlc;
                     case 0x0F: return EntryRole.Dlc;
-                    // 0x05 = base PS3 game (NPDRM), 0x09 = theme, 0x0A = avatar.
+                    // 0x05 = base PS3 game (NPDRM) — already in the library, drop entirely.
                     case 0x05: return EntryRole.Skip;
-                    case 0x09: return EntryRole.Skip;
-                    case 0x0A: return EntryRole.Skip;
-                    default:   return EntryRole.Skip;
+                    // v2.79: surface XMB themes / avatars instead of swallowing them. 0x09 = theme,
+                    // 0x0A = avatar; both have their own content_id and can end up in the LB library
+                    // when users mass-import an NPS folder.
+                    case 0x09: return EntryRole.Theme;
+                    case 0x0A: return EntryRole.Other;
+                    // Anything else we don't have a clean classifier for: surface as Other so the
+                    // user can decide. Previously this swallowed too aggressively — e.g. mini PKGs,
+                    // PSone classics, dev content_types showed up as "Skip" with no record.
+                    default:   return EntryRole.Other;
                 }
             }
             if (platform == LocalPkgPlatform.Psp)
@@ -508,13 +541,30 @@ namespace ArchiveCacheManager
                 if (looksLikePatch) return EntryRole.Update;
                 if (cid.IndexOf("DLC", StringComparison.OrdinalIgnoreCase) >= 0 ||
                     cid.IndexOf("ADDCONT", StringComparison.OrdinalIgnoreCase) >= 0) return EntryRole.Dlc;
-                return EntryRole.Skip;
+                // v2.79: known PSP base content types (0x06/0x07/0x18 — game / theme-on-PSP / mini) are
+                // already in the library if the user imported them as games, so still Skip; everything
+                // else falls through as Other so it can be reviewed.
+                switch (contentType)
+                {
+                    case 0x06: return EntryRole.Skip;
+                    case 0x07: return EntryRole.Skip;
+                    case 0x18: return EntryRole.Skip;
+                    default:   return EntryRole.Other;
+                }
             }
             if (platform == LocalPkgPlatform.Psv)
             {
                 if (contentType == 0x16) return EntryRole.Dlc;            // PSV DLC content_type
                 if (looksLikePatch)      return EntryRole.Update;          // PATCH-style content id or Sony naming
-                return EntryRole.Skip;
+                // v2.79: PSV theme (0x17). 0x14/0x15 are base app/game — already in library, Skip.
+                // Unknown content_types surface as Other for review.
+                switch (contentType)
+                {
+                    case 0x14: return EntryRole.Skip;
+                    case 0x15: return EntryRole.Skip;
+                    case 0x17: return EntryRole.Theme;
+                    default:   return EntryRole.Other;
+                }
             }
             return EntryRole.Skip;
         }
@@ -690,13 +740,6 @@ namespace ArchiveCacheManager
             }
 
             string tid = ExtractTitleId(parsed);
-            if (string.IsNullOrWhiteSpace(tid))
-            {
-                progress.Skipped++;
-                EmitLog(progress, onProgress, string.Format("[skip] {0} — couldn't derive TITLE_ID from content_id '{1}'",
-                    label, parsed.Header.ContentId ?? "<null>"));
-                return;
-            }
 
             // Use the entry filename (zip case) or pkg file basename (bare case) for the heuristic.
             string sourceFile = archiveEntry ?? (pkgPath != null ? Path.GetFileName(pkgPath) : null);
@@ -704,7 +747,7 @@ namespace ArchiveCacheManager
             if (role == EntryRole.Skip)
             {
                 progress.Skipped++;
-                EmitLog(progress, onProgress, string.Format("[skip] {0} — content_type=0x{1:X2}, content_id='{2}', file='{3}' → categorised as base/theme/avatar (not update or DLC)",
+                EmitLog(progress, onProgress, string.Format("[skip] {0} — content_type=0x{1:X2}, content_id='{2}', file='{3}' → categorised as base/known-skip",
                     label, parsed.ContentType, parsed.Header.ContentId ?? "<null>", sourceFile ?? "<null>"));
                 return;
             }
@@ -722,25 +765,38 @@ namespace ArchiveCacheManager
                 ContentType     = parsed.ContentType,
             };
 
+            string rapTag = entry.RapPath != null || entry.RapArchiveEntry != null ? " +rap" : "";
+
+            // v2.79: themes/avatars/Other often resolve a TitleId (parent game) but a few don't —
+            // when ExtractTitleId returns null we still keep the entry, just stashed under
+            // manifest.Orphans so the library-purge feature can still surface them.
+            if (string.IsNullOrWhiteSpace(tid))
+            {
+                if (role == EntryRole.Update || role == EntryRole.Dlc)
+                {
+                    // Update/DLC without a parent TID is genuinely unparseable — keep the legacy skip path
+                    // because installers consume Updates/Dlcs grouped by TID and have no concept of orphan.
+                    progress.Skipped++;
+                    EmitLog(progress, onProgress, string.Format("[skip] {0} — couldn't derive TITLE_ID from content_id '{1}'",
+                        label, parsed.Header.ContentId ?? "<null>"));
+                    return;
+                }
+                manifest.Orphans.Add(entry);
+                progress.Indexed++;
+                EmitLog(progress, onProgress, string.Format("[idx]  {0} → ORPHAN {1} (content_type=0x{2:X2}{3})",
+                    label, role.ToString().ToUpperInvariant(), parsed.ContentType, rapTag));
+                return;
+            }
+
             if (!manifest.Titles.TryGetValue(tid, out var bucket))
             {
                 bucket = new LocalPkgTitle();
                 manifest.Titles[tid] = bucket;
             }
-            string rapTag = entry.RapPath != null || entry.RapArchiveEntry != null ? " +rap" : "";
-            if (role == EntryRole.Update)
-            {
-                bucket.Updates.Add(entry);
-                progress.Updates++;
-                EmitLog(progress, onProgress, string.Format("[idx]  {0} → {1} UPDATE (content_type=0x{2:X2}{3})", label, tid, parsed.ContentType, rapTag));
-            }
-            else if (role == EntryRole.Dlc)
-            {
-                bucket.Dlcs.Add(entry);
-                progress.Dlcs++;
-                EmitLog(progress, onProgress, string.Format("[idx]  {0} → {1} DLC    (content_type=0x{2:X2}{3})", label, tid, parsed.ContentType, rapTag));
-            }
+            string roleLabel = AddToBucket(bucket, entry, role, progress);
             progress.Indexed++;
+            EmitLog(progress, onProgress, string.Format("[idx]  {0} → {1} {2} (content_type=0x{3:X2}{4})",
+                label, tid, roleLabel, parsed.ContentType, rapTag));
         }
 
         private static string LabelFor(string pkgPath, string archivePath, string archiveEntry)

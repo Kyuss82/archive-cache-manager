@@ -34,6 +34,7 @@ namespace ArchiveCacheManager
         private Label mSummary;
         private Button mSelectAll;
         private Button mSelectNone;
+        private Button mSelectSafe;
         private Button mRefresh;
         private Button mPurge;
         private Button mClose;
@@ -57,7 +58,7 @@ namespace ArchiveCacheManager
 
         private void BuildUi()
         {
-            Text = "Purge Update / DLC Library Entries";
+            Text = "Purge Library Entries (Update / DLC / Theme / System / Demo / Other)";
             FormBorderStyle = FormBorderStyle.Sizable;
             StartPosition = FormStartPosition.CenterParent;
             MinimumSize = new Size(820, 520);
@@ -103,19 +104,21 @@ namespace ArchiveCacheManager
                 Text = "Scanning…",
             };
 
-            mSelectAll  = new Button { Text = "Select All",  Location = new Point(12,  548), Width = 90, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
-            mSelectNone = new Button { Text = "Select None", Location = new Point(108, 548), Width = 96, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
-            mRefresh    = new Button { Text = "Refresh",     Location = new Point(210, 548), Width = 80, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
-            mPurge      = new Button { Text = "Purge Selected", Location = new Point(746, 548), Width = 120, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-            mClose      = new Button { Text = "Close",       Location = new Point(872, 548), Width = 76,  Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
+            mSelectAll    = new Button { Text = "Check All",       Location = new Point(12,  548), Width = 88, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
+            mSelectNone   = new Button { Text = "Uncheck All",     Location = new Point(106, 548), Width = 96, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
+            mSelectSafe   = new Button { Text = "Check Update+DLC", Location = new Point(208, 548), Width = 130, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
+            mRefresh      = new Button { Text = "Refresh",         Location = new Point(344, 548), Width = 80, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Left };
+            mPurge        = new Button { Text = "Purge Selected",  Location = new Point(746, 548), Width = 120, Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
+            mClose        = new Button { Text = "Close",           Location = new Point(872, 548), Width = 76,  Height = 27, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
 
             mSelectAll.Click  += (s, e) => SetAllChecked(true);
             mSelectNone.Click += (s, e) => SetAllChecked(false);
+            mSelectSafe.Click += (s, e) => SetCheckedForKind(k => LibraryPurgeKind.IsDefaultChecked(k));
             mRefresh.Click    += (s, e) => RebuildMatches();
             mPurge.Click      += (s, e) => DoPurge();
             mClose.Click      += (s, e) => Close();
 
-            Controls.AddRange(new Control[] { mGrid, mSummary, mSelectAll, mSelectNone, mRefresh, mPurge, mClose });
+            Controls.AddRange(new Control[] { mGrid, mSummary, mSelectAll, mSelectNone, mSelectSafe, mRefresh, mPurge, mClose });
             CancelButton = mClose;
         }
 
@@ -161,9 +164,9 @@ namespace ArchiveCacheManager
 
                     mMatches.Add(new MatchRow { Game = g, Candidate = candidate });
                     int idx = mGrid.Rows.Add(
-                        true,
+                        LibraryPurgeKind.IsDefaultChecked(candidate.Kind),
                         g.Title ?? "<no title>",
-                        candidate.IsDlc ? "DLC" : "Update",
+                        candidate.Kind,
                         candidate.Platform.ToString(),
                         g.Platform ?? string.Empty,
                         candidate.TitleId ?? string.Empty,
@@ -179,11 +182,16 @@ namespace ArchiveCacheManager
                 return;
             }
 
+            // Per-kind tally for the summary line.
+            var byKind = mMatches
+                .GroupBy(m => m.Candidate.Kind ?? "?")
+                .OrderBy(g => g.Key, StringComparer.Ordinal)
+                .Select(g => string.Format("{0} {1}", g.Count(), g.Key))
+                .ToArray();
+            string breakdown = byKind.Length > 0 ? string.Join(", ", byKind) : "0 matched";
             mSummary.Text = string.Format(
-                "Scanned {0} library entries — {1} matched ({2} updates, {3} DLCs). Files on disk are NOT touched.",
-                scanned, mMatches.Count,
-                mMatches.Count(m => !m.Candidate.IsDlc),
-                mMatches.Count(m =>  m.Candidate.IsDlc));
+                "Scanned {0} library entries — {1} matched ({2}). Update+DLC ticked by default; files on disk are NOT touched.",
+                scanned, mMatches.Count, breakdown);
             mPurge.Enabled = mMatches.Count > 0;
         }
 
@@ -191,6 +199,15 @@ namespace ArchiveCacheManager
         {
             foreach (DataGridViewRow row in mGrid.Rows)
                 row.Cells["Select"].Value = value;
+        }
+
+        private void SetCheckedForKind(Func<string, bool> shouldCheck)
+        {
+            for (int i = 0; i < mGrid.Rows.Count && i < mMatches.Count; i++)
+            {
+                string kind = mMatches[i].Candidate.Kind ?? string.Empty;
+                mGrid.Rows[i].Cells["Select"].Value = shouldCheck(kind);
+            }
         }
 
         private void DoPurge()
@@ -208,13 +225,21 @@ namespace ArchiveCacheManager
                 return;
             }
 
+            // Per-kind tally for the confirmation dialog so the user knows exactly what they're removing.
+            var kindTally = selected
+                .GroupBy(m => m.Candidate.Kind ?? "?")
+                .OrderBy(g => g.Key, StringComparer.Ordinal)
+                .Select(g => string.Format("  • {0}: {1}", g.Key, g.Count()))
+                .ToArray();
+
             var confirm = MessageBox.Show(this,
-                string.Format("Remove {0} entr{1} from the LaunchBox library?\r\n\r\n" +
-                              "Only the library record will be deleted — the underlying file on disk will NOT be touched.\r\n\r\n" +
-                              "These updates and DLCs will still be installable through the plugin's update manager " +
+                string.Format("Remove {0} entr{1} from the LaunchBox library?\r\n\r\n{2}\r\n\r\n" +
+                              "Only the library records will be deleted — the underlying files on disk will NOT be touched.\r\n\r\n" +
+                              "Updates/DLCs will still be installable through the plugin's update manager " +
                               "(the indexed source files remain on disk).",
-                              selected.Count, selected.Count == 1 ? "y" : "ies"),
-                "Purge Update / DLC Library Entries", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                              selected.Count, selected.Count == 1 ? "y" : "ies",
+                              string.Join("\r\n", kindTally)),
+                "Purge Library Entries", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (confirm != DialogResult.Yes) return;
 
             int removed = 0, failed = 0;
@@ -226,7 +251,7 @@ namespace ArchiveCacheManager
                     {
                         removed++;
                         Logger.Log(string.Format("LibraryPurge: removed library entry '{0}' (TID {1}, {2}).",
-                            m.Game.Title, m.Candidate.TitleId, m.Candidate.IsDlc ? "DLC" : "Update"));
+                            m.Game.Title, m.Candidate.TitleId, m.Candidate.Kind));
                     }
                     else
                     {

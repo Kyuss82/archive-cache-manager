@@ -1,10 +1,17 @@
 /* Archive Cache Manager — fork additions
  * Copyright (C) 2026 Kyuss82
  *
- * Enumerates update/DLC file paths from every persisted LocalPkgIndexer manifest
+ * Enumerates non-base file paths from every persisted LocalPkgIndexer manifest
  * (PS3 / PSP / PSV / Wii U / 3DS) so the Plugin layer can match them against
  * LaunchBox library entries and offer to purge those entries from the library
  * (without touching the files on disk).
+ *
+ * v2.79 — typed categories. Originally this only surfaced Updates and DLCs; the
+ * scanner now also emits Theme / SystemTitle / Demo / Other, plus a manifest-
+ * level Orphans bucket for entries with no resolvable parent title. Each
+ * candidate carries a `Kind` string that the UI uses both as a display value
+ * and to drive default checkbox state (Update + DLC pre-checked; everything
+ * else surfaced but opt-in, since these are less-obvious purge targets).
  *
  * Why only `PkgPath` and not `ArchivePath`:
  *   A `.zip` wrapper indexed by `LocalPkgScanner` can hold updates AND DLCs AND
@@ -22,6 +29,25 @@ using System.IO;
 
 namespace ArchiveCacheManager
 {
+    /// <summary>
+    /// Stable string identifiers for candidate categories. Used both as the
+    /// JSON-friendly display value in the purge UI and to drive default
+    /// checkbox state. Update / Dlc pre-checked; others surfaced but opt-in.
+    /// </summary>
+    public static class LibraryPurgeKind
+    {
+        public const string Update = "Update";
+        public const string Dlc    = "DLC";
+        public const string Theme  = "Theme";
+        public const string System = "System";
+        public const string Demo   = "Demo";
+        public const string Other  = "Other";
+
+        /// <summary>Categories that the UI ticks by default (the original v2.78 scope).</summary>
+        public static bool IsDefaultChecked(string kind) =>
+            kind == Update || kind == Dlc;
+    }
+
     public class LibraryPurgeCandidate
     {
         /// <summary>Normalized absolute path on disk. Lower-cased for case-insensitive lookup.</summary>
@@ -31,15 +57,18 @@ namespace ArchiveCacheManager
         public string TitleId;
         public string ContentId;
         public LocalPkgPlatform Platform;
-        public bool IsDlc;
+        /// <summary>One of <see cref="LibraryPurgeKind"/>'s constants.</summary>
+        public string Kind;
     }
 
     public static class LibraryPurgeCandidates
     {
         /// <summary>
         /// Loads every available platform manifest and yields one candidate per
-        /// standalone update/DLC entry. Caller is responsible for matching the
-        /// returned `PathKey` against normalized library application paths.
+        /// standalone non-base entry across all typed buckets (Updates, Dlcs,
+        /// Themes, SystemTitles, Demos, Other) plus the manifest-level Orphans
+        /// list. Caller is responsible for matching the returned `PathKey`
+        /// against normalized library application paths.
         /// </summary>
         public static IEnumerable<LibraryPurgeCandidate> EnumerateAll()
         {
@@ -56,18 +85,32 @@ namespace ArchiveCacheManager
                 foreach (var kv in manifest.Titles)
                 {
                     string tid = kv.Key;
-                    if (kv.Value == null) continue;
-                    if (kv.Value.Updates != null)
-                        foreach (var e in kv.Value.Updates)
-                            if (TryMake(e, tid, platform, isDlc: false, out var c)) yield return c;
-                    if (kv.Value.Dlcs != null)
-                        foreach (var e in kv.Value.Dlcs)
-                            if (TryMake(e, tid, platform, isDlc: true, out var c)) yield return c;
+                    var t = kv.Value;
+                    if (t == null) continue;
+                    foreach (var c in YieldFromList(t.Updates,      tid, platform, LibraryPurgeKind.Update)) yield return c;
+                    foreach (var c in YieldFromList(t.Dlcs,         tid, platform, LibraryPurgeKind.Dlc))    yield return c;
+                    foreach (var c in YieldFromList(t.Themes,       tid, platform, LibraryPurgeKind.Theme))  yield return c;
+                    foreach (var c in YieldFromList(t.SystemTitles, tid, platform, LibraryPurgeKind.System)) yield return c;
+                    foreach (var c in YieldFromList(t.Demos,        tid, platform, LibraryPurgeKind.Demo))   yield return c;
+                    foreach (var c in YieldFromList(t.Other,        tid, platform, LibraryPurgeKind.Other))  yield return c;
+                }
+
+                if (manifest.Orphans != null)
+                {
+                    // Orphans don't have a parent title id; fall back to the entry's own ContentId-derived TID if present.
+                    foreach (var c in YieldFromList(manifest.Orphans, parentTid: null, platform, LibraryPurgeKind.Other)) yield return c;
                 }
             }
         }
 
-        private static bool TryMake(LocalPkgEntry e, string titleId, LocalPkgPlatform platform, bool isDlc, out LibraryPurgeCandidate candidate)
+        private static IEnumerable<LibraryPurgeCandidate> YieldFromList(List<LocalPkgEntry> list, string parentTid, LocalPkgPlatform platform, string kind)
+        {
+            if (list == null) yield break;
+            foreach (var e in list)
+                if (TryMake(e, parentTid ?? e?.TitleId, platform, kind, out var c)) yield return c;
+        }
+
+        private static bool TryMake(LocalPkgEntry e, string titleId, LocalPkgPlatform platform, string kind, out LibraryPurgeCandidate candidate)
         {
             candidate = null;
             if (e == null) return false;
@@ -85,7 +128,7 @@ namespace ArchiveCacheManager
                 TitleId      = titleId,
                 ContentId    = e.ContentId,
                 Platform     = platform,
-                IsDlc        = isDlc,
+                Kind         = kind,
             };
             return true;
         }

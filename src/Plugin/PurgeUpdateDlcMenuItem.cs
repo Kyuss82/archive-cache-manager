@@ -18,7 +18,7 @@ namespace ArchiveCacheManager
     class PurgeUpdateDlcMenuItem : IGameMenuItemPlugin
     {
         public bool SupportsMultipleGames => false;
-        public string Caption => "Purge Update/DLC Library Entries...";
+        public string Caption => "Purge Library Entries (Update / DLC / Theme / System / ...)...";
         public Image IconImage => Resources.icon16x16;
         public bool ShowInLaunchBox => true;
         public bool ShowInBigBox => false;
