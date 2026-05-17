@@ -14,6 +14,7 @@ namespace ArchiveCacheManager
         private string mGameId = string.Empty;
         private string mArchivePath = string.Empty;
         private string mEmulator = string.Empty;
+        private string mEmulatorPath = string.Empty;
         private string mPlatform = string.Empty;
         private string mTitle = string.Empty;
         private string mVersion = string.Empty;
@@ -50,6 +51,12 @@ namespace ArchiveCacheManager
         {
             get => mEmulator;
             set => mEmulator = value;
+        }
+        /// <summary>Absolute path to the emulator executable, written by the plugin layer at OnBeforeGameLaunching for Core-side auto-detection (e.g. RPCS3 exdata path derivation).</summary>
+        public string EmulatorPath
+        {
+            get => mEmulatorPath;
+            set => mEmulatorPath = value;
         }
         public string Platform
         {
@@ -120,6 +127,7 @@ namespace ArchiveCacheManager
             mGameId = game.mGameId;
             mArchivePath = game.mArchivePath;
             mEmulator = game.mEmulator;
+            mEmulatorPath = game.mEmulatorPath;
             mPlatform = game.mPlatform;
             mTitle = game.mTitle;
             mVersion = game.mVersion;
@@ -151,6 +159,7 @@ namespace ArchiveCacheManager
                     mGameId = iniData[gameSection][nameof(GameId)];
                     mArchivePath = iniData[gameSection][nameof(ArchivePath)];
                     mEmulator = iniData[gameSection][nameof(Emulator)];
+                    mEmulatorPath = iniData[gameSection][nameof(EmulatorPath)] ?? string.Empty;
                     mPlatform = iniData[gameSection][nameof(Platform)];
                     mTitle = iniData[gameSection][nameof(Title)];
                     mVersion = iniData[gameSection][nameof(Version)];
@@ -210,6 +219,7 @@ namespace ArchiveCacheManager
                 iniData[gameSection][nameof(GameId)] = mGameId;
                 iniData[gameSection][nameof(ArchivePath)] = mArchivePath;
                 iniData[gameSection][nameof(Emulator)] = mEmulator;
+                iniData[gameSection][nameof(EmulatorPath)] = mEmulatorPath;
                 iniData[gameSection][nameof(Platform)] = mPlatform;
                 iniData[gameSection][nameof(Title)] = mTitle;
                 iniData[gameSection][nameof(Version)] = mVersion;

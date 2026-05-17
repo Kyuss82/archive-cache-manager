@@ -521,7 +521,9 @@ namespace ArchiveCacheManager
             #region Private members
 
             private MessageBoxDefaultButton defaultButton;
+#pragma warning disable CS0414 // assigned upstream but never read; keep verbatim from FlexibleMessageBox 1.3
             private int visibleButtonsCount;
+#pragma warning restore CS0414
             private TwoLetterISOLanguageID languageID = TwoLetterISOLanguageID.en;
 
             #endregion

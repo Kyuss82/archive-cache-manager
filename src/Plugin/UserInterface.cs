@@ -241,6 +241,19 @@ namespace ArchiveCacheManager
                     panel.ForeColor = foreColor;
                     panel.BackColor = backColor;
                 }
+                else if (control is CheckedListBox)
+                {
+                    // CheckedListBox.DrawMode is fixed at Normal and can't be set to OwnerDraw
+                    // (throws at runtime); we just colour it and leave default rendering for
+                    // the per-item checkboxes.
+                    CheckedListBox clb = control as CheckedListBox;
+                    clb.ForeColor = foreColor;
+                    clb.BackColor = GetBackgroundColor(clb);
+                    if (clb.BorderStyle == BorderStyle.Fixed3D)
+                    {
+                        clb.BorderStyle = BorderStyle.FixedSingle;
+                    }
+                }
                 else if (control is ListBox)
                 {
                     ListBox listBox = control as ListBox;
@@ -254,6 +267,18 @@ namespace ArchiveCacheManager
                     }
                     listBox.DrawMode = DrawMode.OwnerDrawFixed;
                     listBox.DrawItem += ListBox_DrawItem;
+                }
+                else if (control is GroupBox)
+                {
+                    GroupBox gb = control as GroupBox;
+                    gb.ForeColor = foreColor;
+                    if (gb.Parent != null) gb.BackColor = gb.Parent.BackColor;
+                }
+                else if (control is CheckBox)
+                {
+                    CheckBox cb = control as CheckBox;
+                    cb.ForeColor = foreColor;
+                    if (cb.Parent != null) cb.BackColor = cb.Parent.BackColor;
                 }
                 else if (control is DataGridView)
                 {

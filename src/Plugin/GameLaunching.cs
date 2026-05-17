@@ -48,6 +48,10 @@ namespace ArchiveCacheManager
                             || (Config.GetDolphinTool(key) && DolphinTool.SupportedType(archivePath))
                             || (Config.GetExtractXiso(key) && ExtractXiso.SupportedType(archivePath))
                             || (Config.GetPS3dec(key) && PS3dec.SupportedType(archivePath))
+                            || (Config.GetPs3PkgCacheOnLaunch(key) && Ps3PkgExtractor.SupportedType(archivePath))
+                            || (Config.GetPspPkgCacheOnLaunch(key) && PspPkgExtractor.SupportedType(archivePath))
+                            || (Config.GetCtr3dsCacheOnLaunch(key) && Ctr3dsExtractor.SupportedType(archivePath))
+                            || (Config.GetPsvPkgCacheOnLaunch(key) && PsvPkgExtractor.SupportedType(archivePath))
                             ))
             {
                 return true;
@@ -137,6 +141,22 @@ namespace ArchiveCacheManager
             {
                 extractor = new TadExtractor();
             }
+            else if (extract && Config.GetPs3PkgCacheOnLaunch(key) && Ps3PkgExtractor.SupportedType(archivePath))
+            {
+                extractor = new Ps3PkgExtractor();
+            }
+            else if (extract && Config.GetPspPkgCacheOnLaunch(key) && PspPkgExtractor.SupportedType(archivePath))
+            {
+                extractor = new PspPkgExtractor();
+            }
+            else if (extract && Config.GetCtr3dsCacheOnLaunch(key) && Ctr3dsExtractor.SupportedType(archivePath))
+            {
+                extractor = new Ctr3dsExtractor();
+            }
+            else if (extract && Config.GetPsvPkgCacheOnLaunch(key) && PsvPkgExtractor.SupportedType(archivePath))
+            {
+                extractor = new PsvPkgExtractor();
+            }
             else if (extract && Zip.SupportedType(archivePath))
             {
                 extractor = new Zip();
@@ -162,6 +182,7 @@ namespace ArchiveCacheManager
             gameInfo.GameId = game.Id;
             gameInfo.ArchivePath = PluginUtils.GetArchivePath(game, app);
             gameInfo.Emulator = emulator.Title;
+            gameInfo.EmulatorPath = emulator.ApplicationPath ?? string.Empty;
             gameInfo.Platform = game.Platform;
             gameInfo.Title = game.Title;
             gameInfo.Version = game.Version;
@@ -263,10 +284,76 @@ namespace ArchiveCacheManager
                 }
 
                 #endregion
+                #region PS3 PKG → RPCS3 auto-install (NPDRM fix)
+
+                // NPDRM PS3 titles (most PSN releases) fail with "Cannot read SELF" when RPCS3 is
+                // launched against an eboot in our plugin cache: RPCS3 only resolves the rap from
+                // dev_hdd0/home/00000001/exdata/<contentid>.rap when the title is installed under
+                // dev_hdd0/game/<TID>/. Hijack the launch through a powershell wrapper that
+                // robocopies the cache install into that path and runs rpcs3 from there.
+                if (Config.Ps3PkgAutoInstallToRpcs3
+                    && Config.GetPs3PkgCacheOnLaunch(Config.EmulatorPlatformKey(emulator.Title, game.Platform))
+                    && Ps3IsoLauncher.LooksLikeRpcs3(emulator.ApplicationPath)
+                    && Ps3PkgExtractor.SupportedType(PluginUtils.GetArchivePath(game, app)))
+                {
+                    string originalRpcs3 = emulator.ApplicationPath;
+                    string absoluteRpcs3 = PathUtils.GetAbsolutePath(originalRpcs3);
+                    string rpcsGameDir = Ps3PkgRpcs3Launcher.ResolveRpcs3GameDir(absoluteRpcs3);
+                    if (!string.IsNullOrEmpty(rpcsGameDir))
+                    {
+                        string originalArgs = emulator.CommandLine ?? string.Empty;
+                        string scriptPath = Ps3PkgRpcs3Launcher.GetScriptPath();
+                        string newArgs = string.Format(
+                            "-ExecutionPolicy Bypass -NoProfile -File \"{0}\" -Rpcs3Path \"{1}\" -RpcsGameDir \"{2}\" -EbootInCache",
+                            scriptPath, absoluteRpcs3, rpcsGameDir);
+
+                        LaunchBoxDataBackup.BackupSetting(LaunchBoxDataBackup.SettingName.IEmulator_ApplicationPath, originalRpcs3);
+                        LaunchBoxDataBackup.BackupSetting(LaunchBoxDataBackup.SettingName.IEmulator_CommandLine, originalArgs);
+                        emulator.ApplicationPath = Ps3IsoLauncher.PowerShellExePath;
+                        emulator.CommandLine = newArgs;
+                        Logger.Log(string.Format("PS3 PKG → RPCS3 wrapper: redirected {0} to powershell + {1} (game dir = {2}).",
+                            emulator.Title, scriptPath, rpcsGameDir));
+                    }
+                    else
+                    {
+                        Logger.Log(string.Format("PS3 PKG → RPCS3 wrapper: cannot resolve dev_hdd0/game next to {0} — keeping plain cache launch.", originalRpcs3));
+                    }
+                }
+
+                #endregion
+                #region Wii U auto-install updates / DLCs from local mirror
+
+                // Pre-launch step: if a Wii U game is being launched and the user has the
+                // local mirror indexer populated, robocopy any matching updates / DLCs into
+                // Cemu's mlc01 so the next launch sees them. The PS3/PSP/PSV equivalent is
+                // wired inside the PKG staging pipeline; Wii U has no equivalent at-launch
+                // staging hook so we run it here directly.
+                if ((Config.WiiuAutoInstallUpdates || Config.WiiuAutoInstallDlcs)
+                    && Config.MatchesWiiuPlatform(game.Platform))
+                {
+                    try
+                    {
+                        string archive = PluginUtils.GetArchivePath(game, app);
+                        WiiuUpdateInstaller.RunAtLaunch(archive, emulator.ApplicationPath,
+                            Config.WiiuAutoInstallUpdates, Config.WiiuAutoInstallDlcs);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(string.Format("WiiuUpdateInstaller: launch hook crashed: {0}", ex), Logger.LogLevel.Exception);
+                    }
+                }
+
+                #endregion
                 if (LaunchBoxDataBackup.Settings.Count > 0)
                 {
                     LaunchBoxDataBackup.Save();
-                    LaunchBoxDataBackup.RestoreAllSettingsDelay(5000);
+                    // Delay the safety-net restore well past any plausible extraction time. The
+                    // happy path is OnAfterGameLaunched calling RestoreAllSettings immediately
+                    // once LaunchBox actually invokes the emulator; this timer only fires if the
+                    // game never launches at all (eg. cache-prep error). PS3 PKG flow extracts for
+                    // ~10s on ~800 MB archives, so 5000ms used to fire mid-extraction and undo
+                    // the hijack before LaunchBox had a chance to use it.
+                    LaunchBoxDataBackup.RestoreAllSettingsDelay(120000);
                 }
                 #endregion
             }

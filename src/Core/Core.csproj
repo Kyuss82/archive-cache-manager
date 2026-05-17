@@ -22,8 +22,8 @@
     <AssemblyTitle>Archive Cache Manager Core</AssemblyTitle>
     <Product>Archive Cache Manager</Product>
     <Copyright>Copyright ©  2023</Copyright>
-    <AssemblyVersion>2.18.0.0</AssemblyVersion>
-    <FileVersion>2.18.0.0</FileVersion>
+    <AssemblyVersion>2.77.0.0</AssemblyVersion>
+    <FileVersion>2.77.0.0</FileVersion>
   </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Target Name="AfterClean" AfterTargets="Clean">

@@ -9,7 +9,7 @@ namespace ArchiveCacheManager
     /// Deterministic Wii U title key derivation, ported from a community PHP implementation.
     /// salt = MD5(secret(-3, 10) || mungedTitleId); titleKey = PBKDF2-HMAC-SHA1(password, salt, 20 iter, 16 bytes).
     /// </summary>
-    public static class WiiuTitleKey
+    public static class WiiuTitleKeys
     {
         public static byte[] Derive(string titleIdHex, string password)
         {

@@ -113,6 +113,22 @@ namespace ArchiveCacheManager
             {
                 return new TadExtractor();
             }
+            else if (extract && mGameCacheData.Config.Ps3PkgCacheOnLaunch && Ps3PkgExtractor.SupportedType(archivePath))
+            {
+                return new Ps3PkgExtractor();
+            }
+            else if (extract && mGameCacheData.Config.PspPkgCacheOnLaunch && PspPkgExtractor.SupportedType(archivePath))
+            {
+                return new PspPkgExtractor();
+            }
+            else if (extract && mGameCacheData.Config.Ctr3dsCacheOnLaunch && Ctr3dsExtractor.SupportedType(archivePath))
+            {
+                return new Ctr3dsExtractor();
+            }
+            else if (extract && mGameCacheData.Config.PsvPkgCacheOnLaunch && PsvPkgExtractor.SupportedType(archivePath))
+            {
+                return new PsvPkgExtractor();
+            }
             else if (extract && Zip.SupportedType(archivePath))
             {
                 return new Zip();

@@ -99,6 +99,20 @@ namespace ArchiveCacheManager
                 var result = LaunchInfo.Extractor.Extract(LaunchInfo.GetArchivePath(discApp), LaunchInfo.GetArchiveCachePath(discApp), singleFile.ToSingleArray());
                 if (result)
                 {
+                    // Ps3 ISO flow: after PS3Dec finishes, query Sony for patches/DLC and stage them
+                    // into RPCS3's dev_hdd0/game/<TITLE_ID>/. Runs before SetDirectoryContentsReadOnly
+                    // because we need to read PARAM.SFO out of the freshly decrypted ISO (read-only is
+                    // fine for that — but we want the decision logged before the cache is locked).
+                    if (Config.Ps3AutoInstallUpdates && LaunchInfo.Extractor is PS3dec)
+                    {
+                        string isoPath = System.Linq.Enumerable.FirstOrDefault(
+                            Directory.GetFiles(LaunchInfo.GetArchiveCachePath(discApp), "*.iso"));
+                        if (isoPath != null)
+                        {
+                            Ps3UpdateInstaller.TryInstallForDecryptedIso(isoPath, LaunchInfo.Game.EmulatorPath);
+                        }
+                    }
+
                     LaunchInfo.UpdateSizeFromCache(discApp);
                     LaunchInfo.SaveToCache(discApp);
                     DiskUtils.SetDirectoryContentsReadOnly(LaunchInfo.GetArchiveCachePath(discApp));
@@ -319,6 +333,24 @@ namespace ArchiveCacheManager
 
             if (!string.IsNullOrEmpty(LaunchInfo.Game.SelectedFile) && !(LaunchInfo.Game.MultiDisc && LaunchInfo.MultiDiscSupport))
             {
+                // Fast path for nested SelectedFile (PS3/PSP PKG: <baseName>\USRDIR\EBOOT.BIN,
+                // <baseName>\PSP\GAME\<TID>\EBOOT.PBP, …). MatchFileList compares Path.GetFileName(x)
+                // against the include pattern and so won't match when the pattern carries directory
+                // components — verify the file directly first.
+                string nestedSelected = LaunchInfo.Game.SelectedFile
+                    .Replace('/', Path.DirectorySeparatorChar)
+                    .Replace('\\', Path.DirectorySeparatorChar);
+                if (nestedSelected.IndexOf(Path.DirectorySeparatorChar) >= 0)
+                {
+                    string absoluteSelectedPath = Path.Combine(archiveCachePath, nestedSelected);
+                    if (File.Exists(absoluteSelectedPath))
+                    {
+                        filteredFileList.Add(absoluteSelectedPath);
+                        Logger.Log(string.Format("Selected nested file from archive \"{0}\".", LaunchInfo.Game.SelectedFile));
+                        return filteredFileList;
+                    }
+                }
+
                 if (LaunchInfo.MatchFileList(fileList, LaunchInfo.Game.SelectedFile.ToSingleArray()).Length > 0)
                 {
                     string selectedFilePath = Path.Combine(archiveCachePath, LaunchInfo.Game.SelectedFile);

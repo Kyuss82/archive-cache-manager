@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 
 namespace ArchiveCacheManager
 {
@@ -31,6 +32,29 @@ namespace ArchiveCacheManager
             }
 
             bool produced = File.Exists(outputFile) && new FileInfo(outputFile).Length > 0;
+            return (exitCode == 0 && produced, stdout, stderr, exitCode);
+        }
+
+        /// <summary>
+        /// Extracts a `.wua`/`.zar` archive into <paramref name="outputDir"/> as a Loadiine
+        /// folder. zarchive.exe auto-detects pack vs extract by examining the first arg:
+        /// directory → pack into output file; file → extract into output directory.
+        /// </summary>
+        public static (bool ok, string stdout, string stderr, int exitCode) Extract(string inputWua, string outputDir)
+        {
+            string exe = GetExecutablePath();
+            string args = string.Format("\"{0}\" \"{1}\"",
+                inputWua,
+                outputDir.TrimEnd(Path.DirectorySeparatorChar));
+
+            (string stdout, string stderr, int exitCode) = ProcessUtils.RunProcess(exe, args, redirectOutput: true, redirectError: true);
+
+            if (exitCode != 0)
+            {
+                Logger.Log(string.Format("zarchive extract returned exit {0}.\r\nstdout:\r\n{1}\r\nstderr:\r\n{2}", exitCode, stdout, stderr));
+            }
+
+            bool produced = Directory.Exists(outputDir) && Directory.EnumerateFileSystemEntries(outputDir).Any();
             return (exitCode == 0 && produced, stdout, stderr, exitCode);
         }
     }

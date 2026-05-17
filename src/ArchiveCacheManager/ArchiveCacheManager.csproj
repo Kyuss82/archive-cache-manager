@@ -18,8 +18,8 @@
     <AssemblyTitle>Archive Cache Manager</AssemblyTitle>
     <Product>Archive Cache Manager</Product>
     <Copyright>Copyright ©  2023</Copyright>
-    <AssemblyVersion>2.18.0.0</AssemblyVersion>
-    <FileVersion>2.18.0.0</FileVersion>
+    <AssemblyVersion>2.77.0.0</AssemblyVersion>
+    <FileVersion>2.77.0.0</FileVersion>
   </PropertyGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Target Name="AfterClean" AfterTargets="Clean">
@@ -34,6 +34,7 @@
     <Exec Command="copy /Y $(TargetDir)*.exe $(SolutionDir)..\release\ArchiveCacheManager" />
     <Exec Command="copy /Y $(TargetDir)*.dll $(SolutionDir)..\release\ArchiveCacheManager" />
     <Exec Command="copy /Y $(TargetDir)*.runtimeconfig.json $(SolutionDir)..\release\ArchiveCacheManager" />
+    <Exec Command="copy /Y $(TargetDir)*.deps.json $(SolutionDir)..\release\ArchiveCacheManager" />
     <Exec Command="copy /Y  $(SolutionDir)..\README.md $(SolutionDir)..\release\ArchiveCacheManager\readme.txt" />
     <Exec Command="copy /Y  $(SolutionDir)..\HISTORY.md $(SolutionDir)..\release\ArchiveCacheManager\history.txt" />
     <Exec Command="mkdir $(SolutionDir)..\release\ArchiveCacheManager\7-Zip" />

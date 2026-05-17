@@ -48,7 +48,7 @@ namespace ArchiveCacheManager
         // LaunchBox's priority list isn't documented anywhere, so this is a best guess. A more exhaustive list might look like:
         // cue, gdi, toc, nrg, ccd, mds, cdr, iso, eboot.bin, bin, img, mdf, chd, pbp
         // where disc metadata / table-of-contents types take priority over disc data types.
-        private static readonly string defaultFilenamePriority = @"mds, gdi, cue, eboot.bin";
+        private static readonly string defaultFilenamePriority = @"mds, gdi, cue, eboot.bin, eboot.pbp";
 
         private static readonly LaunchPath defaultLaunchPath = LaunchPath.Default;
         private static readonly Action defaultAction = Action.Extract;
@@ -59,6 +59,29 @@ namespace ArchiveCacheManager
         private static readonly bool defaultPS3dec = false;
         private static readonly string defaultPS3KeyPath = @"ThirdParty\PS3key";
         private static readonly bool defaultPs3UseIsoMountLauncher = false;
+        // Default OFF: opt-in, because it adds a one-time robocopy mirror to
+        // <RPCS3>/dev_hdd0/game/<TID>/ that doubles the on-disk footprint of every
+        // PS3 PKG title. The reward is correct NPDRM behaviour for PSN releases
+        // (RPCS3 only resolves rap files when the title is installed under its
+        // dev_hdd0/game/<TID>/, so a cache-only extract fails with
+        // "Cannot read SELF" for NPDRM eboots).
+        private static readonly bool defaultPs3PkgAutoInstallToRpcs3 = false;
+
+        // Pipe-separated list of folders that hold already-downloaded update / DLC PKGs
+        // for each Sony platform (the user's own offline mirror — eXo updates pack, NPS
+        // Browser exports, etc.). LocalPkgIndexer scans them recursively and produces a
+        // JSON manifest in <Ps3UpdateCachePath>/local_pkg_index.json that the auto-install
+        // path consults before hitting Sony.
+        private static readonly string defaultPs3LocalPkgFolders = "";
+        private static readonly string defaultPspLocalPkgFolders = "";
+        private static readonly string defaultPsvLocalPkgFolders = "";
+        private static readonly string defaultWiiuLocalRomFolders  = "";
+        private static readonly string defaultCtr3dsLocalRomFolders = "";
+        private static readonly bool defaultPs3AutoInstallDlcs   = false;
+        private static readonly bool defaultWiiuAutoInstallUpdates = false;
+        private static readonly bool defaultWiiuAutoInstallDlcs    = false;
+        private static readonly bool defaultPspAutoInstallDlcs   = false;
+        private static readonly bool defaultPsvAutoInstallDlcs   = false;
         private static readonly string defaultWadPlatform = "Nintendo Wii";
         private static readonly string defaultWadOutputPath = "";
         private static readonly string defaultWadCetkCachePath = "";
@@ -85,6 +108,39 @@ namespace ArchiveCacheManager
         private static readonly bool defaultCiaCacheOnLaunch = false;
         private static readonly bool defaultWadCacheOnLaunch = false;
         private static readonly bool defaultTadCacheOnLaunch = false;
+        private static readonly bool defaultPs3PkgCacheOnLaunch = false;
+        private static readonly string defaultPs3PkgPlatform = "Sony Playstation 3";
+        private static readonly string defaultPs3PkgOutputPath = "";
+        private static readonly string defaultPs3RpcsExdataPath = "";
+        private static readonly bool defaultPs3PkgAddToLibrary = false;
+        private static readonly string defaultPs3UpdateOutputPath = "";
+        private static readonly bool defaultPs3AutoInstallUpdates = false;
+        private static readonly string defaultPs3UpdateCachePath = "";
+        private static readonly bool defaultPs3UpdateOfflineMode = false;
+        private static readonly string defaultPspUpdateOutputPath = "";
+        private static readonly bool defaultPspAutoInstallUpdates = false;
+        private static readonly string defaultPspUpdateCachePath = "";
+        private static readonly bool defaultPspUpdateOfflineMode = false;
+        private static readonly bool defaultCtr3dsCacheOnLaunch = false;
+        private static readonly string defaultCtr3dsPlatform = "Nintendo 3DS";
+        private static readonly string defaultCtr3dsKeysPath = "";
+        private static readonly string defaultCtr3dsSeedDbPath = "";
+        private static readonly string defaultCtr3dsOutputPath = "";
+        private static readonly bool defaultCtr3dsAddToLibrary = false;
+        private static readonly bool defaultPsvPkgCacheOnLaunch = false;
+        private static readonly string defaultPsvPkgPlatform = "Sony Playstation Vita";
+        private static readonly string defaultPsvPkgOutputPath = "";
+        private static readonly bool defaultPsvPkgAddToLibrary = false;
+        private static readonly string defaultPsvVita3kDataPath = "";
+        private static readonly string defaultNpsDbPath = "";
+        private static readonly bool defaultPsvAutoInstallUpdates = false;
+        private static readonly string defaultPsvUpdateCachePath = "";
+        private static readonly bool defaultPsvUpdateOfflineMode = false;
+        private static readonly bool defaultPspPkgCacheOnLaunch = false;
+        private static readonly string defaultPspPkgPlatform = "Sony PSP";
+        private static readonly string defaultPspPkgOutputPath = "";
+        private static readonly string defaultPspPpssppLicensePath = "";
+        private static readonly bool defaultPspPkgAddToLibrary = false;
 
         public class EmulatorPlatformConfig
         {
@@ -102,6 +158,10 @@ namespace ArchiveCacheManager
             public bool CiaCacheOnLaunch;
             public bool WadCacheOnLaunch;
             public bool TadCacheOnLaunch;
+            public bool Ps3PkgCacheOnLaunch;
+            public bool PspPkgCacheOnLaunch;
+            public bool Ctr3dsCacheOnLaunch;
+            public bool PsvPkgCacheOnLaunch;
 
             public EmulatorPlatformConfig()
             {
@@ -119,6 +179,10 @@ namespace ArchiveCacheManager
                 CiaCacheOnLaunch = defaultCiaCacheOnLaunch;
                 WadCacheOnLaunch = defaultWadCacheOnLaunch;
                 TadCacheOnLaunch = defaultTadCacheOnLaunch;
+                Ps3PkgCacheOnLaunch = defaultPs3PkgCacheOnLaunch;
+                PspPkgCacheOnLaunch = defaultPspPkgCacheOnLaunch;
+                Ctr3dsCacheOnLaunch = defaultCtr3dsCacheOnLaunch;
+                PsvPkgCacheOnLaunch = defaultPsvPkgCacheOnLaunch;
             }
         };
 
@@ -134,6 +198,17 @@ namespace ArchiveCacheManager
         private static bool mBypassPathCheck = defaultBypassPathCheck;
         private static string mPS3KeyPath = defaultPS3KeyPath;
         private static bool mPs3UseIsoMountLauncher = defaultPs3UseIsoMountLauncher;
+        private static bool mPs3PkgAutoInstallToRpcs3 = defaultPs3PkgAutoInstallToRpcs3;
+        private static string mPs3LocalPkgFolders = defaultPs3LocalPkgFolders;
+        private static string mPspLocalPkgFolders = defaultPspLocalPkgFolders;
+        private static string mPsvLocalPkgFolders = defaultPsvLocalPkgFolders;
+        private static string mWiiuLocalRomFolders  = defaultWiiuLocalRomFolders;
+        private static string mCtr3dsLocalRomFolders = defaultCtr3dsLocalRomFolders;
+        private static bool mPs3AutoInstallDlcs = defaultPs3AutoInstallDlcs;
+        private static bool mWiiuAutoInstallUpdates = defaultWiiuAutoInstallUpdates;
+        private static bool mWiiuAutoInstallDlcs    = defaultWiiuAutoInstallDlcs;
+        private static bool mPspAutoInstallDlcs = defaultPspAutoInstallDlcs;
+        private static bool mPsvAutoInstallDlcs = defaultPsvAutoInstallDlcs;
         private static string mWadPlatform = defaultWadPlatform;
         private static string mWadOutputPath = defaultWadOutputPath;
         private static string mWadCetkCachePath = defaultWadCetkCachePath;
@@ -156,6 +231,35 @@ namespace ArchiveCacheManager
         private static string mTadOutputPath = defaultTadOutputPath;
         private static string mTadCetkCachePath = defaultTadCetkCachePath;
         private static bool mTadAddToLibrary = defaultTadAddToLibrary;
+        private static string mPs3PkgPlatform = defaultPs3PkgPlatform;
+        private static string mPs3PkgOutputPath = defaultPs3PkgOutputPath;
+        private static string mPs3RpcsExdataPath = defaultPs3RpcsExdataPath;
+        private static bool mPs3PkgAddToLibrary = defaultPs3PkgAddToLibrary;
+        private static string mPs3UpdateOutputPath = defaultPs3UpdateOutputPath;
+        private static bool mPs3AutoInstallUpdates = defaultPs3AutoInstallUpdates;
+        private static string mPs3UpdateCachePath = defaultPs3UpdateCachePath;
+        private static bool mPs3UpdateOfflineMode = defaultPs3UpdateOfflineMode;
+        private static string mPspUpdateOutputPath = defaultPspUpdateOutputPath;
+        private static bool mPspAutoInstallUpdates = defaultPspAutoInstallUpdates;
+        private static string mPspUpdateCachePath = defaultPspUpdateCachePath;
+        private static bool mPspUpdateOfflineMode = defaultPspUpdateOfflineMode;
+        private static string mCtr3dsPlatform = defaultCtr3dsPlatform;
+        private static string mCtr3dsKeysPath = defaultCtr3dsKeysPath;
+        private static string mCtr3dsSeedDbPath = defaultCtr3dsSeedDbPath;
+        private static string mCtr3dsOutputPath = defaultCtr3dsOutputPath;
+        private static bool mCtr3dsAddToLibrary = defaultCtr3dsAddToLibrary;
+        private static string mPsvPkgPlatform = defaultPsvPkgPlatform;
+        private static string mPsvPkgOutputPath = defaultPsvPkgOutputPath;
+        private static bool mPsvPkgAddToLibrary = defaultPsvPkgAddToLibrary;
+        private static string mPsvVita3kDataPath = defaultPsvVita3kDataPath;
+        private static string mNpsDbPath = defaultNpsDbPath;
+        private static bool mPsvAutoInstallUpdates = defaultPsvAutoInstallUpdates;
+        private static string mPsvUpdateCachePath = defaultPsvUpdateCachePath;
+        private static bool mPsvUpdateOfflineMode = defaultPsvUpdateOfflineMode;
+        private static string mPspPkgPlatform = defaultPspPkgPlatform;
+        private static string mPspPkgOutputPath = defaultPspPkgOutputPath;
+        private static string mPspPpssppLicensePath = defaultPspPpssppLicensePath;
+        private static bool mPspPkgAddToLibrary = defaultPspPkgAddToLibrary;
 
         private static Dictionary<string, EmulatorPlatformConfig> mEmulatorPlatformConfig;
 
@@ -239,6 +343,46 @@ namespace ArchiveCacheManager
         {
             get => mPs3UseIsoMountLauncher;
             set => mPs3UseIsoMountLauncher = value;
+        }
+
+        public static bool Ps3PkgAutoInstallToRpcs3
+        {
+            get => mPs3PkgAutoInstallToRpcs3;
+            set => mPs3PkgAutoInstallToRpcs3 = value;
+        }
+
+        public static string Ps3LocalPkgFolders { get => mPs3LocalPkgFolders; set => mPs3LocalPkgFolders = value ?? string.Empty; }
+        public static string PspLocalPkgFolders { get => mPspLocalPkgFolders; set => mPspLocalPkgFolders = value ?? string.Empty; }
+        public static string PsvLocalPkgFolders { get => mPsvLocalPkgFolders; set => mPsvLocalPkgFolders = value ?? string.Empty; }
+        public static string WiiuLocalRomFolders  { get => mWiiuLocalRomFolders;  set => mWiiuLocalRomFolders  = value ?? string.Empty; }
+        public static string Ctr3dsLocalRomFolders { get => mCtr3dsLocalRomFolders; set => mCtr3dsLocalRomFolders = value ?? string.Empty; }
+        public static bool   Ps3AutoInstallDlcs { get => mPs3AutoInstallDlcs; set => mPs3AutoInstallDlcs = value; }
+
+        /// <summary>
+        /// When true, every Wii U game launch consults the local mirror index
+        /// (`WiiuLocalCache/local_rom_index.json`) and robocopies matching update entries into
+        /// Cemu's `mlc01/usr/title/0005000E/&lt;TID-low&gt;/` before the emulator starts. Only
+        /// Loadiine-layout sources (folder containing `title.tmd` + `code/content/meta/`) are
+        /// auto-installable today; `.wua` / NUS-dump sources are skipped with a log line.
+        /// </summary>
+        public static bool   WiiuAutoInstallUpdates { get => mWiiuAutoInstallUpdates; set => mWiiuAutoInstallUpdates = value; }
+
+        /// <summary>WiiU DLC counterpart of <see cref="WiiuAutoInstallUpdates"/>; targets `0005000C`.</summary>
+        public static bool   WiiuAutoInstallDlcs    { get => mWiiuAutoInstallDlcs;    set => mWiiuAutoInstallDlcs    = value; }
+        public static bool   PspAutoInstallDlcs { get => mPspAutoInstallDlcs; set => mPspAutoInstallDlcs = value; }
+        public static bool   PsvAutoInstallDlcs { get => mPsvAutoInstallDlcs; set => mPsvAutoInstallDlcs = value; }
+
+        public static string[] ParsePipeList(string csv)
+        {
+            if (string.IsNullOrWhiteSpace(csv)) return Array.Empty<string>();
+            var parts = csv.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var trimmed = new List<string>();
+            foreach (var p in parts)
+            {
+                string t = p.Trim();
+                if (t.Length > 0) trimmed.Add(t);
+            }
+            return trimmed.ToArray();
         }
 
         /// <summary>
@@ -436,10 +580,228 @@ namespace ArchiveCacheManager
         /// <summary>True if the supplied LaunchBox platform name matches any entry in the DSi TAD platform list.</summary>
         public static bool MatchesTadPlatform(string platform) => MatchesPlatformCsv(TadPlatform, platform);
 
+        /// <summary>LaunchBox platform that enables the PS3 PKG on-launch packager flow.</summary>
+        public static string Ps3PkgPlatform
+        {
+            get => mPs3PkgPlatform;
+            set => mPs3PkgPlatform = value;
+        }
+
+        /// <summary>Output base folder for staged PS3 PKG installs. Empty = next to the source archive.</summary>
+        public static string Ps3PkgOutputPath
+        {
+            get => mPs3PkgOutputPath;
+            set => mPs3PkgOutputPath = value;
+        }
+
+        /// <summary>
+        /// Path to RPCS3's dev_hdd0/home/00000001/exdata/ folder. When set, PKG-side RAP licence
+        /// files are copied here so RPCS3 picks them up automatically. Empty = leave RAPs only
+        /// inside the plugin cache (user must copy them manually).
+        /// </summary>
+        public static string Ps3RpcsExdataPath
+        {
+            get => mPs3RpcsExdataPath;
+            set => mPs3RpcsExdataPath = value;
+        }
+
+        /// <summary>If true, the staged install is also added as a new game in the LaunchBox library.</summary>
+        public static bool Ps3PkgAddToLibrary
+        {
+            get => mPs3PkgAddToLibrary;
+            set => mPs3PkgAddToLibrary = value;
+        }
+
+        /// <summary>True if the supplied LaunchBox platform name matches any entry in the PS3 PKG platform list.</summary>
+        public static bool MatchesPs3PkgPlatform(string platform) => MatchesPlatformCsv(Ps3PkgPlatform, platform);
+
+        /// <summary>Default download folder for the "Fetch PS3 Updates..." menu item. Empty = next to the source archive.</summary>
+        public static string Ps3UpdateOutputPath
+        {
+            get => mPs3UpdateOutputPath;
+            set => mPs3UpdateOutputPath = value;
+        }
+
+        /// <summary>
+        /// When true, every PS3 game launch (PKG or decrypted-ISO flow) automatically queries
+        /// Sony's update server, downloads any new patch / DLC PKGs into Ps3UpdateCachePath, and
+        /// stages them on top of the base install before the emulator runs. Network failures are
+        /// non-fatal — the game launches with whatever updates are already on disk.
+        /// </summary>
+        public static bool Ps3AutoInstallUpdates
+        {
+            get => mPs3AutoInstallUpdates;
+            set => mPs3AutoInstallUpdates = value;
+        }
+
+        /// <summary>
+        /// Persistent folder for the auto-installer's downloaded PKG cache. Empty falls back to
+        /// &lt;Plugins\ArchiveCacheManager\Ps3UpdateCache&gt;. Files are keyed by TITLE_ID + version
+        /// + sha1 so they're reused across launches. The same folder doubles as an offline DB:
+        /// the bulk builder writes Sony's titlepatch XML alongside each title's PKGs, and the
+        /// fetcher prefers that local copy over a network call.
+        /// </summary>
+        public static string Ps3UpdateCachePath
+        {
+            get => mPs3UpdateCachePath;
+            set => mPs3UpdateCachePath = value;
+        }
+
+        /// <summary>
+        /// When true, Ps3UpdateFetcher.Query never contacts Sony — only the locally-cached
+        /// titlepatch XML under Ps3UpdateCachePath is consulted. Useful for LAN / offline setups
+        /// where the user has pre-built the DB with the bulk builder.
+        /// </summary>
+        public static bool Ps3UpdateOfflineMode
+        {
+            get => mPs3UpdateOfflineMode;
+            set => mPs3UpdateOfflineMode = value;
+        }
+
+        /// <summary>Default download folder for the "Fetch PSP Updates..." menu item. Empty = next to the source archive.</summary>
+        public static string PspUpdateOutputPath
+        {
+            get => mPspUpdateOutputPath;
+            set => mPspUpdateOutputPath = value;
+        }
+
+        /// <summary>
+        /// PSP counterpart of Ps3AutoInstallUpdates — auto-fetches PSN update PKGs for the
+        /// title being launched and stages them on top of the base install in PSP/GAME/&lt;TITLE_ID&gt;/.
+        /// </summary>
+        public static bool PspAutoInstallUpdates
+        {
+            get => mPspAutoInstallUpdates;
+            set => mPspAutoInstallUpdates = value;
+        }
+
+        /// <summary>
+        /// Persistent folder for the PSP auto-installer's downloaded PKG + manifest cache.
+        /// Empty falls back to &lt;Plugins\ArchiveCacheManager\PspUpdateCache&gt;.
+        /// </summary>
+        public static string PspUpdateCachePath
+        {
+            get => mPspUpdateCachePath;
+            set => mPspUpdateCachePath = value;
+        }
+
+        /// <summary>PSP counterpart of Ps3UpdateOfflineMode.</summary>
+        public static bool PspUpdateOfflineMode
+        {
+            get => mPspUpdateOfflineMode;
+            set => mPspUpdateOfflineMode = value;
+        }
+
+        /// <summary>LaunchBox platform that enables the 3DS .3ds/.cci on-launch decryption flow.</summary>
+        public static string Ctr3dsPlatform
+        {
+            get => mCtr3dsPlatform;
+            set => mCtr3dsPlatform = value;
+        }
+
+        /// <summary>Path to aes_keys.txt (slot0x2CKeyX + Secure2/3/4 KeyX). Empty = Extractors/aes_keys.txt.</summary>
+        public static string Ctr3dsKeysPath
+        {
+            get => mCtr3dsKeysPath;
+            set => mCtr3dsKeysPath = value;
+        }
+
+        /// <summary>Path to seeddb.bin (per-TitleID seeds for 7.x+ seed-crypto titles). Empty = Extractors/seeddb.bin.</summary>
+        public static string Ctr3dsSeedDbPath
+        {
+            get => mCtr3dsSeedDbPath;
+            set => mCtr3dsSeedDbPath = value;
+        }
+
+        /// <summary>Output folder for the "Decrypt 3DS ROM..." menu item. Empty = next to the source archive.</summary>
+        public static string Ctr3dsOutputPath
+        {
+            get => mCtr3dsOutputPath;
+            set => mCtr3dsOutputPath = value;
+        }
+
+        /// <summary>If true, the decrypted .3ds from the right-click menu is added as a new game in the LaunchBox library.</summary>
+        public static bool Ctr3dsAddToLibrary
+        {
+            get => mCtr3dsAddToLibrary;
+            set => mCtr3dsAddToLibrary = value;
+        }
+
+        /// <summary>True if the supplied LaunchBox platform matches the 3DS decrypt platform list.</summary>
+        public static bool MatchesCtr3dsPlatform(string platform) => MatchesPlatformCsv(Ctr3dsPlatform, platform);
+
+        public static bool GetCtr3dsCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.Ctr3dsCacheOnLaunch, defaultCtr3dsCacheOnLaunch);
+        public static bool GetPsvPkgCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.PsvPkgCacheOnLaunch, defaultPsvPkgCacheOnLaunch);
+
+        /// <summary>LaunchBox platform(s) for which the PS Vita PKG flow is offered.</summary>
+        public static string PsvPkgPlatform { get => mPsvPkgPlatform; set => mPsvPkgPlatform = value; }
+        /// <summary>Output base folder for menu-created PSV VPK files. Empty = next to the source archive.</summary>
+        public static string PsvPkgOutputPath { get => mPsvPkgOutputPath; set => mPsvPkgOutputPath = value; }
+        /// <summary>If true, the produced .vpk is also added to LaunchBox.</summary>
+        public static bool PsvPkgAddToLibrary { get => mPsvPkgAddToLibrary; set => mPsvPkgAddToLibrary = value; }
+        public static bool MatchesPsvPkgPlatform(string platform) => MatchesPlatformCsv(PsvPkgPlatform, platform);
+
+        /// <summary>
+        /// Vita3K user-data folder (the one that contains ux0/, ur0/, vs0/, …). Default falls back
+        /// to %APPDATA%\Vita3K\Vita3K. Used by the PSV pipeline to drop auto-decoded .rif licenses
+        /// at &lt;data&gt;/ux0/license/app/&lt;TITLE_ID&gt;/&lt;contentid&gt;.rif.
+        /// </summary>
+        public static string PsvVita3kDataPath { get => mPsvVita3kDataPath; set => mPsvVita3kDataPath = value; }
+
+        /// <summary>
+        /// Path to a NoPayStation TSV file or a folder of TSV files (PS3_GAMES.tsv,
+        /// PS3_DLC.tsv, PSP_GAMES.tsv, PSV_GAMES.tsv, etc.). Used by the Sony PKG flows to
+        /// auto-stage missing zRIF (PSV) / RAP (PS3+PSP) licenses when the source archive
+        /// doesn't carry them.
+        /// </summary>
+        public static string NpsDbPath { get => mNpsDbPath; set => mNpsDbPath = value; }
+
+        /// <summary>PSV equivalent of Ps3AutoInstallUpdates — auto-fetches Vita patches from Sony at launch and stages them in &lt;Vita3K&gt;/ux0/patch/&lt;TID&gt;/.</summary>
+        public static bool PsvAutoInstallUpdates { get => mPsvAutoInstallUpdates; set => mPsvAutoInstallUpdates = value; }
+        public static string PsvUpdateCachePath { get => mPsvUpdateCachePath; set => mPsvUpdateCachePath = value; }
+        public static bool PsvUpdateOfflineMode { get => mPsvUpdateOfflineMode; set => mPsvUpdateOfflineMode = value; }
+
+        /// <summary>LaunchBox platform that enables the PSP PKG on-launch packager flow.</summary>
+        public static string PspPkgPlatform
+        {
+            get => mPspPkgPlatform;
+            set => mPspPkgPlatform = value;
+        }
+
+        /// <summary>Output base folder for staged PSP PKG installs. Empty = next to the source archive.</summary>
+        public static string PspPkgOutputPath
+        {
+            get => mPspPkgOutputPath;
+            set => mPspPkgOutputPath = value;
+        }
+
+        /// <summary>
+        /// Path to PPSSPP's memstick PSP/LICENSE/ folder. When set, RAP licence files from
+        /// the source archive are copied here so PPSSPP picks them up automatically. Empty
+        /// = leave RAPs only inside the plugin cache (user must copy them manually).
+        /// </summary>
+        public static string PspPpssppLicensePath
+        {
+            get => mPspPpssppLicensePath;
+            set => mPspPpssppLicensePath = value;
+        }
+
+        /// <summary>If true, the staged install is also added as a new game in the LaunchBox library.</summary>
+        public static bool PspPkgAddToLibrary
+        {
+            get => mPspPkgAddToLibrary;
+            set => mPspPkgAddToLibrary = value;
+        }
+
+        /// <summary>True if the supplied LaunchBox platform name matches any entry in the PSP PKG platform list.</summary>
+        public static bool MatchesPspPkgPlatform(string platform) => MatchesPlatformCsv(PspPkgPlatform, platform);
+
         public static bool GetWiiuCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.WiiuCacheOnLaunch, defaultWiiuCacheOnLaunch);
         public static bool GetCiaCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.CiaCacheOnLaunch, defaultCiaCacheOnLaunch);
         public static bool GetWadCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.WadCacheOnLaunch, defaultWadCacheOnLaunch);
         public static bool GetTadCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.TadCacheOnLaunch, defaultTadCacheOnLaunch);
+        public static bool GetPs3PkgCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.Ps3PkgCacheOnLaunch, defaultPs3PkgCacheOnLaunch);
+        public static bool GetPspPkgCacheOnLaunch(string key) => GetEmulatorPlatformFlag(key, c => c.PspPkgCacheOnLaunch, defaultPspPkgCacheOnLaunch);
 
         private static bool GetEmulatorPlatformFlag(string key, Func<EmulatorPlatformConfig, bool> selector, bool fallback)
         {
@@ -755,6 +1117,20 @@ namespace ArchiveCacheManager
                                 mPS3KeyPath = section.Keys[nameof(PS3KeyPath)];
                             }
 
+                            if (section.Keys.ContainsKey(nameof(Ps3PkgAutoInstallToRpcs3)))
+                            {
+                                mPs3PkgAutoInstallToRpcs3 = Convert.ToBoolean(section.Keys[nameof(Ps3PkgAutoInstallToRpcs3)]);
+                            }
+                            if (section.Keys.ContainsKey(nameof(Ps3LocalPkgFolders))) mPs3LocalPkgFolders = section.Keys[nameof(Ps3LocalPkgFolders)];
+                            if (section.Keys.ContainsKey(nameof(PspLocalPkgFolders))) mPspLocalPkgFolders = section.Keys[nameof(PspLocalPkgFolders)];
+                            if (section.Keys.ContainsKey(nameof(PsvLocalPkgFolders))) mPsvLocalPkgFolders = section.Keys[nameof(PsvLocalPkgFolders)];
+                            if (section.Keys.ContainsKey(nameof(WiiuLocalRomFolders))) mWiiuLocalRomFolders = section.Keys[nameof(WiiuLocalRomFolders)];
+                            if (section.Keys.ContainsKey(nameof(Ctr3dsLocalRomFolders))) mCtr3dsLocalRomFolders = section.Keys[nameof(Ctr3dsLocalRomFolders)];
+                            if (section.Keys.ContainsKey(nameof(Ps3AutoInstallDlcs))) mPs3AutoInstallDlcs = Convert.ToBoolean(section.Keys[nameof(Ps3AutoInstallDlcs)]);
+                            if (section.Keys.ContainsKey(nameof(WiiuAutoInstallUpdates))) mWiiuAutoInstallUpdates = Convert.ToBoolean(section.Keys[nameof(WiiuAutoInstallUpdates)]);
+                            if (section.Keys.ContainsKey(nameof(WiiuAutoInstallDlcs)))    mWiiuAutoInstallDlcs    = Convert.ToBoolean(section.Keys[nameof(WiiuAutoInstallDlcs)]);
+                            if (section.Keys.ContainsKey(nameof(PspAutoInstallDlcs))) mPspAutoInstallDlcs = Convert.ToBoolean(section.Keys[nameof(PspAutoInstallDlcs)]);
+                            if (section.Keys.ContainsKey(nameof(PsvAutoInstallDlcs))) mPsvAutoInstallDlcs = Convert.ToBoolean(section.Keys[nameof(PsvAutoInstallDlcs)]);
                             if (section.Keys.ContainsKey(nameof(Ps3UseIsoMountLauncher)))
                             {
                                 mPs3UseIsoMountLauncher = Convert.ToBoolean(section.Keys[nameof(Ps3UseIsoMountLauncher)]);
@@ -870,6 +1246,98 @@ namespace ArchiveCacheManager
                                 mTadAddToLibrary = Convert.ToBoolean(section.Keys[nameof(TadAddToLibrary)]);
                             }
 
+                            if (section.Keys.ContainsKey(nameof(Ps3PkgPlatform)))
+                            {
+                                mPs3PkgPlatform = section.Keys[nameof(Ps3PkgPlatform)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(Ps3PkgOutputPath)))
+                            {
+                                mPs3PkgOutputPath = section.Keys[nameof(Ps3PkgOutputPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(Ps3RpcsExdataPath)))
+                            {
+                                mPs3RpcsExdataPath = section.Keys[nameof(Ps3RpcsExdataPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(Ps3PkgAddToLibrary)))
+                            {
+                                mPs3PkgAddToLibrary = Convert.ToBoolean(section.Keys[nameof(Ps3PkgAddToLibrary)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(Ps3UpdateOutputPath)))
+                            {
+                                mPs3UpdateOutputPath = section.Keys[nameof(Ps3UpdateOutputPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(Ps3AutoInstallUpdates)))
+                            {
+                                mPs3AutoInstallUpdates = Convert.ToBoolean(section.Keys[nameof(Ps3AutoInstallUpdates)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(Ps3UpdateCachePath)))
+                            {
+                                mPs3UpdateCachePath = section.Keys[nameof(Ps3UpdateCachePath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(Ps3UpdateOfflineMode)))
+                            {
+                                mPs3UpdateOfflineMode = Convert.ToBoolean(section.Keys[nameof(Ps3UpdateOfflineMode)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(PspUpdateOutputPath)))
+                            {
+                                mPspUpdateOutputPath = section.Keys[nameof(PspUpdateOutputPath)];
+                            }
+                            if (section.Keys.ContainsKey(nameof(PspAutoInstallUpdates)))
+                            {
+                                mPspAutoInstallUpdates = Convert.ToBoolean(section.Keys[nameof(PspAutoInstallUpdates)]);
+                            }
+                            if (section.Keys.ContainsKey(nameof(PspUpdateCachePath)))
+                            {
+                                mPspUpdateCachePath = section.Keys[nameof(PspUpdateCachePath)];
+                            }
+                            if (section.Keys.ContainsKey(nameof(PspUpdateOfflineMode)))
+                            {
+                                mPspUpdateOfflineMode = Convert.ToBoolean(section.Keys[nameof(PspUpdateOfflineMode)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(Ctr3dsPlatform))) mCtr3dsPlatform = section.Keys[nameof(Ctr3dsPlatform)];
+                            if (section.Keys.ContainsKey(nameof(Ctr3dsKeysPath))) mCtr3dsKeysPath = section.Keys[nameof(Ctr3dsKeysPath)];
+                            if (section.Keys.ContainsKey(nameof(Ctr3dsSeedDbPath))) mCtr3dsSeedDbPath = section.Keys[nameof(Ctr3dsSeedDbPath)];
+                            if (section.Keys.ContainsKey(nameof(Ctr3dsOutputPath))) mCtr3dsOutputPath = section.Keys[nameof(Ctr3dsOutputPath)];
+                            if (section.Keys.ContainsKey(nameof(Ctr3dsAddToLibrary))) mCtr3dsAddToLibrary = Convert.ToBoolean(section.Keys[nameof(Ctr3dsAddToLibrary)]);
+
+                            if (section.Keys.ContainsKey(nameof(PsvPkgPlatform))) mPsvPkgPlatform = section.Keys[nameof(PsvPkgPlatform)];
+                            if (section.Keys.ContainsKey(nameof(PsvPkgOutputPath))) mPsvPkgOutputPath = section.Keys[nameof(PsvPkgOutputPath)];
+                            if (section.Keys.ContainsKey(nameof(PsvPkgAddToLibrary))) mPsvPkgAddToLibrary = Convert.ToBoolean(section.Keys[nameof(PsvPkgAddToLibrary)]);
+                            if (section.Keys.ContainsKey(nameof(PsvVita3kDataPath))) mPsvVita3kDataPath = section.Keys[nameof(PsvVita3kDataPath)];
+                            if (section.Keys.ContainsKey(nameof(NpsDbPath))) mNpsDbPath = section.Keys[nameof(NpsDbPath)];
+                            if (section.Keys.ContainsKey(nameof(PsvAutoInstallUpdates))) mPsvAutoInstallUpdates = Convert.ToBoolean(section.Keys[nameof(PsvAutoInstallUpdates)]);
+                            if (section.Keys.ContainsKey(nameof(PsvUpdateCachePath))) mPsvUpdateCachePath = section.Keys[nameof(PsvUpdateCachePath)];
+                            if (section.Keys.ContainsKey(nameof(PsvUpdateOfflineMode))) mPsvUpdateOfflineMode = Convert.ToBoolean(section.Keys[nameof(PsvUpdateOfflineMode)]);
+
+                            if (section.Keys.ContainsKey(nameof(PspPkgPlatform)))
+                            {
+                                mPspPkgPlatform = section.Keys[nameof(PspPkgPlatform)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(PspPkgOutputPath)))
+                            {
+                                mPspPkgOutputPath = section.Keys[nameof(PspPkgOutputPath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(PspPpssppLicensePath)))
+                            {
+                                mPspPpssppLicensePath = section.Keys[nameof(PspPpssppLicensePath)];
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(PspPkgAddToLibrary)))
+                            {
+                                mPspPkgAddToLibrary = Convert.ToBoolean(section.Keys[nameof(PspPkgAddToLibrary)]);
+                            }
+
 
                             if (section.Keys.ContainsKey("MultiDiscSupport"))
                             {
@@ -973,6 +1441,26 @@ namespace ArchiveCacheManager
                             {
                                 mEmulatorPlatformConfig[section.SectionName].TadCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.TadCacheOnLaunch)]);
                             }
+
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.Ps3PkgCacheOnLaunch)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].Ps3PkgCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.Ps3PkgCacheOnLaunch)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.PspPkgCacheOnLaunch)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].PspPkgCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.PspPkgCacheOnLaunch)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.Ctr3dsCacheOnLaunch)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].Ctr3dsCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.Ctr3dsCacheOnLaunch)]);
+                            }
+
+                            if (section.Keys.ContainsKey(nameof(EmulatorPlatformConfig.PsvPkgCacheOnLaunch)))
+                            {
+                                mEmulatorPlatformConfig[section.SectionName].PsvPkgCacheOnLaunch = Convert.ToBoolean(section.Keys[nameof(EmulatorPlatformConfig.PsvPkgCacheOnLaunch)]);
+                            }
                         }
                     }
 
@@ -1053,6 +1541,17 @@ namespace ArchiveCacheManager
             iniData[configSection][nameof(BypassPathCheck)] = mBypassPathCheck.ToString();
             iniData[configSection][nameof(PS3KeyPath)] = mPS3KeyPath;
             iniData[configSection][nameof(Ps3UseIsoMountLauncher)] = mPs3UseIsoMountLauncher.ToString();
+            iniData[configSection][nameof(Ps3PkgAutoInstallToRpcs3)] = mPs3PkgAutoInstallToRpcs3.ToString();
+            iniData[configSection][nameof(Ps3LocalPkgFolders)] = mPs3LocalPkgFolders;
+            iniData[configSection][nameof(PspLocalPkgFolders)] = mPspLocalPkgFolders;
+            iniData[configSection][nameof(PsvLocalPkgFolders)] = mPsvLocalPkgFolders;
+            iniData[configSection][nameof(WiiuLocalRomFolders)] = mWiiuLocalRomFolders;
+            iniData[configSection][nameof(Ctr3dsLocalRomFolders)] = mCtr3dsLocalRomFolders;
+            iniData[configSection][nameof(Ps3AutoInstallDlcs)] = mPs3AutoInstallDlcs.ToString();
+            iniData[configSection][nameof(WiiuAutoInstallUpdates)] = mWiiuAutoInstallUpdates.ToString();
+            iniData[configSection][nameof(WiiuAutoInstallDlcs)]    = mWiiuAutoInstallDlcs.ToString();
+            iniData[configSection][nameof(PspAutoInstallDlcs)] = mPspAutoInstallDlcs.ToString();
+            iniData[configSection][nameof(PsvAutoInstallDlcs)] = mPsvAutoInstallDlcs.ToString();
             iniData[configSection][nameof(WadPlatform)] = mWadPlatform;
             iniData[configSection][nameof(WadOutputPath)] = mWadOutputPath;
             iniData[configSection][nameof(WadCetkCachePath)] = mWadCetkCachePath;
@@ -1075,6 +1574,35 @@ namespace ArchiveCacheManager
             iniData[configSection][nameof(TadOutputPath)] = mTadOutputPath;
             iniData[configSection][nameof(TadCetkCachePath)] = mTadCetkCachePath;
             iniData[configSection][nameof(TadAddToLibrary)] = mTadAddToLibrary.ToString();
+            iniData[configSection][nameof(Ps3PkgPlatform)] = mPs3PkgPlatform;
+            iniData[configSection][nameof(Ps3PkgOutputPath)] = mPs3PkgOutputPath;
+            iniData[configSection][nameof(Ps3RpcsExdataPath)] = mPs3RpcsExdataPath;
+            iniData[configSection][nameof(Ps3PkgAddToLibrary)] = mPs3PkgAddToLibrary.ToString();
+            iniData[configSection][nameof(Ps3UpdateOutputPath)] = mPs3UpdateOutputPath;
+            iniData[configSection][nameof(Ps3AutoInstallUpdates)] = mPs3AutoInstallUpdates.ToString();
+            iniData[configSection][nameof(Ps3UpdateCachePath)] = mPs3UpdateCachePath;
+            iniData[configSection][nameof(Ps3UpdateOfflineMode)] = mPs3UpdateOfflineMode.ToString();
+            iniData[configSection][nameof(PspUpdateOutputPath)] = mPspUpdateOutputPath;
+            iniData[configSection][nameof(PspAutoInstallUpdates)] = mPspAutoInstallUpdates.ToString();
+            iniData[configSection][nameof(PspUpdateCachePath)] = mPspUpdateCachePath;
+            iniData[configSection][nameof(PspUpdateOfflineMode)] = mPspUpdateOfflineMode.ToString();
+            iniData[configSection][nameof(Ctr3dsPlatform)] = mCtr3dsPlatform;
+            iniData[configSection][nameof(Ctr3dsKeysPath)] = mCtr3dsKeysPath;
+            iniData[configSection][nameof(Ctr3dsSeedDbPath)] = mCtr3dsSeedDbPath;
+            iniData[configSection][nameof(Ctr3dsOutputPath)] = mCtr3dsOutputPath;
+            iniData[configSection][nameof(Ctr3dsAddToLibrary)] = mCtr3dsAddToLibrary.ToString();
+            iniData[configSection][nameof(PsvPkgPlatform)] = mPsvPkgPlatform;
+            iniData[configSection][nameof(PsvPkgOutputPath)] = mPsvPkgOutputPath;
+            iniData[configSection][nameof(PsvPkgAddToLibrary)] = mPsvPkgAddToLibrary.ToString();
+            iniData[configSection][nameof(PsvVita3kDataPath)] = mPsvVita3kDataPath;
+            iniData[configSection][nameof(NpsDbPath)] = mNpsDbPath;
+            iniData[configSection][nameof(PsvAutoInstallUpdates)] = mPsvAutoInstallUpdates.ToString();
+            iniData[configSection][nameof(PsvUpdateCachePath)] = mPsvUpdateCachePath;
+            iniData[configSection][nameof(PsvUpdateOfflineMode)] = mPsvUpdateOfflineMode.ToString();
+            iniData[configSection][nameof(PspPkgPlatform)] = mPspPkgPlatform;
+            iniData[configSection][nameof(PspPkgOutputPath)] = mPspPkgOutputPath;
+            iniData[configSection][nameof(PspPpssppLicensePath)] = mPspPpssppLicensePath;
+            iniData[configSection][nameof(PspPkgAddToLibrary)] = mPspPkgAddToLibrary.ToString();
 
             foreach (KeyValuePair<string, EmulatorPlatformConfig> priority in mEmulatorPlatformConfig)
             {
@@ -1092,6 +1620,10 @@ namespace ArchiveCacheManager
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.CiaCacheOnLaunch)] = priority.Value.CiaCacheOnLaunch.ToString();
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.WadCacheOnLaunch)] = priority.Value.WadCacheOnLaunch.ToString();
                 iniData[priority.Key][nameof(EmulatorPlatformConfig.TadCacheOnLaunch)] = priority.Value.TadCacheOnLaunch.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.Ps3PkgCacheOnLaunch)] = priority.Value.Ps3PkgCacheOnLaunch.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.PspPkgCacheOnLaunch)] = priority.Value.PspPkgCacheOnLaunch.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.Ctr3dsCacheOnLaunch)] = priority.Value.Ctr3dsCacheOnLaunch.ToString();
+                iniData[priority.Key][nameof(EmulatorPlatformConfig.PsvPkgCacheOnLaunch)] = priority.Value.PsvPkgCacheOnLaunch.ToString();
             }
 
             try
@@ -1118,6 +1650,17 @@ namespace ArchiveCacheManager
             mBypassPathCheck = defaultBypassPathCheck;
             mPS3KeyPath = defaultPS3KeyPath;
             mPs3UseIsoMountLauncher = defaultPs3UseIsoMountLauncher;
+            mPs3PkgAutoInstallToRpcs3 = defaultPs3PkgAutoInstallToRpcs3;
+            mPs3LocalPkgFolders = defaultPs3LocalPkgFolders;
+            mPspLocalPkgFolders = defaultPspLocalPkgFolders;
+            mPsvLocalPkgFolders = defaultPsvLocalPkgFolders;
+            mWiiuLocalRomFolders = defaultWiiuLocalRomFolders;
+            mCtr3dsLocalRomFolders = defaultCtr3dsLocalRomFolders;
+            mPs3AutoInstallDlcs = defaultPs3AutoInstallDlcs;
+            mWiiuAutoInstallUpdates = defaultWiiuAutoInstallUpdates;
+            mWiiuAutoInstallDlcs    = defaultWiiuAutoInstallDlcs;
+            mPspAutoInstallDlcs = defaultPspAutoInstallDlcs;
+            mPsvAutoInstallDlcs = defaultPsvAutoInstallDlcs;
             mWadPlatform = defaultWadPlatform;
             mWadOutputPath = defaultWadOutputPath;
             mWadCetkCachePath = defaultWadCetkCachePath;
@@ -1140,6 +1683,35 @@ namespace ArchiveCacheManager
             mTadOutputPath = defaultTadOutputPath;
             mTadCetkCachePath = defaultTadCetkCachePath;
             mTadAddToLibrary = defaultTadAddToLibrary;
+            mPs3PkgPlatform = defaultPs3PkgPlatform;
+            mPs3PkgOutputPath = defaultPs3PkgOutputPath;
+            mPs3RpcsExdataPath = defaultPs3RpcsExdataPath;
+            mPs3PkgAddToLibrary = defaultPs3PkgAddToLibrary;
+            mPs3UpdateOutputPath = defaultPs3UpdateOutputPath;
+            mPs3AutoInstallUpdates = defaultPs3AutoInstallUpdates;
+            mPs3UpdateCachePath = defaultPs3UpdateCachePath;
+            mPs3UpdateOfflineMode = defaultPs3UpdateOfflineMode;
+            mPspUpdateOutputPath = defaultPspUpdateOutputPath;
+            mPspAutoInstallUpdates = defaultPspAutoInstallUpdates;
+            mPspUpdateCachePath = defaultPspUpdateCachePath;
+            mPspUpdateOfflineMode = defaultPspUpdateOfflineMode;
+            mCtr3dsPlatform = defaultCtr3dsPlatform;
+            mCtr3dsKeysPath = defaultCtr3dsKeysPath;
+            mCtr3dsSeedDbPath = defaultCtr3dsSeedDbPath;
+            mCtr3dsOutputPath = defaultCtr3dsOutputPath;
+            mCtr3dsAddToLibrary = defaultCtr3dsAddToLibrary;
+            mPsvPkgPlatform = defaultPsvPkgPlatform;
+            mPsvPkgOutputPath = defaultPsvPkgOutputPath;
+            mPsvPkgAddToLibrary = defaultPsvPkgAddToLibrary;
+            mPsvVita3kDataPath = defaultPsvVita3kDataPath;
+            mNpsDbPath = defaultNpsDbPath;
+            mPsvAutoInstallUpdates = defaultPsvAutoInstallUpdates;
+            mPsvUpdateCachePath = defaultPsvUpdateCachePath;
+            mPsvUpdateOfflineMode = defaultPsvUpdateOfflineMode;
+            mPspPkgPlatform = defaultPspPkgPlatform;
+            mPspPkgOutputPath = defaultPspPkgOutputPath;
+            mPspPpssppLicensePath = defaultPspPpssppLicensePath;
+            mPspPkgAddToLibrary = defaultPspPkgAddToLibrary;
 
             mEmulatorPlatformConfig = new Dictionary<string, EmulatorPlatformConfig>();
             mEmulatorPlatformConfig.Add(defaultEmulatorPlatform, new EmulatorPlatformConfig());

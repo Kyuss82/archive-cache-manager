@@ -81,6 +81,9 @@ namespace ArchiveCacheManager
             this.label4 = new System.Windows.Forms.Label();
             this.tab4PluginSettings = new System.Windows.Forms.TabPage();
             this.tab5PackagingSettings = new System.Windows.Forms.TabPage();
+            this.packagingSubTabs = new System.Windows.Forms.TabControl();
+            this.tabPackagingNintendo = new System.Windows.Forms.TabPage();
+            this.tabPackagingSony = new System.Windows.Forms.TabPage();
             this.packagingWiiSectionLabel = new System.Windows.Forms.Label();
             this.wadPlatformLabel = new System.Windows.Forms.Label();
             this.wadPlatform = new System.Windows.Forms.CheckedListBox();
@@ -125,8 +128,82 @@ namespace ArchiveCacheManager
             this.tadCetkCachePath = new System.Windows.Forms.TextBox();
             this.tadCetkCachePathBrowseButton = new System.Windows.Forms.Button();
             this.tadAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
+            this.packagingPs3PkgSectionLabel = new System.Windows.Forms.Label();
+            this.ps3PkgPlatformLabel = new System.Windows.Forms.Label();
+            this.ps3PkgPlatform = new System.Windows.Forms.CheckedListBox();
+            this.ps3PkgOutputPathLabel = new System.Windows.Forms.Label();
+            this.ps3PkgOutputPath = new System.Windows.Forms.TextBox();
+            this.ps3PkgOutputPathBrowseButton = new System.Windows.Forms.Button();
+            this.ps3RpcsExdataPathLabel = new System.Windows.Forms.Label();
+            this.ps3RpcsExdataPath = new System.Windows.Forms.TextBox();
+            this.ps3RpcsExdataPathBrowseButton = new System.Windows.Forms.Button();
+            this.ps3PkgAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
+            this.ps3PkgAutoInstallToRpcs3CheckBox = new System.Windows.Forms.CheckBox();
+            this.ps3AutoInstallDlcsCheckBox = new System.Windows.Forms.CheckBox();
+            this.pspAutoInstallDlcsCheckBox = new System.Windows.Forms.CheckBox();
+            this.psvAutoInstallDlcsCheckBox = new System.Windows.Forms.CheckBox();
+            this.ps3LocalPkgFoldersButton = new System.Windows.Forms.Button();
+            this.pspLocalPkgFoldersButton = new System.Windows.Forms.Button();
+            this.psvLocalPkgFoldersButton = new System.Windows.Forms.Button();
+            this.wiiuLocalRomFoldersButton = new System.Windows.Forms.Button();
+            this.ctr3dsLocalRomFoldersButton = new System.Windows.Forms.Button();
+            this.packagingPspPkgSectionLabel = new System.Windows.Forms.Label();
+            this.pspPkgPlatformLabel = new System.Windows.Forms.Label();
+            this.pspPkgPlatform = new System.Windows.Forms.CheckedListBox();
+            this.pspPkgOutputPathLabel = new System.Windows.Forms.Label();
+            this.pspPkgOutputPath = new System.Windows.Forms.TextBox();
+            this.pspPkgOutputPathBrowseButton = new System.Windows.Forms.Button();
+            this.pspPpssppLicensePathLabel = new System.Windows.Forms.Label();
+            this.pspPpssppLicensePath = new System.Windows.Forms.TextBox();
+            this.pspPpssppLicensePathBrowseButton = new System.Windows.Forms.Button();
+            this.pspPkgAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
+            this.packagingPs3AutoUpdateSectionLabel = new System.Windows.Forms.Label();
+            this.ps3AutoInstallUpdatesCheckBox = new System.Windows.Forms.CheckBox();
+            this.ps3UpdateCachePathLabel = new System.Windows.Forms.Label();
+            this.ps3UpdateCachePath = new System.Windows.Forms.TextBox();
+            this.ps3UpdateCachePathBrowseButton = new System.Windows.Forms.Button();
+            this.ps3UpdateOfflineModeCheckBox = new System.Windows.Forms.CheckBox();
+            this.packagingPspAutoUpdateSectionLabel = new System.Windows.Forms.Label();
+            this.pspAutoInstallUpdatesCheckBox = new System.Windows.Forms.CheckBox();
+            this.pspUpdateCachePathLabel = new System.Windows.Forms.Label();
+            this.pspUpdateCachePath = new System.Windows.Forms.TextBox();
+            this.pspUpdateCachePathBrowseButton = new System.Windows.Forms.Button();
+            this.pspUpdateOfflineModeCheckBox = new System.Windows.Forms.CheckBox();
+            this.packagingCtr3dsSectionLabel = new System.Windows.Forms.Label();
+            this.ctr3dsPlatformLabel = new System.Windows.Forms.Label();
+            this.ctr3dsPlatform = new System.Windows.Forms.CheckedListBox();
+            this.ctr3dsKeysPathLabel = new System.Windows.Forms.Label();
+            this.ctr3dsKeysPath = new System.Windows.Forms.TextBox();
+            this.ctr3dsKeysPathBrowseButton = new System.Windows.Forms.Button();
+            this.ctr3dsSeedDbPathLabel = new System.Windows.Forms.Label();
+            this.ctr3dsSeedDbPath = new System.Windows.Forms.TextBox();
+            this.ctr3dsSeedDbPathBrowseButton = new System.Windows.Forms.Button();
+            this.ctr3dsOutputPathLabel = new System.Windows.Forms.Label();
+            this.ctr3dsOutputPath = new System.Windows.Forms.TextBox();
+            this.ctr3dsOutputPathBrowseButton = new System.Windows.Forms.Button();
+            this.ctr3dsAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
+            this.packagingPsvPkgSectionLabel = new System.Windows.Forms.Label();
+            this.psvPkgPlatformLabel = new System.Windows.Forms.Label();
+            this.psvPkgPlatform = new System.Windows.Forms.CheckedListBox();
+            this.psvPkgOutputPathLabel = new System.Windows.Forms.Label();
+            this.psvPkgOutputPath = new System.Windows.Forms.TextBox();
+            this.psvPkgOutputPathBrowseButton = new System.Windows.Forms.Button();
+            this.psvPkgAddToLibraryCheckBox = new System.Windows.Forms.CheckBox();
+            this.psvVita3kDataPathLabel = new System.Windows.Forms.Label();
+            this.psvVita3kDataPath = new System.Windows.Forms.TextBox();
+            this.psvVita3kDataPathBrowseButton = new System.Windows.Forms.Button();
+            this.npsDbPathLabel = new System.Windows.Forms.Label();
+            this.npsDbPath = new System.Windows.Forms.TextBox();
+            this.npsDbPathBrowseButton = new System.Windows.Forms.Button();
+            this.packagingPsvAutoUpdateSectionLabel = new System.Windows.Forms.Label();
+            this.psvAutoInstallUpdatesCheckBox = new System.Windows.Forms.CheckBox();
+            this.psvUpdateCachePathLabel = new System.Windows.Forms.Label();
+            this.psvUpdateCachePath = new System.Windows.Forms.TextBox();
+            this.psvUpdateCachePathBrowseButton = new System.Windows.Forms.Button();
+            this.psvUpdateOfflineModeCheckBox = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.bypassPathCheckCheckBox = new System.Windows.Forms.CheckBox();
+            this.packagingPs3IsoSectionLabel = new System.Windows.Forms.Label();
             this.ps3KeyPathLabel = new System.Windows.Forms.Label();
             this.ps3KeyPath = new System.Windows.Forms.TextBox();
             this.ps3KeyPathBrowseButton = new System.Windows.Forms.Button();
@@ -150,6 +227,10 @@ namespace ArchiveCacheManager
             this.CiaCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.WadCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.TadCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Ps3PkgCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.PspPkgCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Ctr3dsCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.PsvPkgCacheOnLaunch = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.flowLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tab1CacheSettings.SuspendLayout();
@@ -159,6 +240,9 @@ namespace ArchiveCacheManager
             this.tab3SmartExtractSettings.SuspendLayout();
             this.tab4PluginSettings.SuspendLayout();
             this.tab5PackagingSettings.SuspendLayout();
+            this.packagingSubTabs.SuspendLayout();
+            this.tabPackagingNintendo.SuspendLayout();
+            this.tabPackagingSony.SuspendLayout();
             this.SuspendLayout();
             // 
             // openInExplorerButton
@@ -605,7 +689,11 @@ namespace ArchiveCacheManager
             this.WiiuCacheOnLaunch,
             this.CiaCacheOnLaunch,
             this.WadCacheOnLaunch,
-            this.TadCacheOnLaunch});
+            this.TadCacheOnLaunch,
+            this.Ps3PkgCacheOnLaunch,
+            this.PspPkgCacheOnLaunch,
+            this.Ctr3dsCacheOnLaunch,
+            this.PsvPkgCacheOnLaunch});
             this.emulatorPlatformConfigDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.emulatorPlatformConfigDataGridView.Location = new System.Drawing.Point(6, 62);
             this.emulatorPlatformConfigDataGridView.MultiSelect = false;
@@ -717,10 +805,11 @@ namespace ArchiveCacheManager
             this.tab4PluginSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tab4PluginSettings.Controls.Add(this.label8);
             this.tab4PluginSettings.Controls.Add(this.bypassPathCheckCheckBox);
-            this.tab4PluginSettings.Controls.Add(this.ps3KeyPathLabel);
-            this.tab4PluginSettings.Controls.Add(this.ps3KeyPath);
-            this.tab4PluginSettings.Controls.Add(this.ps3KeyPathBrowseButton);
-            this.tab4PluginSettings.Controls.Add(this.ps3UseIsoMountLauncherCheckBox);
+            this.tabPackagingSony.Controls.Add(this.packagingPs3IsoSectionLabel);
+            this.tabPackagingSony.Controls.Add(this.ps3KeyPathLabel);
+            this.tabPackagingSony.Controls.Add(this.ps3KeyPath);
+            this.tabPackagingSony.Controls.Add(this.ps3KeyPathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.ps3UseIsoMountLauncherCheckBox);
             this.tab4PluginSettings.Controls.Add(this.label7);
             this.tab4PluginSettings.Controls.Add(this.label3);
             this.tab4PluginSettings.Controls.Add(this.updateCheckCheckBox);
@@ -735,51 +824,125 @@ namespace ArchiveCacheManager
             // tab5PackagingSettings
             //
             this.tab5PackagingSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tab5PackagingSettings.Controls.Add(this.packagingWiiSectionLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wadPlatformLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wadPlatform);
-            this.tab5PackagingSettings.Controls.Add(this.wadOutputPathLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wadOutputPath);
-            this.tab5PackagingSettings.Controls.Add(this.wadOutputPathBrowseButton);
-            this.tab5PackagingSettings.Controls.Add(this.wadCetkCachePathLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wadCetkCachePath);
-            this.tab5PackagingSettings.Controls.Add(this.wadCetkCachePathBrowseButton);
-            this.tab5PackagingSettings.Controls.Add(this.wadAddToLibraryCheckBox);
-            this.tab5PackagingSettings.Controls.Add(this.packagingWiiuSectionLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuPlatformLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuPlatform);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuOutputPathLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuOutputPath);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuOutputPathBrowseButton);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuCommonKeyLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuCommonKey);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuTitleKeyPasswordLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuTitleKeyPassword);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuAddToLibraryCheckBox);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuCemuKeysPathLabel);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuCemuKeysPath);
-            this.tab5PackagingSettings.Controls.Add(this.wiiuCemuKeysPathBrowseButton);
-            this.tab5PackagingSettings.Controls.Add(this.packagingCiaSectionLabel);
-            this.tab5PackagingSettings.Controls.Add(this.ciaPlatformLabel);
-            this.tab5PackagingSettings.Controls.Add(this.ciaPlatform);
-            this.tab5PackagingSettings.Controls.Add(this.ciaOutputPathLabel);
-            this.tab5PackagingSettings.Controls.Add(this.ciaOutputPath);
-            this.tab5PackagingSettings.Controls.Add(this.ciaOutputPathBrowseButton);
-            this.tab5PackagingSettings.Controls.Add(this.ciaCetkCachePathLabel);
-            this.tab5PackagingSettings.Controls.Add(this.ciaCetkCachePath);
-            this.tab5PackagingSettings.Controls.Add(this.ciaCetkCachePathBrowseButton);
-            this.tab5PackagingSettings.Controls.Add(this.ciaAddToLibraryCheckBox);
-            this.tab5PackagingSettings.Controls.Add(this.packagingTadSectionLabel);
-            this.tab5PackagingSettings.Controls.Add(this.tadPlatformLabel);
-            this.tab5PackagingSettings.Controls.Add(this.tadPlatform);
-            this.tab5PackagingSettings.Controls.Add(this.tadOutputPathLabel);
-            this.tab5PackagingSettings.Controls.Add(this.tadOutputPath);
-            this.tab5PackagingSettings.Controls.Add(this.tadOutputPathBrowseButton);
-            this.tab5PackagingSettings.Controls.Add(this.tadCetkCachePathLabel);
-            this.tab5PackagingSettings.Controls.Add(this.tadCetkCachePath);
-            this.tab5PackagingSettings.Controls.Add(this.tadCetkCachePathBrowseButton);
-            this.tab5PackagingSettings.Controls.Add(this.tadAddToLibraryCheckBox);
-            this.tab5PackagingSettings.AutoScroll = true;
+            this.tabPackagingNintendo.Controls.Add(this.wiiuLocalRomFoldersButton);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsLocalRomFoldersButton);
+            this.tabPackagingNintendo.Controls.Add(this.packagingWiiSectionLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wadPlatformLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wadPlatform);
+            this.tabPackagingNintendo.Controls.Add(this.wadOutputPathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wadOutputPath);
+            this.tabPackagingNintendo.Controls.Add(this.wadOutputPathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.wadCetkCachePathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wadCetkCachePath);
+            this.tabPackagingNintendo.Controls.Add(this.wadCetkCachePathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.wadAddToLibraryCheckBox);
+            this.tabPackagingNintendo.Controls.Add(this.packagingWiiuSectionLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuPlatformLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuPlatform);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuOutputPathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuOutputPath);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuOutputPathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuCommonKeyLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuCommonKey);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuTitleKeyPasswordLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuTitleKeyPassword);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuAddToLibraryCheckBox);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuCemuKeysPathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuCemuKeysPath);
+            this.tabPackagingNintendo.Controls.Add(this.wiiuCemuKeysPathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.packagingCiaSectionLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ciaPlatformLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ciaPlatform);
+            this.tabPackagingNintendo.Controls.Add(this.ciaOutputPathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ciaOutputPath);
+            this.tabPackagingNintendo.Controls.Add(this.ciaOutputPathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.ciaCetkCachePathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ciaCetkCachePath);
+            this.tabPackagingNintendo.Controls.Add(this.ciaCetkCachePathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.ciaAddToLibraryCheckBox);
+            this.tabPackagingNintendo.Controls.Add(this.packagingTadSectionLabel);
+            this.tabPackagingNintendo.Controls.Add(this.tadPlatformLabel);
+            this.tabPackagingNintendo.Controls.Add(this.tadPlatform);
+            this.tabPackagingNintendo.Controls.Add(this.tadOutputPathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.tadOutputPath);
+            this.tabPackagingNintendo.Controls.Add(this.tadOutputPathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.tadCetkCachePathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.tadCetkCachePath);
+            this.tabPackagingNintendo.Controls.Add(this.tadCetkCachePathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.tadAddToLibraryCheckBox);
+            this.tabPackagingSony.Controls.Add(this.packagingPs3PkgSectionLabel);
+            this.tabPackagingSony.Controls.Add(this.ps3PkgPlatformLabel);
+            this.tabPackagingSony.Controls.Add(this.ps3PkgPlatform);
+            this.tabPackagingSony.Controls.Add(this.ps3PkgOutputPathLabel);
+            this.tabPackagingSony.Controls.Add(this.ps3PkgOutputPath);
+            this.tabPackagingSony.Controls.Add(this.ps3PkgOutputPathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.ps3RpcsExdataPathLabel);
+            this.tabPackagingSony.Controls.Add(this.ps3RpcsExdataPath);
+            this.tabPackagingSony.Controls.Add(this.ps3RpcsExdataPathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.ps3PkgAddToLibraryCheckBox);
+            this.tabPackagingSony.Controls.Add(this.ps3PkgAutoInstallToRpcs3CheckBox);
+            this.tabPackagingSony.Controls.Add(this.ps3AutoInstallDlcsCheckBox);
+            this.tabPackagingSony.Controls.Add(this.pspAutoInstallDlcsCheckBox);
+            this.tabPackagingSony.Controls.Add(this.psvAutoInstallDlcsCheckBox);
+            this.tabPackagingSony.Controls.Add(this.ps3LocalPkgFoldersButton);
+            this.tabPackagingSony.Controls.Add(this.pspLocalPkgFoldersButton);
+            this.tabPackagingSony.Controls.Add(this.psvLocalPkgFoldersButton);
+            this.tabPackagingSony.Controls.Add(this.packagingPspPkgSectionLabel);
+            this.tabPackagingSony.Controls.Add(this.pspPkgPlatformLabel);
+            this.tabPackagingSony.Controls.Add(this.pspPkgPlatform);
+            this.tabPackagingSony.Controls.Add(this.pspPkgOutputPathLabel);
+            this.tabPackagingSony.Controls.Add(this.pspPkgOutputPath);
+            this.tabPackagingSony.Controls.Add(this.pspPkgOutputPathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.pspPpssppLicensePathLabel);
+            this.tabPackagingSony.Controls.Add(this.pspPpssppLicensePath);
+            this.tabPackagingSony.Controls.Add(this.pspPpssppLicensePathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.pspPkgAddToLibraryCheckBox);
+            this.tabPackagingSony.Controls.Add(this.packagingPs3AutoUpdateSectionLabel);
+            this.tabPackagingSony.Controls.Add(this.ps3AutoInstallUpdatesCheckBox);
+            this.tabPackagingSony.Controls.Add(this.ps3UpdateCachePathLabel);
+            this.tabPackagingSony.Controls.Add(this.ps3UpdateCachePath);
+            this.tabPackagingSony.Controls.Add(this.ps3UpdateCachePathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.ps3UpdateOfflineModeCheckBox);
+            this.tabPackagingSony.Controls.Add(this.packagingPspAutoUpdateSectionLabel);
+            this.tabPackagingSony.Controls.Add(this.pspAutoInstallUpdatesCheckBox);
+            this.tabPackagingSony.Controls.Add(this.pspUpdateCachePathLabel);
+            this.tabPackagingSony.Controls.Add(this.pspUpdateCachePath);
+            this.tabPackagingSony.Controls.Add(this.pspUpdateCachePathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.pspUpdateOfflineModeCheckBox);
+            this.tabPackagingNintendo.Controls.Add(this.packagingCtr3dsSectionLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsPlatformLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsPlatform);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsKeysPathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsKeysPath);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsKeysPathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsSeedDbPathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsSeedDbPath);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsSeedDbPathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsOutputPathLabel);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsOutputPath);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsOutputPathBrowseButton);
+            this.tabPackagingNintendo.Controls.Add(this.ctr3dsAddToLibraryCheckBox);
+            this.tabPackagingSony.Controls.Add(this.packagingPsvPkgSectionLabel);
+            this.tabPackagingSony.Controls.Add(this.psvPkgPlatformLabel);
+            this.tabPackagingSony.Controls.Add(this.psvPkgPlatform);
+            this.tabPackagingSony.Controls.Add(this.psvPkgOutputPathLabel);
+            this.tabPackagingSony.Controls.Add(this.psvPkgOutputPath);
+            this.tabPackagingSony.Controls.Add(this.psvPkgOutputPathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.psvPkgAddToLibraryCheckBox);
+            this.tabPackagingSony.Controls.Add(this.psvVita3kDataPathLabel);
+            this.tabPackagingSony.Controls.Add(this.psvVita3kDataPath);
+            this.tabPackagingSony.Controls.Add(this.psvVita3kDataPathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.npsDbPathLabel);
+            this.tabPackagingSony.Controls.Add(this.npsDbPath);
+            this.tabPackagingSony.Controls.Add(this.npsDbPathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.packagingPsvAutoUpdateSectionLabel);
+            this.tabPackagingSony.Controls.Add(this.psvAutoInstallUpdatesCheckBox);
+            this.tabPackagingSony.Controls.Add(this.psvUpdateCachePathLabel);
+            this.tabPackagingSony.Controls.Add(this.psvUpdateCachePath);
+            this.tabPackagingSony.Controls.Add(this.psvUpdateCachePathBrowseButton);
+            this.tabPackagingSony.Controls.Add(this.psvUpdateOfflineModeCheckBox);
+            this.tab5PackagingSettings.Controls.Add(this.packagingSubTabs);
+            this.tab5PackagingSettings.AutoScroll = false;
             this.tab5PackagingSettings.Location = new System.Drawing.Point(4, 22);
             this.tab5PackagingSettings.Name = "tab5PackagingSettings";
             this.tab5PackagingSettings.Padding = new System.Windows.Forms.Padding(3);
@@ -787,6 +950,39 @@ namespace ArchiveCacheManager
             this.tab5PackagingSettings.TabIndex = 4;
             this.tab5PackagingSettings.Text = "Packaging";
             this.tab5PackagingSettings.UseVisualStyleBackColor = true;
+            //
+            // packagingSubTabs
+            //
+            this.packagingSubTabs.Controls.Add(this.tabPackagingNintendo);
+            this.packagingSubTabs.Controls.Add(this.tabPackagingSony);
+            this.packagingSubTabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.packagingSubTabs.Location = new System.Drawing.Point(3, 3);
+            this.packagingSubTabs.Name = "packagingSubTabs";
+            this.packagingSubTabs.SelectedIndex = 0;
+            this.packagingSubTabs.Size = new System.Drawing.Size(734, 518);
+            this.packagingSubTabs.TabIndex = 0;
+            //
+            // tabPackagingNintendo
+            //
+            this.tabPackagingNintendo.AutoScroll = true;
+            this.tabPackagingNintendo.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPackagingNintendo.Location = new System.Drawing.Point(4, 22);
+            this.tabPackagingNintendo.Name = "tabPackagingNintendo";
+            this.tabPackagingNintendo.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPackagingNintendo.Size = new System.Drawing.Size(726, 492);
+            this.tabPackagingNintendo.TabIndex = 0;
+            this.tabPackagingNintendo.Text = "Nintendo (Wii / Wii U / 3DS / DSi)";
+            //
+            // tabPackagingSony
+            //
+            this.tabPackagingSony.AutoScroll = true;
+            this.tabPackagingSony.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPackagingSony.Location = new System.Drawing.Point(4, 22);
+            this.tabPackagingSony.Name = "tabPackagingSony";
+            this.tabPackagingSony.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPackagingSony.Size = new System.Drawing.Size(726, 492);
+            this.tabPackagingSony.TabIndex = 1;
+            this.tabPackagingSony.Text = "Sony (PS3 / PSP / PSV) + NoPayStation";
             //
             // packagingWiiSectionLabel
             //
@@ -1215,8 +1411,725 @@ namespace ArchiveCacheManager
             this.tadAddToLibraryCheckBox.Text = "Menu: add created TAD to LaunchBox library";
             this.tadAddToLibraryCheckBox.UseVisualStyleBackColor = true;
             //
+            // packagingPs3PkgSectionLabel
+            //
+            this.packagingPs3PkgSectionLabel.AutoSize = true;
+            this.packagingPs3PkgSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingPs3PkgSectionLabel.Location = new System.Drawing.Point(9, 142);
+            this.packagingPs3PkgSectionLabel.Name = "packagingPs3PkgSectionLabel";
+            this.packagingPs3PkgSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingPs3PkgSectionLabel.TabIndex = 117;
+            this.packagingPs3PkgSectionLabel.Text = "PS3 (.pkg)  ·  On-launch packager (.pkg → RPCS3-bootable folder, RAP → exdata)";
+            //
+            // ps3PkgPlatformLabel
+            //
+            this.ps3PkgPlatformLabel.AutoSize = true;
+            this.ps3PkgPlatformLabel.Location = new System.Drawing.Point(9, 166);
+            this.ps3PkgPlatformLabel.Name = "ps3PkgPlatformLabel";
+            this.ps3PkgPlatformLabel.Size = new System.Drawing.Size(220, 13);
+            this.ps3PkgPlatformLabel.TabIndex = 118;
+            this.ps3PkgPlatformLabel.Text = "Menu platforms — show 'Create PS3 Package...' / 'Fetch PS3 Updates...' on these (multi-select):";
+            //
+            // ps3PkgPlatform
+            //
+            this.ps3PkgPlatform.CheckOnClick = true;
+            this.ps3PkgPlatform.IntegralHeight = false;
+            this.ps3PkgPlatform.Location = new System.Drawing.Point(12, 182);
+            this.ps3PkgPlatform.Name = "ps3PkgPlatform";
+            this.ps3PkgPlatform.Size = new System.Drawing.Size(297, 120);
+            this.ps3PkgPlatform.TabIndex = 25;
+            //
+            // ps3PkgOutputPathLabel
+            //
+            this.ps3PkgOutputPathLabel.AutoSize = true;
+            this.ps3PkgOutputPathLabel.Location = new System.Drawing.Point(9, 310);
+            this.ps3PkgOutputPathLabel.Name = "ps3PkgOutputPathLabel";
+            this.ps3PkgOutputPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.ps3PkgOutputPathLabel.TabIndex = 119;
+            this.ps3PkgOutputPathLabel.Text = "Menu output folder (empty = next to source):";
+            //
+            // ps3PkgOutputPath
+            //
+            this.ps3PkgOutputPath.Location = new System.Drawing.Point(12, 326);
+            this.ps3PkgOutputPath.MaxLength = 260;
+            this.ps3PkgOutputPath.Name = "ps3PkgOutputPath";
+            this.ps3PkgOutputPath.Size = new System.Drawing.Size(497, 20);
+            this.ps3PkgOutputPath.TabIndex = 26;
+            //
+            // ps3PkgOutputPathBrowseButton
+            //
+            this.ps3PkgOutputPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ps3PkgOutputPathBrowseButton.Location = new System.Drawing.Point(515, 323);
+            this.ps3PkgOutputPathBrowseButton.Name = "ps3PkgOutputPathBrowseButton";
+            this.ps3PkgOutputPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ps3PkgOutputPathBrowseButton.TabIndex = 27;
+            this.ps3PkgOutputPathBrowseButton.Text = "Browse...";
+            this.ps3PkgOutputPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ps3PkgOutputPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ps3PkgOutputPathBrowseButton.UseVisualStyleBackColor = true;
+            this.ps3PkgOutputPathBrowseButton.Click += new System.EventHandler(this.ps3PkgOutputPathBrowseButton_Click);
+            //
+            // ps3RpcsExdataPathLabel
+            //
+            this.ps3RpcsExdataPathLabel.AutoSize = true;
+            this.ps3RpcsExdataPathLabel.Location = new System.Drawing.Point(9, 358);
+            this.ps3RpcsExdataPathLabel.Name = "ps3RpcsExdataPathLabel";
+            this.ps3RpcsExdataPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.ps3RpcsExdataPathLabel.TabIndex = 120;
+            this.ps3RpcsExdataPathLabel.Text = "RPCS3 exdata folder for RAP licences (dev_hdd0/home/00000001/exdata/) — empty = cache-only:";
+            //
+            // ps3RpcsExdataPath
+            //
+            this.ps3RpcsExdataPath.Location = new System.Drawing.Point(12, 374);
+            this.ps3RpcsExdataPath.MaxLength = 260;
+            this.ps3RpcsExdataPath.Name = "ps3RpcsExdataPath";
+            this.ps3RpcsExdataPath.Size = new System.Drawing.Size(497, 20);
+            this.ps3RpcsExdataPath.TabIndex = 28;
+            //
+            // ps3RpcsExdataPathBrowseButton
+            //
+            this.ps3RpcsExdataPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ps3RpcsExdataPathBrowseButton.Location = new System.Drawing.Point(515, 371);
+            this.ps3RpcsExdataPathBrowseButton.Name = "ps3RpcsExdataPathBrowseButton";
+            this.ps3RpcsExdataPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ps3RpcsExdataPathBrowseButton.TabIndex = 29;
+            this.ps3RpcsExdataPathBrowseButton.Text = "Browse...";
+            this.ps3RpcsExdataPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ps3RpcsExdataPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ps3RpcsExdataPathBrowseButton.UseVisualStyleBackColor = true;
+            this.ps3RpcsExdataPathBrowseButton.Click += new System.EventHandler(this.ps3RpcsExdataPathBrowseButton_Click);
+            //
+            // ps3PkgAddToLibraryCheckBox
+            //
+            this.ps3PkgAddToLibraryCheckBox.AutoSize = true;
+            this.ps3PkgAddToLibraryCheckBox.Location = new System.Drawing.Point(12, 406);
+            this.ps3PkgAddToLibraryCheckBox.Name = "ps3PkgAddToLibraryCheckBox";
+            this.ps3PkgAddToLibraryCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.ps3PkgAddToLibraryCheckBox.TabIndex = 30;
+            this.ps3PkgAddToLibraryCheckBox.Text = "Menu: add staged PS3 install to LaunchBox library";
+            this.ps3PkgAddToLibraryCheckBox.UseVisualStyleBackColor = true;
+            //
+            // ps3PkgAutoInstallToRpcs3CheckBox
+            //
+            this.ps3PkgAutoInstallToRpcs3CheckBox.AutoSize = true;
+            this.ps3PkgAutoInstallToRpcs3CheckBox.Location = new System.Drawing.Point(12, 427);
+            this.ps3PkgAutoInstallToRpcs3CheckBox.Name = "ps3PkgAutoInstallToRpcs3CheckBox";
+            this.ps3PkgAutoInstallToRpcs3CheckBox.Size = new System.Drawing.Size(420, 17);
+            this.ps3PkgAutoInstallToRpcs3CheckBox.TabIndex = 31;
+            this.ps3PkgAutoInstallToRpcs3CheckBox.Text = "On-launch: also robocopy cache → RPCS3 dev_hdd0/game/<TID>/ so NPDRM eboots find their rap";
+            this.ps3PkgAutoInstallToRpcs3CheckBox.UseVisualStyleBackColor = true;
+            //
+            // ps3AutoInstallDlcsCheckBox
+            //
+            this.ps3AutoInstallDlcsCheckBox.AutoSize = true;
+            this.ps3AutoInstallDlcsCheckBox.Location = new System.Drawing.Point(12, 448);
+            this.ps3AutoInstallDlcsCheckBox.Name = "ps3AutoInstallDlcsCheckBox";
+            this.ps3AutoInstallDlcsCheckBox.Size = new System.Drawing.Size(420, 17);
+            this.ps3AutoInstallDlcsCheckBox.TabIndex = 32;
+            this.ps3AutoInstallDlcsCheckBox.Text = "On-launch: install DLCs from local PKG index (see right-click \"Index Local PS3 PKG Folders…\")";
+            this.ps3AutoInstallDlcsCheckBox.UseVisualStyleBackColor = true;
+            //
+            // pspAutoInstallDlcsCheckBox
+            //
+            this.pspAutoInstallDlcsCheckBox.AutoSize = true;
+            this.pspAutoInstallDlcsCheckBox.Location = new System.Drawing.Point(12, 877);
+            this.pspAutoInstallDlcsCheckBox.Name = "pspAutoInstallDlcsCheckBox";
+            this.pspAutoInstallDlcsCheckBox.Size = new System.Drawing.Size(420, 17);
+            this.pspAutoInstallDlcsCheckBox.TabIndex = 50;
+            this.pspAutoInstallDlcsCheckBox.Text = "On-launch: install DLCs from local PKG index (see right-click \"Index Local PSP PKG Folders…\")";
+            this.pspAutoInstallDlcsCheckBox.UseVisualStyleBackColor = true;
+            //
+            // psvAutoInstallDlcsCheckBox
+            //
+            this.psvAutoInstallDlcsCheckBox.AutoSize = true;
+            this.psvAutoInstallDlcsCheckBox.Location = new System.Drawing.Point(12, 1279);
+            this.psvAutoInstallDlcsCheckBox.Name = "psvAutoInstallDlcsCheckBox";
+            this.psvAutoInstallDlcsCheckBox.Size = new System.Drawing.Size(420, 17);
+            this.psvAutoInstallDlcsCheckBox.TabIndex = 70;
+            this.psvAutoInstallDlcsCheckBox.Text = "On-launch: install DLCs from local PKG index (see right-click \"Index Local PSV PKG Folders…\")";
+            this.psvAutoInstallDlcsCheckBox.UseVisualStyleBackColor = true;
+            //
+            // ps3LocalPkgFoldersButton
+            //
+            this.ps3LocalPkgFoldersButton.Location = new System.Drawing.Point(440, 444);
+            this.ps3LocalPkgFoldersButton.Name = "ps3LocalPkgFoldersButton";
+            this.ps3LocalPkgFoldersButton.Size = new System.Drawing.Size(290, 25);
+            this.ps3LocalPkgFoldersButton.TabIndex = 33;
+            this.ps3LocalPkgFoldersButton.Text = "Manage PS3 Local PKG Folders…";
+            this.ps3LocalPkgFoldersButton.UseVisualStyleBackColor = true;
+            //
+            // pspLocalPkgFoldersButton
+            //
+            this.pspLocalPkgFoldersButton.Location = new System.Drawing.Point(440, 873);
+            this.pspLocalPkgFoldersButton.Name = "pspLocalPkgFoldersButton";
+            this.pspLocalPkgFoldersButton.Size = new System.Drawing.Size(290, 25);
+            this.pspLocalPkgFoldersButton.TabIndex = 51;
+            this.pspLocalPkgFoldersButton.Text = "Manage PSP Local PKG Folders…";
+            this.pspLocalPkgFoldersButton.UseVisualStyleBackColor = true;
+            //
+            // psvLocalPkgFoldersButton
+            //
+            this.psvLocalPkgFoldersButton.Location = new System.Drawing.Point(440, 1275);
+            this.psvLocalPkgFoldersButton.Name = "psvLocalPkgFoldersButton";
+            this.psvLocalPkgFoldersButton.Size = new System.Drawing.Size(290, 25);
+            this.psvLocalPkgFoldersButton.TabIndex = 71;
+            this.psvLocalPkgFoldersButton.Text = "Manage PSV Local PKG Folders…";
+            this.psvLocalPkgFoldersButton.UseVisualStyleBackColor = true;
+            //
+            // wiiuLocalRomFoldersButton
+            //
+            this.wiiuLocalRomFoldersButton.Location = new System.Drawing.Point(440, 250);
+            this.wiiuLocalRomFoldersButton.Name = "wiiuLocalRomFoldersButton";
+            this.wiiuLocalRomFoldersButton.Size = new System.Drawing.Size(290, 25);
+            this.wiiuLocalRomFoldersButton.TabIndex = 200;
+            this.wiiuLocalRomFoldersButton.Text = "Manage Wii U Local ROM Folders…";
+            this.wiiuLocalRomFoldersButton.UseVisualStyleBackColor = true;
+            //
+            // ctr3dsLocalRomFoldersButton
+            //
+            this.ctr3dsLocalRomFoldersButton.Location = new System.Drawing.Point(440, 1618);
+            this.ctr3dsLocalRomFoldersButton.Name = "ctr3dsLocalRomFoldersButton";
+            this.ctr3dsLocalRomFoldersButton.Size = new System.Drawing.Size(290, 25);
+            this.ctr3dsLocalRomFoldersButton.TabIndex = 201;
+            this.ctr3dsLocalRomFoldersButton.Text = "Manage 3DS Local ROM Folders…";
+            this.ctr3dsLocalRomFoldersButton.UseVisualStyleBackColor = true;
+            //
+            // packagingPspPkgSectionLabel
+            //
+            this.packagingPspPkgSectionLabel.AutoSize = true;
+            this.packagingPspPkgSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingPspPkgSectionLabel.Location = new System.Drawing.Point(9, 590);
+            this.packagingPspPkgSectionLabel.Name = "packagingPspPkgSectionLabel";
+            this.packagingPspPkgSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingPspPkgSectionLabel.TabIndex = 121;
+            this.packagingPspPkgSectionLabel.Text = "PSP (.pkg)  ·  On-launch packager (.pkg → PPSSPP memstick layout, RAP → PSP/LICENSE)";
+            //
+            // pspPkgPlatformLabel
+            //
+            this.pspPkgPlatformLabel.AutoSize = true;
+            this.pspPkgPlatformLabel.Location = new System.Drawing.Point(9, 614);
+            this.pspPkgPlatformLabel.Name = "pspPkgPlatformLabel";
+            this.pspPkgPlatformLabel.Size = new System.Drawing.Size(220, 13);
+            this.pspPkgPlatformLabel.TabIndex = 122;
+            this.pspPkgPlatformLabel.Text = "Menu platforms — show 'Create PSP Package...' on these (multi-select):";
+            //
+            // pspPkgPlatform
+            //
+            this.pspPkgPlatform.CheckOnClick = true;
+            this.pspPkgPlatform.IntegralHeight = false;
+            this.pspPkgPlatform.Location = new System.Drawing.Point(12, 630);
+            this.pspPkgPlatform.Name = "pspPkgPlatform";
+            this.pspPkgPlatform.Size = new System.Drawing.Size(297, 120);
+            this.pspPkgPlatform.TabIndex = 31;
+            //
+            // pspPkgOutputPathLabel
+            //
+            this.pspPkgOutputPathLabel.AutoSize = true;
+            this.pspPkgOutputPathLabel.Location = new System.Drawing.Point(9, 758);
+            this.pspPkgOutputPathLabel.Name = "pspPkgOutputPathLabel";
+            this.pspPkgOutputPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.pspPkgOutputPathLabel.TabIndex = 123;
+            this.pspPkgOutputPathLabel.Text = "Menu output folder (empty = next to source):";
+            //
+            // pspPkgOutputPath
+            //
+            this.pspPkgOutputPath.Location = new System.Drawing.Point(12, 774);
+            this.pspPkgOutputPath.MaxLength = 260;
+            this.pspPkgOutputPath.Name = "pspPkgOutputPath";
+            this.pspPkgOutputPath.Size = new System.Drawing.Size(497, 20);
+            this.pspPkgOutputPath.TabIndex = 32;
+            //
+            // pspPkgOutputPathBrowseButton
+            //
+            this.pspPkgOutputPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.pspPkgOutputPathBrowseButton.Location = new System.Drawing.Point(515, 771);
+            this.pspPkgOutputPathBrowseButton.Name = "pspPkgOutputPathBrowseButton";
+            this.pspPkgOutputPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.pspPkgOutputPathBrowseButton.TabIndex = 33;
+            this.pspPkgOutputPathBrowseButton.Text = "Browse...";
+            this.pspPkgOutputPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.pspPkgOutputPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pspPkgOutputPathBrowseButton.UseVisualStyleBackColor = true;
+            this.pspPkgOutputPathBrowseButton.Click += new System.EventHandler(this.pspPkgOutputPathBrowseButton_Click);
+            //
+            // pspPpssppLicensePathLabel
+            //
+            this.pspPpssppLicensePathLabel.AutoSize = true;
+            this.pspPpssppLicensePathLabel.Location = new System.Drawing.Point(9, 806);
+            this.pspPpssppLicensePathLabel.Name = "pspPpssppLicensePathLabel";
+            this.pspPpssppLicensePathLabel.Size = new System.Drawing.Size(220, 13);
+            this.pspPpssppLicensePathLabel.TabIndex = 124;
+            this.pspPpssppLicensePathLabel.Text = "PPSSPP memstick LICENSE folder (PSP/LICENSE/) — empty = cache-only:";
+            //
+            // pspPpssppLicensePath
+            //
+            this.pspPpssppLicensePath.Location = new System.Drawing.Point(12, 822);
+            this.pspPpssppLicensePath.MaxLength = 260;
+            this.pspPpssppLicensePath.Name = "pspPpssppLicensePath";
+            this.pspPpssppLicensePath.Size = new System.Drawing.Size(497, 20);
+            this.pspPpssppLicensePath.TabIndex = 34;
+            //
+            // pspPpssppLicensePathBrowseButton
+            //
+            this.pspPpssppLicensePathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.pspPpssppLicensePathBrowseButton.Location = new System.Drawing.Point(515, 819);
+            this.pspPpssppLicensePathBrowseButton.Name = "pspPpssppLicensePathBrowseButton";
+            this.pspPpssppLicensePathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.pspPpssppLicensePathBrowseButton.TabIndex = 35;
+            this.pspPpssppLicensePathBrowseButton.Text = "Browse...";
+            this.pspPpssppLicensePathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.pspPpssppLicensePathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pspPpssppLicensePathBrowseButton.UseVisualStyleBackColor = true;
+            this.pspPpssppLicensePathBrowseButton.Click += new System.EventHandler(this.pspPpssppLicensePathBrowseButton_Click);
+            //
+            // pspPkgAddToLibraryCheckBox
+            //
+            this.pspPkgAddToLibraryCheckBox.AutoSize = true;
+            this.pspPkgAddToLibraryCheckBox.Location = new System.Drawing.Point(12, 854);
+            this.pspPkgAddToLibraryCheckBox.Name = "pspPkgAddToLibraryCheckBox";
+            this.pspPkgAddToLibraryCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.pspPkgAddToLibraryCheckBox.TabIndex = 36;
+            this.pspPkgAddToLibraryCheckBox.Text = "Menu: add staged PSP install to LaunchBox library";
+            this.pspPkgAddToLibraryCheckBox.UseVisualStyleBackColor = true;
+            //
+            // packagingPs3AutoUpdateSectionLabel
+            //
+            this.packagingPs3AutoUpdateSectionLabel.AutoSize = true;
+            this.packagingPs3AutoUpdateSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingPs3AutoUpdateSectionLabel.Location = new System.Drawing.Point(9, 450);
+            this.packagingPs3AutoUpdateSectionLabel.Name = "packagingPs3AutoUpdateSectionLabel";
+            this.packagingPs3AutoUpdateSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingPs3AutoUpdateSectionLabel.TabIndex = 125;
+            this.packagingPs3AutoUpdateSectionLabel.Text = "PS3 Auto-Update  ·  Pull patches/DLC from Sony PSN on launch (covers both PKG and ISO flows)";
+            //
+            // ps3AutoInstallUpdatesCheckBox
+            //
+            this.ps3AutoInstallUpdatesCheckBox.AutoSize = true;
+            this.ps3AutoInstallUpdatesCheckBox.Location = new System.Drawing.Point(12, 475);
+            this.ps3AutoInstallUpdatesCheckBox.Name = "ps3AutoInstallUpdatesCheckBox";
+            this.ps3AutoInstallUpdatesCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.ps3AutoInstallUpdatesCheckBox.TabIndex = 37;
+            this.ps3AutoInstallUpdatesCheckBox.Text = "Auto-install updates / DLC from Sony on launch (PS3 PKG + decrypted ISO)";
+            this.ps3AutoInstallUpdatesCheckBox.UseVisualStyleBackColor = true;
+            //
+            // ps3UpdateCachePathLabel
+            //
+            this.ps3UpdateCachePathLabel.AutoSize = true;
+            this.ps3UpdateCachePathLabel.Location = new System.Drawing.Point(9, 503);
+            this.ps3UpdateCachePathLabel.Name = "ps3UpdateCachePathLabel";
+            this.ps3UpdateCachePathLabel.Size = new System.Drawing.Size(220, 13);
+            this.ps3UpdateCachePathLabel.TabIndex = 126;
+            this.ps3UpdateCachePathLabel.Text = "Update PKG cache folder (persistent, reused across launches) — empty = Plugins\\ArchiveCacheManager\\Ps3UpdateCache:";
+            //
+            // ps3UpdateCachePath
+            //
+            this.ps3UpdateCachePath.Location = new System.Drawing.Point(12, 519);
+            this.ps3UpdateCachePath.MaxLength = 260;
+            this.ps3UpdateCachePath.Name = "ps3UpdateCachePath";
+            this.ps3UpdateCachePath.Size = new System.Drawing.Size(497, 20);
+            this.ps3UpdateCachePath.TabIndex = 38;
+            //
+            // ps3UpdateCachePathBrowseButton
+            //
+            this.ps3UpdateCachePathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ps3UpdateCachePathBrowseButton.Location = new System.Drawing.Point(515, 516);
+            this.ps3UpdateCachePathBrowseButton.Name = "ps3UpdateCachePathBrowseButton";
+            this.ps3UpdateCachePathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ps3UpdateCachePathBrowseButton.TabIndex = 39;
+            this.ps3UpdateCachePathBrowseButton.Text = "Browse...";
+            this.ps3UpdateCachePathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ps3UpdateCachePathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ps3UpdateCachePathBrowseButton.UseVisualStyleBackColor = true;
+            this.ps3UpdateCachePathBrowseButton.Click += new System.EventHandler(this.ps3UpdateCachePathBrowseButton_Click);
+            //
+            // ps3UpdateOfflineModeCheckBox
+            //
+            this.ps3UpdateOfflineModeCheckBox.AutoSize = true;
+            this.ps3UpdateOfflineModeCheckBox.Location = new System.Drawing.Point(12, 550);
+            this.ps3UpdateOfflineModeCheckBox.Name = "ps3UpdateOfflineModeCheckBox";
+            this.ps3UpdateOfflineModeCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.ps3UpdateOfflineModeCheckBox.TabIndex = 40;
+            this.ps3UpdateOfflineModeCheckBox.Text = "Offline mode — read only from local cache, never query Sony (pre-build the DB with right-click → \"Build PS3 Update DB...\")";
+            this.ps3UpdateOfflineModeCheckBox.UseVisualStyleBackColor = true;
+            //
+            // packagingPspAutoUpdateSectionLabel
+            //
+            this.packagingPspAutoUpdateSectionLabel.AutoSize = true;
+            this.packagingPspAutoUpdateSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingPspAutoUpdateSectionLabel.Location = new System.Drawing.Point(9, 900);
+            this.packagingPspAutoUpdateSectionLabel.Name = "packagingPspAutoUpdateSectionLabel";
+            this.packagingPspAutoUpdateSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingPspAutoUpdateSectionLabel.TabIndex = 127;
+            this.packagingPspAutoUpdateSectionLabel.Text = "PSP Auto-Update  ·  Pull patches/DLC from Sony PSN on launch (PSP PKG flow)";
+            //
+            // pspAutoInstallUpdatesCheckBox
+            //
+            this.pspAutoInstallUpdatesCheckBox.AutoSize = true;
+            this.pspAutoInstallUpdatesCheckBox.Location = new System.Drawing.Point(12, 925);
+            this.pspAutoInstallUpdatesCheckBox.Name = "pspAutoInstallUpdatesCheckBox";
+            this.pspAutoInstallUpdatesCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.pspAutoInstallUpdatesCheckBox.TabIndex = 41;
+            this.pspAutoInstallUpdatesCheckBox.Text = "Auto-install updates / DLC from Sony on launch (PSP PKG)";
+            this.pspAutoInstallUpdatesCheckBox.UseVisualStyleBackColor = true;
+            //
+            // pspUpdateCachePathLabel
+            //
+            this.pspUpdateCachePathLabel.AutoSize = true;
+            this.pspUpdateCachePathLabel.Location = new System.Drawing.Point(9, 953);
+            this.pspUpdateCachePathLabel.Name = "pspUpdateCachePathLabel";
+            this.pspUpdateCachePathLabel.Size = new System.Drawing.Size(220, 13);
+            this.pspUpdateCachePathLabel.TabIndex = 128;
+            this.pspUpdateCachePathLabel.Text = "Update PKG cache folder (persistent, reused across launches) — empty = Plugins\\ArchiveCacheManager\\PspUpdateCache:";
+            //
+            // pspUpdateCachePath
+            //
+            this.pspUpdateCachePath.Location = new System.Drawing.Point(12, 969);
+            this.pspUpdateCachePath.MaxLength = 260;
+            this.pspUpdateCachePath.Name = "pspUpdateCachePath";
+            this.pspUpdateCachePath.Size = new System.Drawing.Size(497, 20);
+            this.pspUpdateCachePath.TabIndex = 42;
+            //
+            // pspUpdateCachePathBrowseButton
+            //
+            this.pspUpdateCachePathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.pspUpdateCachePathBrowseButton.Location = new System.Drawing.Point(515, 966);
+            this.pspUpdateCachePathBrowseButton.Name = "pspUpdateCachePathBrowseButton";
+            this.pspUpdateCachePathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.pspUpdateCachePathBrowseButton.TabIndex = 43;
+            this.pspUpdateCachePathBrowseButton.Text = "Browse...";
+            this.pspUpdateCachePathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.pspUpdateCachePathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pspUpdateCachePathBrowseButton.UseVisualStyleBackColor = true;
+            this.pspUpdateCachePathBrowseButton.Click += new System.EventHandler(this.pspUpdateCachePathBrowseButton_Click);
+            //
+            // pspUpdateOfflineModeCheckBox
+            //
+            this.pspUpdateOfflineModeCheckBox.AutoSize = true;
+            this.pspUpdateOfflineModeCheckBox.Location = new System.Drawing.Point(12, 1000);
+            this.pspUpdateOfflineModeCheckBox.Name = "pspUpdateOfflineModeCheckBox";
+            this.pspUpdateOfflineModeCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.pspUpdateOfflineModeCheckBox.TabIndex = 44;
+            this.pspUpdateOfflineModeCheckBox.Text = "Offline mode — read only from local cache, never query Sony (pre-build the DB with right-click → \"Build PSP Update DB...\")";
+            this.pspUpdateOfflineModeCheckBox.UseVisualStyleBackColor = true;
+            //
+            // packagingCtr3dsSectionLabel
+            //
+            this.packagingCtr3dsSectionLabel.AutoSize = true;
+            this.packagingCtr3dsSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingCtr3dsSectionLabel.Location = new System.Drawing.Point(9, 1310);
+            this.packagingCtr3dsSectionLabel.Name = "packagingCtr3dsSectionLabel";
+            this.packagingCtr3dsSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingCtr3dsSectionLabel.TabIndex = 130;
+            this.packagingCtr3dsSectionLabel.Text = "3DS (.3ds / .cci)  ·  In-process NCCH decryption (needs user-supplied aes_keys.txt)";
+            //
+            // ctr3dsPlatformLabel
+            //
+            this.ctr3dsPlatformLabel.AutoSize = true;
+            this.ctr3dsPlatformLabel.Location = new System.Drawing.Point(9, 1334);
+            this.ctr3dsPlatformLabel.Name = "ctr3dsPlatformLabel";
+            this.ctr3dsPlatformLabel.Size = new System.Drawing.Size(220, 13);
+            this.ctr3dsPlatformLabel.TabIndex = 131;
+            this.ctr3dsPlatformLabel.Text = "Menu platforms — show 'Decrypt 3DS ROM...' on these (multi-select):";
+            //
+            // ctr3dsPlatform
+            //
+            this.ctr3dsPlatform.CheckOnClick = true;
+            this.ctr3dsPlatform.IntegralHeight = false;
+            this.ctr3dsPlatform.Location = new System.Drawing.Point(12, 1350);
+            this.ctr3dsPlatform.Name = "ctr3dsPlatform";
+            this.ctr3dsPlatform.Size = new System.Drawing.Size(297, 120);
+            this.ctr3dsPlatform.TabIndex = 45;
+            //
+            // ctr3dsKeysPathLabel
+            //
+            this.ctr3dsKeysPathLabel.AutoSize = true;
+            this.ctr3dsKeysPathLabel.Location = new System.Drawing.Point(9, 1478);
+            this.ctr3dsKeysPathLabel.Name = "ctr3dsKeysPathLabel";
+            this.ctr3dsKeysPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.ctr3dsKeysPathLabel.TabIndex = 132;
+            this.ctr3dsKeysPathLabel.Text = "Path to aes_keys.txt (slot0x2CKeyX + optional Secure2/3/4 KeyX) — empty = Extractors\\aes_keys.txt:";
+            //
+            // ctr3dsKeysPath
+            //
+            this.ctr3dsKeysPath.Location = new System.Drawing.Point(12, 1494);
+            this.ctr3dsKeysPath.MaxLength = 260;
+            this.ctr3dsKeysPath.Name = "ctr3dsKeysPath";
+            this.ctr3dsKeysPath.Size = new System.Drawing.Size(497, 20);
+            this.ctr3dsKeysPath.TabIndex = 46;
+            //
+            // ctr3dsKeysPathBrowseButton
+            //
+            this.ctr3dsKeysPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ctr3dsKeysPathBrowseButton.Location = new System.Drawing.Point(515, 1491);
+            this.ctr3dsKeysPathBrowseButton.Name = "ctr3dsKeysPathBrowseButton";
+            this.ctr3dsKeysPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ctr3dsKeysPathBrowseButton.TabIndex = 47;
+            this.ctr3dsKeysPathBrowseButton.Text = "Browse...";
+            this.ctr3dsKeysPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ctr3dsKeysPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ctr3dsKeysPathBrowseButton.UseVisualStyleBackColor = true;
+            this.ctr3dsKeysPathBrowseButton.Click += new System.EventHandler(this.ctr3dsKeysPathBrowseButton_Click);
+            //
+            // ctr3dsSeedDbPathLabel
+            //
+            this.ctr3dsSeedDbPathLabel.AutoSize = true;
+            this.ctr3dsSeedDbPathLabel.Location = new System.Drawing.Point(9, 1526);
+            this.ctr3dsSeedDbPathLabel.Name = "ctr3dsSeedDbPathLabel";
+            this.ctr3dsSeedDbPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.ctr3dsSeedDbPathLabel.TabIndex = 133;
+            this.ctr3dsSeedDbPathLabel.Text = "Path to seeddb.bin (per-TitleID seeds for 7.x+ seed-crypto titles) — empty = Extractors\\seeddb.bin:";
+            //
+            // ctr3dsSeedDbPath
+            //
+            this.ctr3dsSeedDbPath.Location = new System.Drawing.Point(12, 1542);
+            this.ctr3dsSeedDbPath.MaxLength = 260;
+            this.ctr3dsSeedDbPath.Name = "ctr3dsSeedDbPath";
+            this.ctr3dsSeedDbPath.Size = new System.Drawing.Size(497, 20);
+            this.ctr3dsSeedDbPath.TabIndex = 48;
+            //
+            // ctr3dsSeedDbPathBrowseButton
+            //
+            this.ctr3dsSeedDbPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ctr3dsSeedDbPathBrowseButton.Location = new System.Drawing.Point(515, 1539);
+            this.ctr3dsSeedDbPathBrowseButton.Name = "ctr3dsSeedDbPathBrowseButton";
+            this.ctr3dsSeedDbPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ctr3dsSeedDbPathBrowseButton.TabIndex = 49;
+            this.ctr3dsSeedDbPathBrowseButton.Text = "Browse...";
+            this.ctr3dsSeedDbPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ctr3dsSeedDbPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ctr3dsSeedDbPathBrowseButton.UseVisualStyleBackColor = true;
+            this.ctr3dsSeedDbPathBrowseButton.Click += new System.EventHandler(this.ctr3dsSeedDbPathBrowseButton_Click);
+            //
+            // ctr3dsOutputPathLabel
+            //
+            this.ctr3dsOutputPathLabel.AutoSize = true;
+            this.ctr3dsOutputPathLabel.Location = new System.Drawing.Point(9, 1574);
+            this.ctr3dsOutputPathLabel.Name = "ctr3dsOutputPathLabel";
+            this.ctr3dsOutputPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.ctr3dsOutputPathLabel.TabIndex = 134;
+            this.ctr3dsOutputPathLabel.Text = "Menu output folder (empty = next to source):";
+            //
+            // ctr3dsOutputPath
+            //
+            this.ctr3dsOutputPath.Location = new System.Drawing.Point(12, 1590);
+            this.ctr3dsOutputPath.MaxLength = 260;
+            this.ctr3dsOutputPath.Name = "ctr3dsOutputPath";
+            this.ctr3dsOutputPath.Size = new System.Drawing.Size(497, 20);
+            this.ctr3dsOutputPath.TabIndex = 50;
+            //
+            // ctr3dsOutputPathBrowseButton
+            //
+            this.ctr3dsOutputPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.ctr3dsOutputPathBrowseButton.Location = new System.Drawing.Point(515, 1587);
+            this.ctr3dsOutputPathBrowseButton.Name = "ctr3dsOutputPathBrowseButton";
+            this.ctr3dsOutputPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.ctr3dsOutputPathBrowseButton.TabIndex = 51;
+            this.ctr3dsOutputPathBrowseButton.Text = "Browse...";
+            this.ctr3dsOutputPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ctr3dsOutputPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.ctr3dsOutputPathBrowseButton.UseVisualStyleBackColor = true;
+            this.ctr3dsOutputPathBrowseButton.Click += new System.EventHandler(this.ctr3dsOutputPathBrowseButton_Click);
+            //
+            // ctr3dsAddToLibraryCheckBox
+            //
+            this.ctr3dsAddToLibraryCheckBox.AutoSize = true;
+            this.ctr3dsAddToLibraryCheckBox.Location = new System.Drawing.Point(12, 1622);
+            this.ctr3dsAddToLibraryCheckBox.Name = "ctr3dsAddToLibraryCheckBox";
+            this.ctr3dsAddToLibraryCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.ctr3dsAddToLibraryCheckBox.TabIndex = 52;
+            this.ctr3dsAddToLibraryCheckBox.Text = "Menu: add decrypted .3ds to LaunchBox library";
+            this.ctr3dsAddToLibraryCheckBox.UseVisualStyleBackColor = true;
+            //
+            // packagingPsvPkgSectionLabel
+            //
+            this.packagingPsvPkgSectionLabel.AutoSize = true;
+            this.packagingPsvPkgSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingPsvPkgSectionLabel.Location = new System.Drawing.Point(9, 1040);
+            this.packagingPsvPkgSectionLabel.Name = "packagingPsvPkgSectionLabel";
+            this.packagingPsvPkgSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingPsvPkgSectionLabel.TabIndex = 135;
+            this.packagingPsvPkgSectionLabel.Text = "PSV (.pkg)  ·  On-launch decrypt (.pkg → Vita3K ux0:app layout) + .vpk packaging";
+            //
+            // psvPkgPlatformLabel
+            //
+            this.psvPkgPlatformLabel.AutoSize = true;
+            this.psvPkgPlatformLabel.Location = new System.Drawing.Point(9, 1064);
+            this.psvPkgPlatformLabel.Name = "psvPkgPlatformLabel";
+            this.psvPkgPlatformLabel.Size = new System.Drawing.Size(220, 13);
+            this.psvPkgPlatformLabel.TabIndex = 136;
+            this.psvPkgPlatformLabel.Text = "Menu platforms — show 'Create PSV VPK...' on these (multi-select):";
+            //
+            // psvPkgPlatform
+            //
+            this.psvPkgPlatform.CheckOnClick = true;
+            this.psvPkgPlatform.IntegralHeight = false;
+            this.psvPkgPlatform.Location = new System.Drawing.Point(12, 1080);
+            this.psvPkgPlatform.Name = "psvPkgPlatform";
+            this.psvPkgPlatform.Size = new System.Drawing.Size(297, 120);
+            this.psvPkgPlatform.TabIndex = 53;
+            //
+            // psvPkgOutputPathLabel
+            //
+            this.psvPkgOutputPathLabel.AutoSize = true;
+            this.psvPkgOutputPathLabel.Location = new System.Drawing.Point(9, 1208);
+            this.psvPkgOutputPathLabel.Name = "psvPkgOutputPathLabel";
+            this.psvPkgOutputPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.psvPkgOutputPathLabel.TabIndex = 137;
+            this.psvPkgOutputPathLabel.Text = "Menu output folder (empty = next to source):";
+            //
+            // psvPkgOutputPath
+            //
+            this.psvPkgOutputPath.Location = new System.Drawing.Point(12, 1224);
+            this.psvPkgOutputPath.MaxLength = 260;
+            this.psvPkgOutputPath.Name = "psvPkgOutputPath";
+            this.psvPkgOutputPath.Size = new System.Drawing.Size(497, 20);
+            this.psvPkgOutputPath.TabIndex = 54;
+            //
+            // psvPkgOutputPathBrowseButton
+            //
+            this.psvPkgOutputPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.psvPkgOutputPathBrowseButton.Location = new System.Drawing.Point(515, 1221);
+            this.psvPkgOutputPathBrowseButton.Name = "psvPkgOutputPathBrowseButton";
+            this.psvPkgOutputPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.psvPkgOutputPathBrowseButton.TabIndex = 55;
+            this.psvPkgOutputPathBrowseButton.Text = "Browse...";
+            this.psvPkgOutputPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.psvPkgOutputPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.psvPkgOutputPathBrowseButton.UseVisualStyleBackColor = true;
+            this.psvPkgOutputPathBrowseButton.Click += new System.EventHandler(this.psvPkgOutputPathBrowseButton_Click);
+            //
+            // psvPkgAddToLibraryCheckBox
+            //
+            this.psvPkgAddToLibraryCheckBox.AutoSize = true;
+            this.psvPkgAddToLibraryCheckBox.Location = new System.Drawing.Point(12, 1256);
+            this.psvPkgAddToLibraryCheckBox.Name = "psvPkgAddToLibraryCheckBox";
+            this.psvPkgAddToLibraryCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.psvPkgAddToLibraryCheckBox.TabIndex = 56;
+            this.psvPkgAddToLibraryCheckBox.Text = "Menu: add created .vpk to LaunchBox library";
+            this.psvPkgAddToLibraryCheckBox.UseVisualStyleBackColor = true;
+            //
+            // psvVita3kDataPathLabel
+            //
+            this.psvVita3kDataPathLabel.AutoSize = true;
+            this.psvVita3kDataPathLabel.Location = new System.Drawing.Point(9, 1284);
+            this.psvVita3kDataPathLabel.Name = "psvVita3kDataPathLabel";
+            this.psvVita3kDataPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.psvVita3kDataPathLabel.TabIndex = 138;
+            this.psvVita3kDataPathLabel.Text = "Vita3K data folder (contains ux0/, ur0/) — empty = %APPDATA%\\Vita3K\\Vita3K. Used to drop auto-decoded .rif licenses.";
+            //
+            // psvVita3kDataPath
+            //
+            this.psvVita3kDataPath.Location = new System.Drawing.Point(12, 1300);
+            this.psvVita3kDataPath.MaxLength = 260;
+            this.psvVita3kDataPath.Name = "psvVita3kDataPath";
+            this.psvVita3kDataPath.Size = new System.Drawing.Size(497, 20);
+            this.psvVita3kDataPath.TabIndex = 57;
+            //
+            // psvVita3kDataPathBrowseButton
+            //
+            this.psvVita3kDataPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.psvVita3kDataPathBrowseButton.Location = new System.Drawing.Point(515, 1297);
+            this.psvVita3kDataPathBrowseButton.Name = "psvVita3kDataPathBrowseButton";
+            this.psvVita3kDataPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.psvVita3kDataPathBrowseButton.TabIndex = 58;
+            this.psvVita3kDataPathBrowseButton.Text = "Browse...";
+            this.psvVita3kDataPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.psvVita3kDataPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.psvVita3kDataPathBrowseButton.UseVisualStyleBackColor = true;
+            this.psvVita3kDataPathBrowseButton.Click += new System.EventHandler(this.psvVita3kDataPathBrowseButton_Click);
+            //
+            // npsDbPathLabel
+            //
+            this.npsDbPathLabel.AutoSize = true;
+            this.npsDbPathLabel.Location = new System.Drawing.Point(9, 1332);
+            this.npsDbPathLabel.Name = "npsDbPathLabel";
+            this.npsDbPathLabel.Size = new System.Drawing.Size(220, 13);
+            this.npsDbPathLabel.TabIndex = 139;
+            this.npsDbPathLabel.Text = "NoPayStation TSV folder (or single .tsv) — used by PS3 / PSP / PSV PKG flows to auto-stage missing RAP / zRIF licenses:";
+            //
+            // npsDbPath
+            //
+            this.npsDbPath.Location = new System.Drawing.Point(12, 1348);
+            this.npsDbPath.MaxLength = 260;
+            this.npsDbPath.Name = "npsDbPath";
+            this.npsDbPath.Size = new System.Drawing.Size(497, 20);
+            this.npsDbPath.TabIndex = 59;
+            //
+            // npsDbPathBrowseButton
+            //
+            this.npsDbPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.npsDbPathBrowseButton.Location = new System.Drawing.Point(515, 1345);
+            this.npsDbPathBrowseButton.Name = "npsDbPathBrowseButton";
+            this.npsDbPathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.npsDbPathBrowseButton.TabIndex = 60;
+            this.npsDbPathBrowseButton.Text = "Browse...";
+            this.npsDbPathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.npsDbPathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.npsDbPathBrowseButton.UseVisualStyleBackColor = true;
+            this.npsDbPathBrowseButton.Click += new System.EventHandler(this.npsDbPathBrowseButton_Click);
+            //
+            // packagingPsvAutoUpdateSectionLabel
+            //
+            this.packagingPsvAutoUpdateSectionLabel.AutoSize = true;
+            this.packagingPsvAutoUpdateSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingPsvAutoUpdateSectionLabel.Location = new System.Drawing.Point(9, 1400);
+            this.packagingPsvAutoUpdateSectionLabel.Name = "packagingPsvAutoUpdateSectionLabel";
+            this.packagingPsvAutoUpdateSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingPsvAutoUpdateSectionLabel.TabIndex = 140;
+            this.packagingPsvAutoUpdateSectionLabel.Text = "PSV Auto-Update  ·  Pull patches from Sony PSN on launch (HMAC-signed endpoint, stages into ux0/patch/<TID>/)";
+            //
+            // psvAutoInstallUpdatesCheckBox
+            //
+            this.psvAutoInstallUpdatesCheckBox.AutoSize = true;
+            this.psvAutoInstallUpdatesCheckBox.Location = new System.Drawing.Point(12, 1425);
+            this.psvAutoInstallUpdatesCheckBox.Name = "psvAutoInstallUpdatesCheckBox";
+            this.psvAutoInstallUpdatesCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.psvAutoInstallUpdatesCheckBox.TabIndex = 61;
+            this.psvAutoInstallUpdatesCheckBox.Text = "Auto-install patches from Sony on launch (PSV PKG)";
+            this.psvAutoInstallUpdatesCheckBox.UseVisualStyleBackColor = true;
+            //
+            // psvUpdateCachePathLabel
+            //
+            this.psvUpdateCachePathLabel.AutoSize = true;
+            this.psvUpdateCachePathLabel.Location = new System.Drawing.Point(9, 1453);
+            this.psvUpdateCachePathLabel.Name = "psvUpdateCachePathLabel";
+            this.psvUpdateCachePathLabel.Size = new System.Drawing.Size(220, 13);
+            this.psvUpdateCachePathLabel.TabIndex = 141;
+            this.psvUpdateCachePathLabel.Text = "Update PKG cache folder (persistent) — empty = Plugins\\ArchiveCacheManager\\PsvUpdateCache:";
+            //
+            // psvUpdateCachePath
+            //
+            this.psvUpdateCachePath.Location = new System.Drawing.Point(12, 1469);
+            this.psvUpdateCachePath.MaxLength = 260;
+            this.psvUpdateCachePath.Name = "psvUpdateCachePath";
+            this.psvUpdateCachePath.Size = new System.Drawing.Size(497, 20);
+            this.psvUpdateCachePath.TabIndex = 62;
+            //
+            // psvUpdateCachePathBrowseButton
+            //
+            this.psvUpdateCachePathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
+            this.psvUpdateCachePathBrowseButton.Location = new System.Drawing.Point(515, 1466);
+            this.psvUpdateCachePathBrowseButton.Name = "psvUpdateCachePathBrowseButton";
+            this.psvUpdateCachePathBrowseButton.Size = new System.Drawing.Size(97, 28);
+            this.psvUpdateCachePathBrowseButton.TabIndex = 63;
+            this.psvUpdateCachePathBrowseButton.Text = "Browse...";
+            this.psvUpdateCachePathBrowseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.psvUpdateCachePathBrowseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.psvUpdateCachePathBrowseButton.UseVisualStyleBackColor = true;
+            this.psvUpdateCachePathBrowseButton.Click += new System.EventHandler(this.psvUpdateCachePathBrowseButton_Click);
+            //
+            // psvUpdateOfflineModeCheckBox
+            //
+            this.psvUpdateOfflineModeCheckBox.AutoSize = true;
+            this.psvUpdateOfflineModeCheckBox.Location = new System.Drawing.Point(12, 1500);
+            this.psvUpdateOfflineModeCheckBox.Name = "psvUpdateOfflineModeCheckBox";
+            this.psvUpdateOfflineModeCheckBox.Size = new System.Drawing.Size(280, 17);
+            this.psvUpdateOfflineModeCheckBox.TabIndex = 64;
+            this.psvUpdateOfflineModeCheckBox.Text = "Offline mode — read only from local cache, never query Sony";
+            this.psvUpdateOfflineModeCheckBox.UseVisualStyleBackColor = true;
+            //
             // label8
-            // 
+            //
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(6, 91);
             this.label8.Name = "label8";
@@ -1233,22 +2146,32 @@ namespace ArchiveCacheManager
             this.bypassPathCheckCheckBox.TabIndex = 16;
             this.bypassPathCheckCheckBox.Text = "Always Bypass LaunchBox Path Check";
             this.bypassPathCheckCheckBox.UseVisualStyleBackColor = true;
-            // 
+            //
+            //
+            // packagingPs3IsoSectionLabel
+            //
+            this.packagingPs3IsoSectionLabel.AutoSize = true;
+            this.packagingPs3IsoSectionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.packagingPs3IsoSectionLabel.Location = new System.Drawing.Point(9, 12);
+            this.packagingPs3IsoSectionLabel.Name = "packagingPs3IsoSectionLabel";
+            this.packagingPs3IsoSectionLabel.Size = new System.Drawing.Size(80, 15);
+            this.packagingPs3IsoSectionLabel.TabIndex = 200;
+            this.packagingPs3IsoSectionLabel.Text = "PS3 (.iso)  ·  Per-game .dkey lookup for PS3Dec extractor + optional RPCS3 ISO-mount launcher";
             //
             // ps3KeyPathLabel
             //
             this.ps3KeyPathLabel.AutoSize = true;
-            this.ps3KeyPathLabel.Location = new System.Drawing.Point(6, 155);
+            this.ps3KeyPathLabel.Location = new System.Drawing.Point(6, 36);
             this.ps3KeyPathLabel.Name = "ps3KeyPathLabel";
             this.ps3KeyPathLabel.Size = new System.Drawing.Size(78, 13);
             this.ps3KeyPathLabel.TabIndex = 20;
-            this.ps3KeyPathLabel.Text = "PS3 Keys Path:";
+            this.ps3KeyPathLabel.Text = "PS3 .dkey folder:";
             //
             // ps3KeyPath
             //
             this.ps3KeyPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ps3KeyPath.Location = new System.Drawing.Point(9, 171);
+            this.ps3KeyPath.Location = new System.Drawing.Point(9, 52);
             this.ps3KeyPath.MaxLength = 260;
             this.ps3KeyPath.Name = "ps3KeyPath";
             this.ps3KeyPath.Size = new System.Drawing.Size(618, 20);
@@ -1258,7 +2181,7 @@ namespace ArchiveCacheManager
             //
             this.ps3KeyPathBrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ps3KeyPathBrowseButton.Image = global::ArchiveCacheManager.Resources.folder_horizontal_open;
-            this.ps3KeyPathBrowseButton.Location = new System.Drawing.Point(633, 168);
+            this.ps3KeyPathBrowseButton.Location = new System.Drawing.Point(633, 49);
             this.ps3KeyPathBrowseButton.Name = "ps3KeyPathBrowseButton";
             this.ps3KeyPathBrowseButton.Size = new System.Drawing.Size(97, 28);
             this.ps3KeyPathBrowseButton.TabIndex = 22;
@@ -1271,7 +2194,7 @@ namespace ArchiveCacheManager
             // ps3UseIsoMountLauncherCheckBox
             //
             this.ps3UseIsoMountLauncherCheckBox.AutoSize = true;
-            this.ps3UseIsoMountLauncherCheckBox.Location = new System.Drawing.Point(7, 202);
+            this.ps3UseIsoMountLauncherCheckBox.Location = new System.Drawing.Point(7, 86);
             this.ps3UseIsoMountLauncherCheckBox.Name = "ps3UseIsoMountLauncherCheckBox";
             this.ps3UseIsoMountLauncherCheckBox.Size = new System.Drawing.Size(360, 17);
             this.ps3UseIsoMountLauncherCheckBox.TabIndex = 23;
@@ -1457,6 +2380,34 @@ namespace ArchiveCacheManager
             this.TadCacheOnLaunch.ToolTipText = "Build a .tad from a DSi CDN-dump archive on launch.";
             this.TadCacheOnLaunch.Width = 58;
             //
+            // Ps3PkgCacheOnLaunch
+            //
+            this.Ps3PkgCacheOnLaunch.HeaderText = "PS3 .pkg";
+            this.Ps3PkgCacheOnLaunch.Name = "Ps3PkgCacheOnLaunch";
+            this.Ps3PkgCacheOnLaunch.ToolTipText = "Decrypt PS3 .pkg files to an RPCS3-bootable folder on launch (in-process AES-CTR).";
+            this.Ps3PkgCacheOnLaunch.Width = 62;
+            //
+            // PspPkgCacheOnLaunch
+            //
+            this.PspPkgCacheOnLaunch.HeaderText = "PSP .pkg";
+            this.PspPkgCacheOnLaunch.Name = "PspPkgCacheOnLaunch";
+            this.PspPkgCacheOnLaunch.ToolTipText = "Decrypt PSP .pkg files to a PPSSPP-bootable memstick folder on launch (shared in-process AES-CTR).";
+            this.PspPkgCacheOnLaunch.Width = 62;
+            //
+            // Ctr3dsCacheOnLaunch
+            //
+            this.Ctr3dsCacheOnLaunch.HeaderText = "3DS .3ds";
+            this.Ctr3dsCacheOnLaunch.Name = "Ctr3dsCacheOnLaunch";
+            this.Ctr3dsCacheOnLaunch.ToolTipText = "Decrypt 3DS .3ds/.cci files on launch (in-process NCCH decryption, needs aes_keys.txt in Extractors/).";
+            this.Ctr3dsCacheOnLaunch.Width = 60;
+            //
+            // PsvPkgCacheOnLaunch
+            //
+            this.PsvPkgCacheOnLaunch.HeaderText = "PSV .pkg";
+            this.PsvPkgCacheOnLaunch.Name = "PsvPkgCacheOnLaunch";
+            this.PsvPkgCacheOnLaunch.ToolTipText = "Decrypt PS Vita .pkg files into a Vita3K-installable folder tree on launch (in-process AES-CTR with derived key).";
+            this.PsvPkgCacheOnLaunch.Width = 62;
+            //
             // NewConfigWindow
             // 
             this.AcceptButton = this.okButton;
@@ -1489,6 +2440,11 @@ namespace ArchiveCacheManager
             this.tab3SmartExtractSettings.ResumeLayout(false);
             this.tab3SmartExtractSettings.PerformLayout();
             this.tab4PluginSettings.ResumeLayout(false);
+            this.tabPackagingNintendo.ResumeLayout(false);
+            this.tabPackagingNintendo.PerformLayout();
+            this.tabPackagingSony.ResumeLayout(false);
+            this.tabPackagingSony.PerformLayout();
+            this.packagingSubTabs.ResumeLayout(false);
             this.tab5PackagingSettings.ResumeLayout(false);
             this.tab5PackagingSettings.PerformLayout();
             this.tab4PluginSettings.PerformLayout();
@@ -1526,6 +2482,9 @@ namespace ArchiveCacheManager
         private System.Windows.Forms.Label extractionSettingsTipLabel;
         private System.Windows.Forms.TabPage tab3SmartExtractSettings;
         private System.Windows.Forms.TabPage tab5PackagingSettings;
+        private System.Windows.Forms.TabControl packagingSubTabs;
+        private System.Windows.Forms.TabPage tabPackagingNintendo;
+        private System.Windows.Forms.TabPage tabPackagingSony;
         private System.Windows.Forms.Label packagingWiiSectionLabel;
         private System.Windows.Forms.Label wadPlatformLabel;
         private System.Windows.Forms.CheckedListBox wadPlatform;
@@ -1603,6 +2562,84 @@ namespace ArchiveCacheManager
         private System.Windows.Forms.DataGridViewCheckBoxColumn CiaCacheOnLaunch;
         private System.Windows.Forms.DataGridViewCheckBoxColumn WadCacheOnLaunch;
         private System.Windows.Forms.DataGridViewCheckBoxColumn TadCacheOnLaunch;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Ps3PkgCacheOnLaunch;
+        private System.Windows.Forms.Label packagingPs3PkgSectionLabel;
+        private System.Windows.Forms.Label packagingPs3IsoSectionLabel;
+        private System.Windows.Forms.Label ps3PkgPlatformLabel;
+        private System.Windows.Forms.CheckedListBox ps3PkgPlatform;
+        private System.Windows.Forms.Label ps3PkgOutputPathLabel;
+        private System.Windows.Forms.TextBox ps3PkgOutputPath;
+        private System.Windows.Forms.Button ps3PkgOutputPathBrowseButton;
+        private System.Windows.Forms.Label ps3RpcsExdataPathLabel;
+        private System.Windows.Forms.TextBox ps3RpcsExdataPath;
+        private System.Windows.Forms.Button ps3RpcsExdataPathBrowseButton;
+        private System.Windows.Forms.CheckBox ps3PkgAddToLibraryCheckBox;
+        private System.Windows.Forms.CheckBox ps3PkgAutoInstallToRpcs3CheckBox;
+        private System.Windows.Forms.CheckBox ps3AutoInstallDlcsCheckBox;
+        private System.Windows.Forms.CheckBox pspAutoInstallDlcsCheckBox;
+        private System.Windows.Forms.CheckBox psvAutoInstallDlcsCheckBox;
+        private System.Windows.Forms.Button ps3LocalPkgFoldersButton;
+        private System.Windows.Forms.Button pspLocalPkgFoldersButton;
+        private System.Windows.Forms.Button psvLocalPkgFoldersButton;
+        private System.Windows.Forms.Button wiiuLocalRomFoldersButton;
+        private System.Windows.Forms.Button ctr3dsLocalRomFoldersButton;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn PspPkgCacheOnLaunch;
+        private System.Windows.Forms.Label packagingPspPkgSectionLabel;
+        private System.Windows.Forms.Label pspPkgPlatformLabel;
+        private System.Windows.Forms.CheckedListBox pspPkgPlatform;
+        private System.Windows.Forms.Label pspPkgOutputPathLabel;
+        private System.Windows.Forms.TextBox pspPkgOutputPath;
+        private System.Windows.Forms.Button pspPkgOutputPathBrowseButton;
+        private System.Windows.Forms.Label pspPpssppLicensePathLabel;
+        private System.Windows.Forms.TextBox pspPpssppLicensePath;
+        private System.Windows.Forms.Button pspPpssppLicensePathBrowseButton;
+        private System.Windows.Forms.CheckBox pspPkgAddToLibraryCheckBox;
+        private System.Windows.Forms.Label packagingPs3AutoUpdateSectionLabel;
+        private System.Windows.Forms.CheckBox ps3AutoInstallUpdatesCheckBox;
+        private System.Windows.Forms.Label ps3UpdateCachePathLabel;
+        private System.Windows.Forms.TextBox ps3UpdateCachePath;
+        private System.Windows.Forms.Button ps3UpdateCachePathBrowseButton;
+        private System.Windows.Forms.CheckBox ps3UpdateOfflineModeCheckBox;
+        private System.Windows.Forms.Label packagingPspAutoUpdateSectionLabel;
+        private System.Windows.Forms.CheckBox pspAutoInstallUpdatesCheckBox;
+        private System.Windows.Forms.Label pspUpdateCachePathLabel;
+        private System.Windows.Forms.TextBox pspUpdateCachePath;
+        private System.Windows.Forms.Button pspUpdateCachePathBrowseButton;
+        private System.Windows.Forms.CheckBox pspUpdateOfflineModeCheckBox;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Ctr3dsCacheOnLaunch;
+        private System.Windows.Forms.Label packagingCtr3dsSectionLabel;
+        private System.Windows.Forms.Label ctr3dsPlatformLabel;
+        private System.Windows.Forms.CheckedListBox ctr3dsPlatform;
+        private System.Windows.Forms.Label ctr3dsKeysPathLabel;
+        private System.Windows.Forms.TextBox ctr3dsKeysPath;
+        private System.Windows.Forms.Button ctr3dsKeysPathBrowseButton;
+        private System.Windows.Forms.Label ctr3dsSeedDbPathLabel;
+        private System.Windows.Forms.TextBox ctr3dsSeedDbPath;
+        private System.Windows.Forms.Button ctr3dsSeedDbPathBrowseButton;
+        private System.Windows.Forms.Label ctr3dsOutputPathLabel;
+        private System.Windows.Forms.TextBox ctr3dsOutputPath;
+        private System.Windows.Forms.Button ctr3dsOutputPathBrowseButton;
+        private System.Windows.Forms.CheckBox ctr3dsAddToLibraryCheckBox;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn PsvPkgCacheOnLaunch;
+        private System.Windows.Forms.Label packagingPsvPkgSectionLabel;
+        private System.Windows.Forms.Label psvPkgPlatformLabel;
+        private System.Windows.Forms.CheckedListBox psvPkgPlatform;
+        private System.Windows.Forms.Label psvPkgOutputPathLabel;
+        private System.Windows.Forms.TextBox psvPkgOutputPath;
+        private System.Windows.Forms.Button psvPkgOutputPathBrowseButton;
+        private System.Windows.Forms.CheckBox psvPkgAddToLibraryCheckBox;
+        private System.Windows.Forms.Label psvVita3kDataPathLabel;
+        private System.Windows.Forms.TextBox psvVita3kDataPath;
+        private System.Windows.Forms.Button psvVita3kDataPathBrowseButton;
+        private System.Windows.Forms.Label npsDbPathLabel;
+        private System.Windows.Forms.TextBox npsDbPath;
+        private System.Windows.Forms.Button npsDbPathBrowseButton;
+        private System.Windows.Forms.Label packagingPsvAutoUpdateSectionLabel;
+        private System.Windows.Forms.CheckBox psvAutoInstallUpdatesCheckBox;
+        private System.Windows.Forms.Label psvUpdateCachePathLabel;
+        private System.Windows.Forms.TextBox psvUpdateCachePath;
+        private System.Windows.Forms.Button psvUpdateCachePathBrowseButton;
+        private System.Windows.Forms.CheckBox psvUpdateOfflineModeCheckBox;
         private System.Windows.Forms.Label wiiuCemuKeysPathLabel;
         private System.Windows.Forms.TextBox wiiuCemuKeysPath;
         private System.Windows.Forms.Button wiiuCemuKeysPathBrowseButton;

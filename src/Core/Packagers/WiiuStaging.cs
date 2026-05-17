@@ -459,13 +459,13 @@ namespace ArchiveCacheManager
             {
                 chosenPassword = ordered[0];
                 Logger.Log("Wii U build: no .app available for title-key verification, using first candidate password unverified.");
-                return WiiuTitleKey.Derive(titleIdHex, chosenPassword);
+                return WiiuTitleKeys.Derive(titleIdHex, chosenPassword);
             }
 
             foreach (string candidate in ordered)
             {
                 byte[] key;
-                try { key = WiiuTitleKey.Derive(titleIdHex, candidate); }
+                try { key = WiiuTitleKeys.Derive(titleIdHex, candidate); }
                 catch (Exception ex)
                 {
                     Logger.Log(string.Format("Wii U build: derive failed for password '{0}': {1}", candidate, ex.Message));
