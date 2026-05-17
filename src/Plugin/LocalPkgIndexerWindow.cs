@@ -68,7 +68,7 @@ namespace ArchiveCacheManager
             };
 
             foreach (LocalPkgPlatform platform in new[]
-                { LocalPkgPlatform.Ps3, LocalPkgPlatform.Psp, LocalPkgPlatform.Psv, LocalPkgPlatform.Wiiu, LocalPkgPlatform.Ctr3ds })
+                { LocalPkgPlatform.Ps3, LocalPkgPlatform.Psp, LocalPkgPlatform.Psv, LocalPkgPlatform.Wiiu, LocalPkgPlatform.Ctr3ds, LocalPkgPlatform.Wii })
             {
                 var tab = new PlatformTab(this, platform);
                 mTabsByPlatform[platform] = tab;
@@ -422,6 +422,7 @@ namespace ArchiveCacheManager
                     case LocalPkgPlatform.Psv:    Config.PsvLocalPkgFolders    = csv; break;
                     case LocalPkgPlatform.Wiiu:   Config.WiiuLocalRomFolders   = csv; break;
                     case LocalPkgPlatform.Ctr3ds: Config.Ctr3dsLocalRomFolders = csv; break;
+                    case LocalPkgPlatform.Wii:    Config.WiiLocalRomFolders    = csv; break;
                 }
                 Config.Save();
             }

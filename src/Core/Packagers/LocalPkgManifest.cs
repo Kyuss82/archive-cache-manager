@@ -33,7 +33,7 @@ using System.Text.Json.Serialization;
 
 namespace ArchiveCacheManager
 {
-    public enum LocalPkgPlatform { Ps3, Psp, Psv, Wiiu, Ctr3ds }
+    public enum LocalPkgPlatform { Ps3, Psp, Psv, Wiiu, Ctr3ds, Wii }
 
     public class LocalPkgEntry
     {

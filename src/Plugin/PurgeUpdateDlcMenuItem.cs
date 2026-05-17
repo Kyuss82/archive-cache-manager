@@ -32,7 +32,8 @@ namespace ArchiveCacheManager
                 || Config.MatchesPsvPkgPlatform(p)
                 || Config.MatchesWiiuPlatform(p)
                 || Config.MatchesCiaPlatform(p)
-                || Config.MatchesCtr3dsPlatform(p);
+                || Config.MatchesCtr3dsPlatform(p)
+                || Config.MatchesWadPlatform(p);
         }
 
         public bool GetIsValidForGames(IGame[] selectedGames) => false;

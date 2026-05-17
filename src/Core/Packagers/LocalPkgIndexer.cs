@@ -94,6 +94,11 @@ namespace ArchiveCacheManager
                     ScanCtr3ds(folder, manifest, progress, onProgress, cancellationToken);
                     continue;
                 }
+                if (platform == LocalPkgPlatform.Wii)
+                {
+                    ScanWii(folder, manifest, progress, onProgress, cancellationToken);
+                    continue;
+                }
 
                 // Bare .pkg files in the folder tree
                 foreach (string pkgPath in EnumeratePkgs(folder))
@@ -169,6 +174,13 @@ namespace ArchiveCacheManager
                         try { foreach (var _ in Directory.EnumerateFiles(folder, "*.wua", opts)) total++; } catch { }
                     try { foreach (var _ in Directory.EnumerateFiles(folder, "*.zip", opts)) total++; } catch { }
                 }
+                else if (platform == LocalPkgPlatform.Wii)
+                {
+                    // Wii indexer covers .wad downloadables (WiiWare/VC/channels). Disc games (.iso/.wbfs/.rvz)
+                    // are deliberately not in scope here — they're the base library entries, not the clutter
+                    // that this indexer is for.
+                    try { foreach (var _ in Directory.EnumerateFiles(folder, "*.wad", opts)) total++; } catch { }
+                }
                 else
                 {
                     try { foreach (var _ in Directory.EnumerateFiles(folder, "*.pkg", opts)) total++; } catch { }
@@ -221,6 +233,9 @@ namespace ArchiveCacheManager
                 case LocalPkgPlatform.Ctr3ds:
                     cacheRoot = Path.Combine(PathUtils.GetPluginRootPath(), "Ctr3dsLocalCache");
                     return Path.Combine(cacheRoot, "local_rom_index.json");
+                case LocalPkgPlatform.Wii:
+                    cacheRoot = Path.Combine(PathUtils.GetPluginRootPath(), "WiiLocalCache");
+                    return Path.Combine(cacheRoot, "local_rom_index.json");
                 default: return null;
             }
             return string.IsNullOrEmpty(cacheRoot) ? null : Path.Combine(cacheRoot, "local_pkg_index.json");
@@ -236,6 +251,7 @@ namespace ArchiveCacheManager
                 case LocalPkgPlatform.Psv:    csv = Config.PsvLocalPkgFolders;    break;
                 case LocalPkgPlatform.Wiiu:   csv = Config.WiiuLocalRomFolders;   break;
                 case LocalPkgPlatform.Ctr3ds: csv = Config.Ctr3dsLocalRomFolders; break;
+                case LocalPkgPlatform.Wii:    csv = Config.WiiLocalRomFolders;    break;
                 default: return Array.Empty<string>();
             }
             var raw = Config.ParsePipeList(csv);

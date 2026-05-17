@@ -77,6 +77,7 @@ namespace ArchiveCacheManager
         private static readonly string defaultPsvLocalPkgFolders = "";
         private static readonly string defaultWiiuLocalRomFolders  = "";
         private static readonly string defaultCtr3dsLocalRomFolders = "";
+        private static readonly string defaultWiiLocalRomFolders   = "";
         private static readonly bool defaultPs3AutoInstallDlcs   = false;
         private static readonly bool defaultWiiuAutoInstallUpdates = false;
         private static readonly bool defaultWiiuAutoInstallDlcs    = false;
@@ -204,6 +205,7 @@ namespace ArchiveCacheManager
         private static string mPsvLocalPkgFolders = defaultPsvLocalPkgFolders;
         private static string mWiiuLocalRomFolders  = defaultWiiuLocalRomFolders;
         private static string mCtr3dsLocalRomFolders = defaultCtr3dsLocalRomFolders;
+        private static string mWiiLocalRomFolders   = defaultWiiLocalRomFolders;
         private static bool mPs3AutoInstallDlcs = defaultPs3AutoInstallDlcs;
         private static bool mWiiuAutoInstallUpdates = defaultWiiuAutoInstallUpdates;
         private static bool mWiiuAutoInstallDlcs    = defaultWiiuAutoInstallDlcs;
@@ -356,6 +358,7 @@ namespace ArchiveCacheManager
         public static string PsvLocalPkgFolders { get => mPsvLocalPkgFolders; set => mPsvLocalPkgFolders = value ?? string.Empty; }
         public static string WiiuLocalRomFolders  { get => mWiiuLocalRomFolders;  set => mWiiuLocalRomFolders  = value ?? string.Empty; }
         public static string Ctr3dsLocalRomFolders { get => mCtr3dsLocalRomFolders; set => mCtr3dsLocalRomFolders = value ?? string.Empty; }
+        public static string WiiLocalRomFolders   { get => mWiiLocalRomFolders;   set => mWiiLocalRomFolders   = value ?? string.Empty; }
         public static bool   Ps3AutoInstallDlcs { get => mPs3AutoInstallDlcs; set => mPs3AutoInstallDlcs = value; }
 
         /// <summary>
@@ -1126,6 +1129,7 @@ namespace ArchiveCacheManager
                             if (section.Keys.ContainsKey(nameof(PsvLocalPkgFolders))) mPsvLocalPkgFolders = section.Keys[nameof(PsvLocalPkgFolders)];
                             if (section.Keys.ContainsKey(nameof(WiiuLocalRomFolders))) mWiiuLocalRomFolders = section.Keys[nameof(WiiuLocalRomFolders)];
                             if (section.Keys.ContainsKey(nameof(Ctr3dsLocalRomFolders))) mCtr3dsLocalRomFolders = section.Keys[nameof(Ctr3dsLocalRomFolders)];
+                            if (section.Keys.ContainsKey(nameof(WiiLocalRomFolders))) mWiiLocalRomFolders = section.Keys[nameof(WiiLocalRomFolders)];
                             if (section.Keys.ContainsKey(nameof(Ps3AutoInstallDlcs))) mPs3AutoInstallDlcs = Convert.ToBoolean(section.Keys[nameof(Ps3AutoInstallDlcs)]);
                             if (section.Keys.ContainsKey(nameof(WiiuAutoInstallUpdates))) mWiiuAutoInstallUpdates = Convert.ToBoolean(section.Keys[nameof(WiiuAutoInstallUpdates)]);
                             if (section.Keys.ContainsKey(nameof(WiiuAutoInstallDlcs)))    mWiiuAutoInstallDlcs    = Convert.ToBoolean(section.Keys[nameof(WiiuAutoInstallDlcs)]);
@@ -1547,6 +1551,7 @@ namespace ArchiveCacheManager
             iniData[configSection][nameof(PsvLocalPkgFolders)] = mPsvLocalPkgFolders;
             iniData[configSection][nameof(WiiuLocalRomFolders)] = mWiiuLocalRomFolders;
             iniData[configSection][nameof(Ctr3dsLocalRomFolders)] = mCtr3dsLocalRomFolders;
+            iniData[configSection][nameof(WiiLocalRomFolders)] = mWiiLocalRomFolders;
             iniData[configSection][nameof(Ps3AutoInstallDlcs)] = mPs3AutoInstallDlcs.ToString();
             iniData[configSection][nameof(WiiuAutoInstallUpdates)] = mWiiuAutoInstallUpdates.ToString();
             iniData[configSection][nameof(WiiuAutoInstallDlcs)]    = mWiiuAutoInstallDlcs.ToString();
@@ -1656,6 +1661,7 @@ namespace ArchiveCacheManager
             mPsvLocalPkgFolders = defaultPsvLocalPkgFolders;
             mWiiuLocalRomFolders = defaultWiiuLocalRomFolders;
             mCtr3dsLocalRomFolders = defaultCtr3dsLocalRomFolders;
+            mWiiLocalRomFolders = defaultWiiLocalRomFolders;
             mPs3AutoInstallDlcs = defaultPs3AutoInstallDlcs;
             mWiiuAutoInstallUpdates = defaultWiiuAutoInstallUpdates;
             mWiiuAutoInstallDlcs    = defaultWiiuAutoInstallDlcs;

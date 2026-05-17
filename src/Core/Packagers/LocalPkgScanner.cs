@@ -466,6 +466,153 @@ namespace ArchiveCacheManager
                 sourcePath, titleId, baseTid, roleLabel));
         }
 
+        // ─── Wii scanning ────────────────────────────────────────────────────────
+        // .wad container layout (wiibrew.org/wiki/WAD_files), big-endian throughout, 0x40-aligned sections:
+        //   0x00..0x20 : header (uint32 header_size=0x20, char[4] type="Is", uint32 cert_size,
+        //                uint32 reserved, uint32 tik_size, uint32 tmd_size, uint32 data_size, uint32 footer_size)
+        //   0x40       : cert chain (cert_size bytes, then pad to 0x40)
+        //   ...        : ticket    (tik_size bytes,  then pad to 0x40)
+        //   ...        : TMD       (tmd_size bytes) ← title_id at offset 0x18C, title_version at 0x1DC
+        //   ...        : contents (.app blobs)
+        //   ...        : footer (optional)
+        // v2.80: only .wad files are in scope — disc games (.iso/.wbfs/.rvz) are the base library entries
+        // we *want* to keep, and channel/VC/WiiWare/DLC content is exclusively in .wad form.
+        private static void ScanWii(string folder, LocalPkgManifest manifest, LocalPkgScanProgress progress, Reporter onProgress, CancellationToken cancellationToken = default)
+        {
+            EnumerationOptions opts = new EnumerationOptions { RecurseSubdirectories = true, IgnoreInaccessible = true };
+            foreach (string wadPath in Directory.EnumerateFiles(folder, "*.wad", opts))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                progress.FilesSeen++;
+                progress.CurrentFile = wadPath;
+                onProgress?.Invoke(progress);
+                if (!File.Exists(wadPath)) continue;
+
+                try
+                {
+                    using (var fs = new FileStream(wadPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        var (titleId, version) = ReadWadTitleId(fs);
+                        if (titleId == 0)
+                        {
+                            EmitLog(progress, onProgress, string.Format("[skip] {0} — Wii WAD header unparseable", wadPath));
+                            progress.Skipped++;
+                            continue;
+                        }
+                        AddWiiEntry(manifest, progress, wadPath, titleId, version, SafeFileLength(wadPath), onProgress);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(string.Format("LocalPkgIndexer: Wii WAD parse failed for {0}: {1}", wadPath, ex.Message));
+                    EmitLog(progress, onProgress, string.Format("[error] {0}: {1}", wadPath, ex.Message));
+                    progress.Errors++;
+                }
+            }
+        }
+
+        // Reads the WAD header to compute the TMD offset, then reads title_id + version from the TMD.
+        // WAD layout: header(0x20) → pad to 0x40 → cert → pad to 0x40 → ticket → pad to 0x40 → TMD.
+        // Returns (0, 0) if anything looks off — caller emits a skip line in that case.
+        private static (ulong titleId, int version) ReadWadTitleId(Stream fs)
+        {
+            byte[] hdr = new byte[0x20];
+            if (!ReadExactly(fs, hdr, 0, 0x20)) return (0, 0);
+            uint headerSize = (uint)((hdr[0x00] << 24) | (hdr[0x01] << 16) | (hdr[0x02] << 8) | hdr[0x03]);
+            if (headerSize != 0x20) return (0, 0);
+            // Bytes 0x04..0x08 are the type field — accept "Is\0\0" (installable, normal case) and any
+            // other 4-byte tag rather than enforcing exact match; the size fields are what we need.
+            uint certSize = (uint)((hdr[0x08] << 24) | (hdr[0x09] << 16) | (hdr[0x0A] << 8) | hdr[0x0B]);
+            uint tikSize  = (uint)((hdr[0x10] << 24) | (hdr[0x11] << 16) | (hdr[0x12] << 8) | hdr[0x13]);
+            uint tmdSize  = (uint)((hdr[0x14] << 24) | (hdr[0x15] << 16) | (hdr[0x16] << 8) | hdr[0x17]);
+            if (tmdSize < 0x1DE) return (0, 0);    // need at least up to title_version
+
+            long certEnd = AlignUp(0x40 + (long)certSize, 0x40);
+            long tikEnd  = AlignUp(certEnd + (long)tikSize, 0x40);
+            long tmdOffset = tikEnd;
+
+            if (fs.Length < tmdOffset + 0x1DE) return (0, 0);
+            fs.Seek(tmdOffset + 0x18C, SeekOrigin.Begin);
+            byte[] tid = new byte[8];
+            if (!ReadExactly(fs, tid, 0, 8)) return (0, 0);
+            ulong titleId =
+                ((ulong)tid[0] << 56) | ((ulong)tid[1] << 48) | ((ulong)tid[2] << 40) | ((ulong)tid[3] << 32) |
+                ((ulong)tid[4] << 24) | ((ulong)tid[5] << 16) | ((ulong)tid[6] <<  8) |  (ulong)tid[7];
+
+            fs.Seek(tmdOffset + 0x1DC, SeekOrigin.Begin);
+            byte[] ver = new byte[2];
+            int version = ReadExactly(fs, ver, 0, 2) ? ((ver[0] << 8) | ver[1]) : 0;
+            return (titleId, version);
+        }
+
+        private static long AlignUp(long value, long alignment) => (value + alignment - 1) & ~(alignment - 1);
+
+        // Wii title_id_high categories (per wiibrew.org/wiki/Titles):
+        //   0x00000001 → System title (boot2, IOS, MIOS, System Menu)            → SystemTitle
+        //   0x00010000 → Disc save data (not a redistributable title)             → Skip
+        //   0x00010001 → Downloadable title (WiiWare, Virtual Console)            → Skip (base — already in LB library)
+        //   0x00010002 → System channel (News, Forecast, Mii, Photo, ...)         → SystemTitle
+        //   0x00010004 → Game with channel (Mario Kart Wii etc. install channels) → Other
+        //   0x00010005 → Downloadable game content (DLC)                          → DLC
+        //   0x00010008 → Hidden channel (EULA, Region Select, ...)                → SystemTitle
+        // Unknown high values are surfaced as Other so the user can review them rather than swallowed.
+        private static void AddWiiEntry(LocalPkgManifest manifest, LocalPkgScanProgress progress, string sourcePath, ulong titleId, int titleVersion, long sizeBytes, Reporter onProgress = null)
+        {
+            uint high = (uint)(titleId >> 32);
+            uint low  = (uint)(titleId & 0xFFFFFFFF);
+            EntryRole role;
+            string skipReason = null;
+            switch (high)
+            {
+                case 0x00000001: role = EntryRole.SystemTitle; break;
+                case 0x00010000: role = EntryRole.Skip;        skipReason = "disc save data (not a title)"; break;
+                case 0x00010001: role = EntryRole.Skip;        skipReason = "base WiiWare/VC (already in library)"; break;
+                case 0x00010002: role = EntryRole.SystemTitle; break;
+                case 0x00010004: role = EntryRole.Other;       break;
+                case 0x00010005: role = EntryRole.Dlc;         break;
+                case 0x00010008: role = EntryRole.SystemTitle; break;
+                default:         role = EntryRole.Other;       break;
+            }
+            if (role == EntryRole.Skip)
+            {
+                EmitLog(progress, onProgress, string.Format("[skip] {0} — Wii title_id=0x{1:X16} ({2})", sourcePath, titleId, skipReason));
+                progress.Skipped++;
+                return;
+            }
+            // DLC (0x00010005) and game-with-channel (0x00010004) attach to a parent base game whose TID
+            // is "00010001"+low. Everything else (system content) groups under its own title_id since
+            // there is no game association.
+            string lowKey = low.ToString("X8");
+            string baseTid;
+            switch (role)
+            {
+                case EntryRole.Dlc:
+                case EntryRole.Other:
+                    baseTid = "00010001" + lowKey;
+                    break;
+                default:
+                    baseTid = titleId.ToString("X16");
+                    break;
+            }
+            if (!manifest.Titles.TryGetValue(baseTid, out var bucket))
+            {
+                bucket = new LocalPkgTitle();
+                manifest.Titles[baseTid] = bucket;
+            }
+            var entry = new LocalPkgEntry
+            {
+                ContentId   = string.Format("{0:X16}_v{1}", titleId, titleVersion),
+                TitleId     = titleId.ToString("X16"),
+                PkgPath     = sourcePath,
+                Size        = sizeBytes,
+                ContentType = high,
+            };
+            string roleLabel = AddToBucket(bucket, entry, role, progress);
+            progress.Indexed++;
+            EmitLog(progress, onProgress, string.Format("[idx]  {0} — Wii title_id=0x{1:X16} → bucket {2} {3}",
+                sourcePath, titleId, baseTid, roleLabel));
+        }
+
         // v2.79: typed roles beyond Update/Dlc so the library-purge feature can offer
         // checkboxes for Theme / System / Demo / Other content. `Skip` still means
         // "drop entirely without indexing" (base games, unparseable, etc.).
